@@ -1,3 +1,5 @@
+github.com/mattn/go-sqlite3 v1.14.16 h1:yOQRA0RpS5PFz/oikGwBEqvAWhWg5ufRz4ETLjwpU1Y=
+github.com/mattn/go-sqlite3 v1.14.16/go.mod h1:2eHXhiwb8IkHr+BDWZGa96P6+rkvnG63S2DGjv9HUNg=
 github.com/uhppoted/uhppote-core v0.8.5-0.20230323171731-26d6b35fc663 h1:uQg149umetub2/TdvBM/mqpJ9L5ptzvThCflWBUVQOQ=
 github.com/uhppoted/uhppote-core v0.8.5-0.20230323171731-26d6b35fc663/go.mod h1:q3xZZc7GMkCfpVnKNmdoZQDjvMHfPvH79VNai7HDH3s=
 github.com/uhppoted/uhppoted-lib v0.8.5-0.20230323173011-5c3342984117 h1:vMbM9QOAoETIgyiEIuDFXfoWSbg00pjgjtHtKYKRlpk=

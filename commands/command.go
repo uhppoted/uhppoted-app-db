@@ -33,6 +33,8 @@ func helpOptions(flagset *flag.FlagSet) {
 	}
 }
 
-func infof(format string, args ...any) {
-	log.Infof(format, args...)
+func infof(tag string, format string, args ...any) {
+	f := fmt.Sprintf("%-10v %v", tag, format)
+
+	log.Infof(f, args...)
 }

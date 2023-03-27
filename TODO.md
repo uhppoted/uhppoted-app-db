@@ -2,10 +2,9 @@
 
 ## IN PROGRESS
 
-- [x] Initial setup
-- [ ] `version` command
-- [ ] `help` command
 - [ ] `get-acl`
+      - [ ] sqlite3
+
 - [ ] `load-acl`
 - [ ] `store-acl`
 - [ ] `compare-acl`

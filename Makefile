@@ -2,7 +2,7 @@ CMD   = ./bin/uhppoted-app-db
 DIST  ?= development
 DEBUG ?= --debug
 
-.DEFAULT_GOAL := test
+.DEFAULT_GOAL := lint
 .PHONY: clean
 .PHONY: update
 .PHONY: update-release
