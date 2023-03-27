@@ -2,6 +2,7 @@ CMD   = ./bin/uhppoted-app-db
 DIST  ?= development
 DEBUG ?= --debug
 
+.DEFAULT_GOAL := test
 .PHONY: clean
 .PHONY: update
 .PHONY: update-release
@@ -88,15 +89,15 @@ help: build
 	$(CMD) help
 	$(CMD) help commands
 	$(CMD) help get-acl
-	$(CMD) help load-acl
-	$(CMD) help store-acl
-	$(CMD) help compare-acl
+	# $(CMD) help load-acl
+	# $(CMD) help store-acl
+	# $(CMD) help compare-acl
 
 version: build
 	$(CMD) version
 
 get-acl: build
-	$(CMD) get-acl
+	$(CMD) get-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db"
 
 get-acl-with-pin: build
 	$(CMD) get-acl --with-pin

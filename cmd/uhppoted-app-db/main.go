@@ -13,6 +13,8 @@ import (
 )
 
 var cli = []uhppoted.Command{
+	&commands.GetACLCmd,
+
 	&uhppoted.Version{
 		Application: commands.APP,
 		Version:     uhppote.VERSION,
