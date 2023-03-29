@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/uhppoted/uhppote-core/uhppote"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 	"github.com/uhppoted/uhppoted-lib/lockfile"
@@ -15,7 +16,7 @@ import (
 )
 
 var GetACLCmd = GetACL{
-	// workdir:     DEFAULT_WORKDIR,
+	config:   config.DefaultConfig,
 	dsn:      "",
 	withPIN:  false,
 	lockfile: "",
@@ -23,7 +24,7 @@ var GetACLCmd = GetACL{
 }
 
 type GetACL struct {
-	// workdir     string
+	config   string
 	dsn      string
 	file     string
 	withPIN  bool
@@ -61,7 +62,6 @@ func (cmd *GetACL) Help() {
 func (cmd *GetACL) FlagSet() *flag.FlagSet {
 	flagset := flag.NewFlagSet("get-acl", flag.ExitOnError)
 
-	//	flagset.StringVar(&cmd.workdir, "workdir", cmd.workdir, "Directory for working files (tokens, revisions, etc)'")
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
 	flagset.StringVar(&cmd.file, "file", cmd.file, "Optional TSV filepath. Defaults to stdout")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code in retrieved ACL information")
@@ -70,9 +70,10 @@ func (cmd *GetACL) FlagSet() *flag.FlagSet {
 	return flagset
 }
 
-func (cmd *GetACL) Execute(args ...interface{}) error {
+func (cmd *GetACL) Execute(args ...any) error {
 	options := args[0].(*Options)
 
+	cmd.config = options.Config
 	cmd.debug = options.Debug
 
 	// ... check parameters
@@ -102,8 +103,15 @@ func (cmd *GetACL) Execute(args ...interface{}) error {
 		}()
 	}
 
-	// ... retrieve ACL
+	// ... get config
+	conf := config.NewConfig()
+	if err := conf.Load(cmd.config); err != nil {
+		return fmt.Errorf("could not load configuration (%v)", err)
+	}
 
+	_, devices := getDevices(conf, cmd.debug)
+
+	// ... retrieve ACL from DB
 	var table *lib.Table
 
 	switch {
@@ -117,46 +125,26 @@ func (cmd *GetACL) Execute(args ...interface{}) error {
 		}
 	}
 
-	fmt.Printf(">>>>>>> TABLE: %v\n", table)
-	// doors, err := getDoors(conf)
-	// if err != nil {
-	//     return err
-	// }
+	f := func(table *lib.Table, devices []uhppote.Device) (*lib.ACL, []error, error) {
+		if cmd.withPIN {
+			return lib.ParseTable(table, devices, false)
+		} else {
+			return lib.ParseTable(table, devices, false)
+		}
+	}
 
-	// if cmd.debug {
-	//     fmt.Printf("DOORS:\n")
-	//     for _, d := range doors {
-	//         fmt.Printf("  %v\n", d)
-	//     }
-	//     fmt.Println()
-	// }
+	if list, warnings, err := f(table, devices); err != nil {
+		return err
+	} else if list == nil {
+		return fmt.Errorf("error creating ACL from DB table (%v)", list)
+	} else {
+		for _, w := range warnings {
+			warnf("%v", w.Error())
+		}
 
-	// makeACL := func(members types.Members, doors Doors) (*acl.ACL, error) {
-	//     if cmd.withPIN {
-	//         return rules.MakeACLWithPIN(members, doors)
-	//     } else {
-	//         return rules.MakeACL(members, doors)
-	//     }
-	// }
-
-	// ACL, err := makeACL(*members, doors)
-	// if err != nil {
-	//     return err
-	// }
-
-	// asTable := func(a *acl.ACL) *lib.Table {
-	//     if cmd.withPIN {
-	//         return a.AsTableWithPIN()
-	//     } else {
-	//         return a.AsTable()
-	//     }
-	// }
-
-	// _, devices := getDevices(conf, cmd.debug)
-	// _, warnings, err := lib.ParseTable(asTable(ACL), devices, false)
-	// if err != nil {
-	//     return err
-	// }
+		fmt.Printf(">>>>>>> ACL: %v\n", list)
+		return nil
+	}
 
 	// if cmd.debug {
 	//     if cmd.withPIN {
