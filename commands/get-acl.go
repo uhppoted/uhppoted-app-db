@@ -143,7 +143,6 @@ func (cmd *GetACL) Execute(args ...any) error {
 		}
 
 		fmt.Printf(">>>>>>> ACL: %v\n", list)
-		return nil
 	}
 
 	// if cmd.debug {

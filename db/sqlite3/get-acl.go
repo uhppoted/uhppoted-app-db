@@ -56,6 +56,4 @@ func GetACL(dsn string) (*lib.Table, error) {
 			return makeTable(columns, recordset)
 		}
 	}
-
-	return nil, nil
 }
