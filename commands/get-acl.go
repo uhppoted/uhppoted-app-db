@@ -119,7 +119,7 @@ func (cmd *GetACL) Execute(args ...any) error {
 		if t, err := sqlite3.GetACL(cmd.dsn[8:]); err != nil {
 			return err
 		} else if t == nil {
-			return fmt.Errorf("Invalid ACL table (%v)", table)
+			return fmt.Errorf("invalid ACL table (%v)", table)
 		} else {
 			table = t
 		}
