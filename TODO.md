@@ -4,6 +4,7 @@
 
 - [ ] `get-acl`
       - [ ] sqlite3
+      - [ ] with-pin
 
 - [ ] `load-acl`
 - [ ] `store-acl`

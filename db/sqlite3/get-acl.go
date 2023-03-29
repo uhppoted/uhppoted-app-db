@@ -8,48 +8,54 @@ import (
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
+
+	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 
-func GetACL(dsn string) error {
+func GetACL(dsn string) (*lib.Table, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()
 
 	if _, err := os.Stat(dsn); errors.Is(err, os.ErrNotExist) {
-		return fmt.Errorf("sqlite3 database %v does not exist", dsn)
+		return nil, fmt.Errorf("sqlite3 database %v does not exist", dsn)
 	} else if err != nil {
-		return err
+		return nil, err
 	}
 
 	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
-		return err
+		return nil, err
 	} else if dbc == nil {
-		return fmt.Errorf("invalid sqlite3 DB pool (%v)", dbc)
+		return nil, fmt.Errorf("invalid sqlite3 DB pool (%v)", dbc)
 	} else if prepared, err := dbc.Prepare(sqlAclGet); err != nil {
-		return err
+		return nil, err
 	} else if rs, err := prepared.QueryContext(ctx); err != nil {
-		return err
+		return nil, err
 	} else if rs == nil {
-		return fmt.Errorf("invalid resultset (%v)", rs)
+		return nil, fmt.Errorf("invalid resultset (%v)", rs)
 	} else {
 		defer rs.Close()
 
 		if columns, err := rs.Columns(); err != nil {
-			return err
+			return nil, err
 		} else if types, err := rs.ColumnTypes(); err != nil {
-			return err
+			return nil, err
 		} else {
+			recordset := []record{}
+
 			for rs.Next() {
 				if record, err := row2record(rs, columns, types); err != nil {
-					return err
+					return nil, err
 				} else if record == nil {
-					return fmt.Errorf("invalid record (%v)", record)
+					return nil, fmt.Errorf("invalid record (%v)", record)
 				} else {
-					fmt.Printf(">>>>>> %v\n", record)
+					recordset = append(recordset, record)
 				}
 			}
+
+			return makeTable(columns, recordset)
 		}
 	}
 
-	return nil
+	return nil, nil
 }

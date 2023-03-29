@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	//lib "github.com/uhppoted/uhppoted-lib/acl"
+	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 	"github.com/uhppoted/uhppoted-lib/lockfile"
 
@@ -104,12 +104,20 @@ func (cmd *GetACL) Execute(args ...interface{}) error {
 
 	// ... retrieve ACL
 
+	var table *lib.Table
+
 	switch {
 	case strings.HasPrefix(cmd.dsn, "sqlite3:"):
-		if err := sqlite3.GetACL(cmd.dsn[8:]); err != nil {
+		if t, err := sqlite3.GetACL(cmd.dsn[8:]); err != nil {
 			return err
+		} else if t == nil {
+			return fmt.Errorf("Invalid ACL table (%v)", table)
+		} else {
+			table = t
 		}
 	}
+
+	fmt.Printf(">>>>>>> TABLE: %v\n", table)
 	// doors, err := getDoors(conf)
 	// if err != nil {
 	//     return err
