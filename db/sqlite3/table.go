@@ -84,7 +84,7 @@ func makeTable(columns []string, recordset []record) (*lib.Table, error) {
 			row = append(row, t.Format("2006-01-02"))
 		}
 
-		for _, h := range header[2:] {
+		for _, h := range header[3:] {
 			if k, ok := index[normalise(h)]; ok {
 				if permission, ok := record[k].(int64); !ok {
 					row = append(row, "")

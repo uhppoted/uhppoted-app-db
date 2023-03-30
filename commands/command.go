@@ -3,6 +3,8 @@ package commands
 import (
 	"flag"
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/uhppoted/uhppote-core/uhppote"
@@ -49,6 +51,30 @@ func getDevices(conf *config.Config, debug bool) (uhppote.IUHPPOTE, []uhppote.De
 	u := uhppote.NewUHPPOTE(bind, broadcast, listen, 5*time.Second, devices, debug)
 
 	return u, devices
+}
+
+func write(file string, bytes []byte) error {
+	tmp, err := os.CreateTemp(os.TempDir(), "ACL")
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		tmp.Close()
+		os.Remove(tmp.Name())
+	}()
+
+	fmt.Fprintf(tmp, "%s", string(bytes))
+	tmp.Close()
+
+	dir := filepath.Dir(file)
+	if err := os.MkdirAll(dir, 0770); err != nil {
+		return err
+	} else if err := os.Rename(tmp.Name(), file); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func helpOptions(flagset *flag.FlagSet) {

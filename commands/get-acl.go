@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
@@ -133,55 +134,37 @@ func (cmd *GetACL) Execute(args ...any) error {
 		}
 	}
 
-	if list, warnings, err := f(table, devices); err != nil {
+	if acl, warnings, err := f(table, devices); err != nil {
 		return err
-	} else if list == nil {
-		return fmt.Errorf("error creating ACL from DB table (%v)", list)
+	} else if acl == nil {
+		return fmt.Errorf("error creating ACL from DB table (%v)", acl)
 	} else {
 		for _, w := range warnings {
-			warnf("%v", w.Error())
+			warnf("get-acl", "%v", w.Error())
 		}
 
-		fmt.Printf(">>>>>>> ACL: %v\n", list)
+		// ... write to TSV file
+		if cmd.file != "" {
+			var b bytes.Buffer
+
+			if err := table.ToTSV(&b); err != nil {
+				return fmt.Errorf("error creating TSV file (%v)", err)
+			} else if err := write(cmd.file, b.Bytes()); err != nil {
+				return err
+			}
+
+			infof("get-acl", "ACL saved to %v", cmd.file)
+			return nil
+		}
+
+		// ... write to stdout
+		if cmd.file != "" {
+			fmt.Fprintln(os.Stdout, string(table.MarshalTextIndent("  ", " ")))
+
+			acl.Print(os.Stdout)
+			return nil
+		}
 	}
-
-	// if cmd.debug {
-	//     if cmd.withPIN {
-	//         fmt.Printf("ACL:\n%s\n", string(ACL.AsTableWithPIN().MarshalTextIndent("  ", " ")))
-	//     } else {
-	//         fmt.Printf("ACL:\n%s\n", string(ACL.AsTable().MarshalTextIndent("  ", " ")))
-	//     }
-	// }
-
-	// for _, w := range warnings {
-	//     warnf("%v", w.Error())
-	// }
-
-	// // ... write to stdout
-	// if cmd.file == "" {
-	//     fmt.Fprintln(os.Stdout, string(asTable(ACL).MarshalTextIndent("  ", " ")))
-	//     return nil
-	// }
-
-	// // ... write to TSV file
-	// asTSV := func(a *acl.ACL, w io.Writer) error {
-	//     if cmd.withPIN {
-	//         return a.ToTSVWithPIN(w)
-	//     } else {
-	//         return a.ToTSV(w)
-	//     }
-	// }
-
-	// var b bytes.Buffer
-	// if err := asTSV(ACL, &b); err != nil {
-	//     return fmt.Errorf("error creating TSV file (%v)", err)
-	// }
-
-	// if err := write(cmd.file, b.Bytes()); err != nil {
-	//     return err
-	// }
-
-	// infof("ACL saved to %s", cmd.file)
 
 	return nil
 }

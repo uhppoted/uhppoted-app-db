@@ -3,11 +3,12 @@
 ## IN PROGRESS
 
 - [ ] `get-acl`
-      - [ ] sqlite3
+      - [x] sqlite3
       - [ ] with-pin
 
+- [ ] `put-acl`
 - [ ] `load-acl`
-- [ ] `store-acl`
+- [ ] `save-acl`
 - [ ] `compare-acl`
 - [ ] README
 
