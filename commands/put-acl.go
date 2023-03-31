@@ -1,14 +1,15 @@
 package commands
 
 import (
+	"encoding/csv"
 	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
-	// "github.com/uhppoted/uhppote-core/uhppote"
-	// lib "github.com/uhppoted/uhppoted-lib/acl"
+	"github.com/uhppoted/uhppote-core/uhppote"
+	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 	"github.com/uhppoted/uhppoted-lib/lockfile"
 	// "github.com/uhppoted/uhppoted-app-db/db/sqlite3"
@@ -20,7 +21,8 @@ var PutACLCmd = PutACL{
 	file:     "",
 	withPIN:  false,
 	lockfile: "",
-	debug:    false,
+	// strict:   false,
+	debug: false,
 }
 
 type PutACL struct {
@@ -29,7 +31,8 @@ type PutACL struct {
 	file     string
 	withPIN  bool
 	lockfile string
-	debug    bool
+	// strict   bool
+	debug bool
 }
 
 func (cmd *PutACL) Name() string {
@@ -46,7 +49,7 @@ func (cmd *PutACL) Usage() string {
 
 func (cmd *PutACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] put-acl  [--with-pin] --file <file> --dsn <DSN>\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] put-acl [--with-pin] [--strict] --file <file> --dsn <DSN>\n", APP)
 	fmt.Println()
 	fmt.Println("  Stores an access control list in a TSV file to a database")
 	fmt.Println()
@@ -65,6 +68,7 @@ func (cmd *PutACL) FlagSet() *flag.FlagSet {
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
 	flagset.StringVar(&cmd.file, "file", cmd.file, "Optional TSV filepath. Defaults to stdout")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code in retrieved ACL information")
+	// flagset.BoolVar(&cmd.withPIN, "strict", cmd.strict, "Fails if the TSV file includes duplicate card numbers.")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
 
 	return flagset
@@ -113,9 +117,64 @@ func (cmd *PutACL) Execute(args ...any) error {
 		return fmt.Errorf("could not load configuration (%v)", err)
 	}
 
-	// _, devices := getDevices(conf, cmd.debug)
+	_, devices := getDevices(conf, cmd.debug)
 
 	// ... retrieve ACL from TSV file
 
+	if acl, warnings, err := cmd.getACL(devices); err != nil {
+		return err
+	} else {
+		for _, w := range warnings {
+			warnf("put-acl", "%v", w.Error())
+		}
+
+		fmt.Printf(">>>>>> ACL:      %v\n", acl)
+	}
+
 	return nil
+}
+
+func (cmd *PutACL) getACL(devices []uhppote.Device) (lib.Table, []error, error) {
+	if f, err := os.Open(cmd.file); err != nil {
+		return lib.Table{}, nil, err
+	} else {
+		defer f.Close()
+
+		r := csv.NewReader(f)
+		r.Comma = '\t'
+
+		records, err := r.ReadAll()
+		if err != nil {
+			return lib.Table{}, nil, err
+		} else if len(records) == 0 {
+			return lib.Table{}, nil, fmt.Errorf("TSV file is empty")
+		} else if len(records) < 1 {
+			return lib.Table{}, nil, fmt.Errorf("TSV file missing header")
+		}
+
+		// ... header
+		header := make([]string, len(records[0]))
+
+		for i, v := range records[0] {
+			header[i] = fmt.Sprintf("%v", v)
+		}
+
+		// ... records
+		rows := make([][]string, 0)
+
+		for _, record := range records[1:] {
+			row := make([]string, len(record))
+
+			for i, v := range record {
+				row[i] = fmt.Sprintf("%v", v)
+			}
+
+			rows = append(rows, row)
+		}
+
+		return lib.Table{
+			Header:  header,
+			Records: records,
+		}, nil, nil
+	}
 }

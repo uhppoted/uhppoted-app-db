@@ -107,7 +107,7 @@ get-acl-with-pin: build
 put-acl: build
 	$(CMD) put-acl --file "../runtime/uhppoted-app-db/get-acl.tsv" --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db" 
 
-put-acl: build
+put-acl-with-pin: build
 	$(CMD) put-acl --with-pin --file "../runtime/uhppoted-app-db/get-acl.tsv" --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db" 
 
 load-acl-with-pin: build
