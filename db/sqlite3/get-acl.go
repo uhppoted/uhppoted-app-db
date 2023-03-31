@@ -26,7 +26,7 @@ func GetACL(dsn string, withPIN bool) (*lib.Table, error) {
 	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
 		return nil, err
 	} else if dbc == nil {
-		return nil, fmt.Errorf("invalid sqlite3 DB pool (%v)", dbc)
+		return nil, fmt.Errorf("invalid sqlite3 DB (%v)", dbc)
 	} else if prepared, err := dbc.Prepare(sqlAclGet); err != nil {
 		return nil, err
 	} else if rs, err := prepared.QueryContext(ctx); err != nil {

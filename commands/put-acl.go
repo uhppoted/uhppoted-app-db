@@ -9,10 +9,10 @@ import (
 	"strings"
 
 	"github.com/uhppoted/uhppote-core/uhppote"
+	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 	"github.com/uhppoted/uhppoted-lib/lockfile"
-	// "github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 )
 
 var PutACLCmd = PutACL{
@@ -106,7 +106,7 @@ func (cmd *PutACL) Execute(args ...any) error {
 		return err
 	} else {
 		defer func() {
-			infof("get-acl", "Removing lockfile '%v'", lockFile.File)
+			infof("put-acl", "Removing lockfile '%v'", lockFile.File)
 			kraken.Release()
 		}()
 	}
@@ -128,7 +128,15 @@ func (cmd *PutACL) Execute(args ...any) error {
 			warnf("put-acl", "%v", w.Error())
 		}
 
-		fmt.Printf(">>>>>> ACL:      %v\n", acl)
+		switch {
+		case strings.HasPrefix(cmd.dsn, "sqlite3:"):
+			if err := sqlite3.PutACL(cmd.dsn[8:], acl, cmd.withPIN); err != nil {
+				return err
+			}
+
+		default:
+			return fmt.Errorf("unsupported DSN (%v)", cmd.dsn)
+		}
 	}
 
 	return nil

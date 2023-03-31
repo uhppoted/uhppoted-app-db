@@ -124,6 +124,9 @@ func (cmd *GetACL) Execute(args ...any) error {
 		} else {
 			table = t
 		}
+
+	default:
+		return fmt.Errorf("unsupported DSN (%v)", cmd.dsn)
 	}
 
 	f := func(table *lib.Table, devices []uhppote.Device) (*lib.ACL, []error, error) {
