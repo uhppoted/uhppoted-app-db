@@ -137,6 +137,8 @@ func (cmd *PutACL) Execute(args ...any) error {
 		default:
 			return fmt.Errorf("unsupported DSN (%v)", cmd.dsn)
 		}
+
+		infof("put-acl", "Updated DB ACL table from %v", cmd.file)
 	}
 
 	return nil
@@ -182,7 +184,7 @@ func (cmd *PutACL) getACL(devices []uhppote.Device) (lib.Table, []error, error) 
 
 		return lib.Table{
 			Header:  header,
-			Records: records,
+			Records: rows,
 		}, nil, nil
 	}
 }

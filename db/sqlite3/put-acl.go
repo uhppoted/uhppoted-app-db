@@ -1,11 +1,12 @@
 package sqlite3
 
 import (
-	// "context"
+	"context"
 	"errors"
 	"fmt"
 	"os"
-	// "time"
+	"strings"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 
@@ -13,9 +14,30 @@ import (
 )
 
 func PutACL(dsn string, table lib.Table, withPIN bool) error {
-	// ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	//
-	// defer cancel()
+	// ... format SQL
+	columns := make([]string, len(table.Header))
+	values := make([]string, len(table.Header))
+	conflicts := []string{}
+
+	for i, h := range table.Header {
+		col := strings.ReplaceAll(h, " ", "")
+		columns[i] = col
+		values[i] = "?"
+
+		if strings.ToLower(col) != "cardnumber" {
+			conflicts = append(conflicts, fmt.Sprintf("%v=excluded.%v", col, col))
+		}
+	}
+
+	insert := fmt.Sprintf("INSERT INTO ACLx (%v) VALUES (%v) ON CONFLICT(CardNumber) DO UPDATE SET %v;",
+		strings.Join(columns, ","),
+		strings.Join(values, ","),
+		strings.Join(conflicts, ","))
+
+	// ... execute
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	defer cancel()
 
 	if _, err := os.Stat(dsn); errors.Is(err, os.ErrNotExist) {
 		return fmt.Errorf("sqlite3 database %v does not exist", dsn)
@@ -27,34 +49,19 @@ func PutACL(dsn string, table lib.Table, withPIN bool) error {
 		return err
 	} else if dbc == nil {
 		return fmt.Errorf("invalid sqlite3 DB (%v)", dbc)
-		// } else if prepared, err := dbc.Prepare(sqlAclGet); err != nil {
-		//     return nil, err
-		// } else if rs, err := prepared.QueryContext(ctx); err != nil {
-		//     return nil, err
-		// } else if rs == nil {
-		//     return nil, fmt.Errorf("invalid resultset (%v)", rs)
-		// } else {
-		//     defer rs.Close()
+	} else if prepared, err := dbc.Prepare(insert); err != nil {
+		return err
+	} else {
+		for _, row := range table.Records {
+			record := make([]any, len(row))
+			for i, v := range row {
+				record[i] = v
+			}
 
-		//     if columns, err := rs.Columns(); err != nil {
-		//         return nil, err
-		//     } else if types, err := rs.ColumnTypes(); err != nil {
-		//         return nil, err
-		//     } else {
-		//         recordset := []record{}
-
-		//         for rs.Next() {
-		//             if record, err := row2record(rs, columns, types); err != nil {
-		//                 return nil, err
-		//             } else if record == nil {
-		//                 return nil, fmt.Errorf("invalid record (%v)", record)
-		//             } else {
-		//                 recordset = append(recordset, record)
-		//             }
-		//         }
-
-		//         return makeTable(columns, recordset, withPIN)
-		//     }
+			if _, err := prepared.ExecContext(ctx, record...); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil
