@@ -83,6 +83,32 @@ Supported commands:
 
 ### ACL table format
 
+The ACL table is expected to have the following structure:
+
+| Column     | Data Type    | Description                                                                                |
+|------------|--------------|--------------------------------------------------------------------------------------------|
+| CardNumber | INTEGER      | Valid card number                                                                          |
+| PIN        | INTEGER      | Optional keypad PIN code in the range 0-99999. Only required for the --with-pin option.    |
+| StartDate  | DATE or TEXT | Date from which the card is valid (YYYY-mm-dd)                                             |
+| EndDate    | DATE or TEXT | Date after which the card is no longer valid (YYYY-mm-dd)                                  |
+| \<door 1\> | INTEGER      | Access privilege for door 1 (0 none, 1 full access and 2-254 correspond to a time profile) |
+| \<door 2\> | INTEGER      | Access privilege for door 2 (0 none, 1 full access and 2-254 correspond to a time profile) |
+| ...        | INTEGER      | Access privilege for door N (0 none, 1 full access and 2-254 correspond to a time profile) |
+
+A _Name_ column is optional and ignored.
+
+e.g.:
+ 
+| Name              | CardNumber | PIN   | StartDate  | EndDate    | GreatHall | Gryffindor | HufflePuff | Ravenclaw | Slytherin | Kitchen | Dungeon |Hogsmeade |
+|-------------------|------------|-------|------------|------------|-----------|------------|------------|-----------|-----------|---------|---------|----------|
+| Albus Dumbledore  | 10058400   | 7531  | 2023-01-01 | 2023-12-31 | 1         | 1          | 1          | 1         | 1         | 1       | 1       | 1        |
+| Rubeus Hagrid     | 10058401   | 0     | 2023-01-01 | 2023-12-31 | 1         | 1          | 1          | 1         | 1         | 0       | 0       | 1        |
+| Dobby The Elf     | 10058402   | 0     | 2023-01-01 | 2023-12-31 | 1         | 1          | 1          | 1         | 1         | 1       | 0       | 1        |
+| Harry Potter      | 10058403   | 0     | 2023-01-01 | 2023-12-31 | 1         | 1          | 0          | 0         | 0         | 0       | 0       | 29       |
+| Hermione Grainger | 10058404   | 82953 | 2023-01-01 | 2023-12-31 | 1         | 1          | 0          | 0         | 0         | 0       | 1       | 29       |
+| Crookshanks       | 10058405   | 1397  | 2023-01-01 | 2023-12-31 | 0         | 1          | 0          | 0         | 0         | 1       | 0       | 1        |
+
+
 ### `get-acl`
 
 Fetches tabular data from a database table and stores it to a TSV file. Intended for use in a `cron` task that routinely

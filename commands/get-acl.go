@@ -42,12 +42,12 @@ func (cmd *GetACL) Description() string {
 }
 
 func (cmd *GetACL) Usage() string {
-	return "--dsn <DSN> --with-pin --file <file>"
+	return "--with-pin --dsn <DSN> --file <file>"
 }
 
 func (cmd *GetACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] get-acl [--dsn <DSN>] [--with-pin] [--file <file>]\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] get-acl [--with-pin] --dsn <DSN> [--file <file>]\n", APP)
 	fmt.Println()
 	fmt.Println("  Retrieves an access control list from a database and optionally saves the ACL to a TSV file")
 	fmt.Println()
@@ -56,7 +56,7 @@ func (cmd *GetACL) Help() {
 
 	fmt.Println()
 	fmt.Println("  Examples:")
-	fmt.Println(`    uhppote-app-db --debug get-acl --dsn "sqlite3:" --file "ACL.tsv"`)
+	fmt.Println(`    uhppote-app-db --debug get-acl --with-pin --dsn "sqlite3:./db/ACL.db" --file "ACL.tsv"`)
 	fmt.Println()
 }
 

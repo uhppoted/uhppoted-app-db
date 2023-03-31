@@ -14,6 +14,7 @@ import (
 
 var cli = []uhppoted.Command{
 	&commands.GetACLCmd,
+	&commands.PutACLCmd,
 
 	&uhppoted.Version{
 		Application: commands.APP,
