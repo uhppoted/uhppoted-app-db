@@ -12,7 +12,7 @@ import (
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 
-func GetACL(dsn string) (*lib.Table, error) {
+func GetACL(dsn string, withPIN bool) (*lib.Table, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()
@@ -53,7 +53,7 @@ func GetACL(dsn string) (*lib.Table, error) {
 				}
 			}
 
-			return makeTable(columns, recordset)
+			return makeTable(columns, recordset, withPIN)
 		}
 	}
 }

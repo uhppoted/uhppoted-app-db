@@ -86,25 +86,21 @@ Supported commands:
 ### `get-acl`
 
 Fetches tabular data from a database table and stores it to a TSV file. Intended for use in a `cron` task that routinely
-transfers information from the database for scripts on the local host managing the access control system. 
+retrieves the ACL from the database for use by scripts on the local host managing the access control system. 
 
 Command line:
 
 ```uhppoted-app-db get-acl``` 
 
-```uhppoted-app-db [--debug] get-acl [--with-pin] [--file <TSV>] [--workdir <dir>]```
+```uhppoted-app-db [--debug] get-acl [--with-pin] [--file <TSV>]```
 
 ```
   --with-pin    Includes the card keypad PIN code in the retrieved file
-  --file        File path for the destination TSV file. Defaults to <yyyy-mm-dd HHmmss>.tsv
+  --file        Optional file path for the destination TSV file. Defaults to displaying the ACL on the 
+                console.
   
-  --workdir     Directory for working files, in particular the tokens, revisions, etc
-                that provide access to Google Sheets. Defaults to:
-                - /var/uhppoted on Linux
-                - /usr/local/var/com.github.uhppoted on MacOS
-                - ./uhppoted on Microsoft Windows
-  --debug       Displays verbose debugging information, in particular the communications
-                with the UHPPOTE controllers
+  --debug       Displays verbose debugging information such as the internal structure of the ACL and the
+                communications with the UHPPOTE controllers
 ```
 
 ### `put-acl`

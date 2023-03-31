@@ -101,7 +101,7 @@ get-acl: build
 	$(CMD) get-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db" --file "../runtime/uhppoted-app-db/get-acl.tsv"
 
 get-acl-with-pin: build
-	$(CMD) get-acl --with-pin
+	$(CMD)  --debug get-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db" --with-pin
 
 put-acl: build
 	$(CMD) put-acl

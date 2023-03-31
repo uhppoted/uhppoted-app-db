@@ -117,7 +117,7 @@ func (cmd *GetACL) Execute(args ...any) error {
 
 	switch {
 	case strings.HasPrefix(cmd.dsn, "sqlite3:"):
-		if t, err := sqlite3.GetACL(cmd.dsn[8:]); err != nil {
+		if t, err := sqlite3.GetACL(cmd.dsn[8:], cmd.withPIN); err != nil {
 			return err
 		} else if t == nil {
 			return fmt.Errorf("invalid ACL table (%v)", table)
@@ -158,11 +158,10 @@ func (cmd *GetACL) Execute(args ...any) error {
 		}
 
 		// ... write to stdout
-		if cmd.file != "" {
-			fmt.Fprintln(os.Stdout, string(table.MarshalTextIndent("  ", " ")))
+		fmt.Fprintln(os.Stdout, string(table.MarshalTextIndent("  ", " ")))
 
+		if cmd.debug {
 			acl.Print(os.Stdout)
-			return nil
 		}
 	}
 

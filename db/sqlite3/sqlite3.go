@@ -6,6 +6,8 @@ import (
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/uhppoted/uhppoted-app-db/log"
 )
 
 const MaxLifetime = 5 * time.Minute
@@ -74,11 +76,11 @@ func row2record(rows *sql.Rows, columns []string, types []*sql.ColumnType) (reco
 // 	log.Infof(f, args...)
 // }
 
-// func warnf(format string, args ...interface{}) {
-// 	f := fmt.Sprintf("%-10v %v", LogTag, format)
-//
-// 	log.Warnf(f, args...)
-// }
+func warnf(format string, args ...interface{}) {
+	f := fmt.Sprintf("%-10v %v", LogTag, format)
+
+	log.Warnf(f, args...)
+}
 
 // func errorf(format string, args ...any) {
 // 	f := fmt.Sprintf("%-10v %v", LogTag, format)

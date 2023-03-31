@@ -2,11 +2,14 @@
 
 ## IN PROGRESS
 
-- [ ] `get-acl`
+- [x] `get-acl`
       - [x] sqlite3
-      - [ ] with-pin
+      - [x] --with-pin
 
 - [ ] `put-acl`
+      - [ ] sqlite3
+      - [ ] --with-pin
+
 - [ ] `load-acl`
 - [ ] `save-acl`
 - [ ] `compare-acl`
