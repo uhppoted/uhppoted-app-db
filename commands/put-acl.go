@@ -130,8 +130,12 @@ func (cmd *PutACL) Execute(args ...any) error {
 
 		switch {
 		case strings.HasPrefix(cmd.dsn, "sqlite3:"):
-			if err := sqlite3.PutACL(cmd.dsn[8:], acl, cmd.withPIN); err != nil {
+			if N, err := sqlite3.PutACL(cmd.dsn[8:], acl, cmd.withPIN); err != nil {
 				return err
+			} else if N == 1 {
+				infof("put-acl", "Stored %v card to DB ACL table", N)
+			} else {
+				infof("put-acl", "Stored %v cards to DB ACL table", N)
 			}
 
 		default:

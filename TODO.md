@@ -5,14 +5,15 @@
 - [x] `get-acl`
       - [x] sqlite3
       - [x] --with-pin
-      - [ ] Replace From/To with Start Date and End Date
+      - [ ] Get table name from DSN
 
 - [ ] `put-acl`
-      - [ ] sqlite3
-            - [ ] delete all
-            - [ ] insert
-            - [ ] commit
+      - [x] sqlite3
+            - [x] delete all
+            - [x] insert
+            - [x] commit
       - [ ] --with-pin
+      - [ ] Get table name from DSN
 
 - [ ] `load-acl`
 - [ ] `save-acl`

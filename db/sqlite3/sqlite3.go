@@ -64,17 +64,17 @@ func row2record(rows *sql.Rows, columns []string, types []*sql.ColumnType) (reco
 	}
 }
 
-// func debugf(format string, args ...interface{}) {
-// 	f := fmt.Sprintf("%-10v %v", LogTag, format)
-//
-// 	log.Debugf(f, args...)
-// }
+func debugf(format string, args ...interface{}) {
+	f := fmt.Sprintf("%-10v %v", LogTag, format)
 
-// func infof(format string, args ...interface{}) {
-// 	f := fmt.Sprintf("%-10v %v", LogTag, format)
-//
-// 	log.Infof(f, args...)
-// }
+	log.Debugf(f, args...)
+}
+
+func infof(format string, args ...interface{}) {
+	f := fmt.Sprintf("%-10v %v", LogTag, format)
+
+	log.Infof(f, args...)
+}
 
 func warnf(format string, args ...interface{}) {
 	f := fmt.Sprintf("%-10v %v", LogTag, format)

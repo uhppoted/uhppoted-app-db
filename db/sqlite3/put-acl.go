@@ -2,6 +2,7 @@ package sqlite3
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"os"
@@ -13,12 +14,53 @@ import (
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 
-func PutACL(dsn string, table lib.Table, withPIN bool) error {
-	// ... format SQL
+func PutACL(dsn string, table lib.Table, withPIN bool) (int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	defer cancel()
+
+	if _, err := os.Stat(dsn); errors.Is(err, os.ErrNotExist) {
+		return 0, fmt.Errorf("sqlite3 database %v does not exist", dsn)
+	} else if err != nil {
+		return 0, err
+	}
+
+	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
+		return 0, err
+	} else if dbc == nil {
+		return 0, fmt.Errorf("invalid sqlite3 DB (%v)", dbc)
+	} else if tx, err := dbc.BeginTx(ctx, nil); err != nil {
+		return 0, err
+	} else if _, err := clear(dbc, tx, "ACLx"); err != nil {
+		return 0, err
+	} else if count, err := insert(dbc, tx, "ACLx", table); err != nil {
+		return 0, err
+	} else if err := tx.Commit(); err != nil {
+		return 0, err
+	} else {
+		return count, nil
+	}
+}
+
+func clear(dbc *sql.DB, tx *sql.Tx, table string) (int64, error) {
+	sql := fmt.Sprintf("DELETE FROM %v;", table)
+
+	if prepared, err := dbc.Prepare(sql); err != nil {
+		return 0, err
+	} else if result, err := tx.Stmt(prepared).Exec(); err != nil {
+		return 0, err
+	} else if N, err := result.RowsAffected(); err != nil {
+		return N, err
+	} else {
+		return N, nil
+	}
+}
+
+func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table) (int, error) {
 	columns := []string{"CardNumber", "StartDate", "EndDate"}
 	index := map[string]int{}
 
-	for i, h := range table.Header {
+	for i, h := range recordset.Header {
 		ix := i
 		if col := normalise(h); col == "cardnumber" {
 			index["cardnumber"] = ix + 1
@@ -26,7 +68,7 @@ func PutACL(dsn string, table lib.Table, withPIN bool) error {
 		}
 	}
 
-	for i, h := range table.Header {
+	for i, h := range recordset.Header {
 		ix := i
 		if col := normalise(h); col == "from" {
 			index["startdate"] = ix + 1
@@ -34,7 +76,7 @@ func PutACL(dsn string, table lib.Table, withPIN bool) error {
 		}
 	}
 
-	for i, h := range table.Header {
+	for i, h := range recordset.Header {
 		ix := i
 		if col := normalise(h); col == "to" {
 			index["enddate"] = ix + 1
@@ -42,7 +84,7 @@ func PutACL(dsn string, table lib.Table, withPIN bool) error {
 		}
 	}
 
-	for i, h := range table.Header {
+	for i, h := range recordset.Header {
 		ix := i
 		col := normalise(h)
 
@@ -54,7 +96,7 @@ func PutACL(dsn string, table lib.Table, withPIN bool) error {
 
 	for _, col := range columns {
 		if index[normalise(col)] < 1 {
-			return fmt.Errorf("missing column %v", col)
+			return 0, fmt.Errorf("missing column %v", col)
 
 		}
 	}
@@ -69,41 +111,35 @@ func PutACL(dsn string, table lib.Table, withPIN bool) error {
 		}
 	}
 
-	insert := fmt.Sprintf("INSERT INTO ACLx (%v) VALUES (%v) ON CONFLICT(CardNumber) DO UPDATE SET %v;",
+	sql := fmt.Sprintf("INSERT INTO %v (%v) VALUES (%v) ON CONFLICT(CardNumber) DO UPDATE SET %v;",
+		table,
 		strings.Join(columns, ","),
 		strings.Join(values, ","),
 		strings.Join(conflicts, ","))
 
 	// ... execute
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	count := 0
 
-	defer cancel()
-
-	if _, err := os.Stat(dsn); errors.Is(err, os.ErrNotExist) {
-		return fmt.Errorf("sqlite3 database %v does not exist", dsn)
-	} else if err != nil {
-		return err
-	}
-
-	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
-		return err
-	} else if dbc == nil {
-		return fmt.Errorf("invalid sqlite3 DB (%v)", dbc)
-	} else if prepared, err := dbc.Prepare(insert); err != nil {
-		return err
+	if prepared, err := dbc.Prepare(sql); err != nil {
+		return 0, err
 	} else {
-		for _, row := range table.Records {
+		for _, row := range recordset.Records {
 			record := make([]any, len(columns))
 			for i, col := range columns {
 				ix := index[normalise(col)] - 1
 				record[i] = row[ix]
 			}
 
-			if _, err := prepared.ExecContext(ctx, record...); err != nil {
-				return err
+			if result, err := tx.Stmt(prepared).Exec(record...); err != nil {
+				return 0, err
+			} else if id, err := result.LastInsertId(); err != nil {
+				return 0, err
+			} else {
+				count++
+				debugf("put-acl: stored card %v@%v", row[index["cardnumber"]], id)
 			}
 		}
 	}
 
-	return nil
+	return count, nil
 }
