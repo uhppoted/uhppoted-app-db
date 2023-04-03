@@ -15,16 +15,56 @@ import (
 
 func PutACL(dsn string, table lib.Table, withPIN bool) error {
 	// ... format SQL
-	columns := make([]string, len(table.Header))
-	values := make([]string, len(table.Header))
-	conflicts := []string{}
+	columns := []string{"CardNumber", "StartDate", "EndDate"}
+	index := map[string]int{}
 
 	for i, h := range table.Header {
-		col := strings.ReplaceAll(h, " ", "")
-		columns[i] = col
-		values[i] = "?"
+		ix := i
+		if col := normalise(h); col == "cardnumber" {
+			index["cardnumber"] = ix + 1
+			break
+		}
+	}
 
-		if strings.ToLower(col) != "cardnumber" {
+	for i, h := range table.Header {
+		ix := i
+		if col := normalise(h); col == "from" {
+			index["startdate"] = ix + 1
+			break
+		}
+	}
+
+	for i, h := range table.Header {
+		ix := i
+		if col := normalise(h); col == "to" {
+			index["enddate"] = ix + 1
+			break
+		}
+	}
+
+	for i, h := range table.Header {
+		ix := i
+		col := normalise(h)
+
+		if col != "name" && col != "cardnumber" && col != "from" && col != "to" && col != "pin" {
+			columns = append(columns, strings.ReplaceAll(h, " ", ""))
+			index[col] = ix + 1
+		}
+	}
+
+	for _, col := range columns {
+		if index[normalise(col)] < 1 {
+			return fmt.Errorf("missing column %v", col)
+
+		}
+	}
+
+	values := []string{}
+	conflicts := []string{}
+	for _, col := range columns {
+		values = append(values, "?")
+
+		if normalise(col) != "CardNumber" {
 			conflicts = append(conflicts, fmt.Sprintf("%v=excluded.%v", col, col))
 		}
 	}
@@ -53,9 +93,10 @@ func PutACL(dsn string, table lib.Table, withPIN bool) error {
 		return err
 	} else {
 		for _, row := range table.Records {
-			record := make([]any, len(row))
-			for i, v := range row {
-				record[i] = v
+			record := make([]any, len(columns))
+			for i, col := range columns {
+				ix := index[normalise(col)] - 1
+				record[i] = row[ix]
 			}
 
 			if _, err := prepared.ExecContext(ctx, record...); err != nil {
