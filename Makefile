@@ -98,17 +98,17 @@ version: build
 	$(CMD) version
 
 get-acl: build
-	$(CMD) get-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db"
+	$(CMD) get-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACL"
 	$(CMD) get-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db" --file "../runtime/uhppoted-app-db/get-acl.tsv"
 
 get-acl-with-pin: build
 	$(CMD)  --debug get-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db" --with-pin
 
 put-acl: build
-	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db" 
+	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACLx" 
 
 put-acl-with-pin: build
-	$(CMD) put-acl --with-pin --file "../runtime/uhppoted-app-db/get-acl.tsv" --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db" 
+	$(CMD) put-acl --with-pin --file "../runtime/uhppoted-app-db/get-acl.tsv" --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACLXXX" 
 
 load-acl-with-pin: build
 	$(CMD) put-acl --with-pin

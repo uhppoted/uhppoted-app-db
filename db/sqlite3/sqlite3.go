@@ -70,11 +70,11 @@ func debugf(format string, args ...interface{}) {
 	log.Debugf(f, args...)
 }
 
-func infof(format string, args ...interface{}) {
-	f := fmt.Sprintf("%-10v %v", LogTag, format)
-
-	log.Infof(f, args...)
-}
+// func infof(format string, args ...interface{}) {
+// 	f := fmt.Sprintf("%-10v %v", LogTag, format)
+//
+// 	log.Infof(f, args...)
+// }
 
 func warnf(format string, args ...interface{}) {
 	f := fmt.Sprintf("%-10v %v", LogTag, format)

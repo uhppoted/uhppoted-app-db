@@ -2,9 +2,11 @@ package sqlite3
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -13,10 +15,14 @@ import (
 )
 
 func GetACL(dsn string, withPIN bool) (*lib.Table, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	table := "ACL"
 
-	defer cancel()
+	if match := regexp.MustCompile(`^(.*?)(::.*)$`).FindStringSubmatch(dsn); len(match) > 2 {
+		dsn = match[1]
+		table = match[2][2:]
+	}
 
+	// ... execute
 	if _, err := os.Stat(dsn); errors.Is(err, os.ErrNotExist) {
 		return nil, fmt.Errorf("sqlite3 database %v does not exist", dsn)
 	} else if err != nil {
@@ -27,7 +33,18 @@ func GetACL(dsn string, withPIN bool) (*lib.Table, error) {
 		return nil, err
 	} else if dbc == nil {
 		return nil, fmt.Errorf("invalid sqlite3 DB (%v)", dbc)
-	} else if prepared, err := dbc.Prepare(sqlAclGet); err != nil {
+	} else {
+		return get(dbc, table, withPIN)
+	}
+}
+
+func get(dbc *sql.DB, table string, withPIN bool) (*lib.Table, error) {
+	sql := fmt.Sprintf(`SELECT * FROM %v;`, table)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	defer cancel()
+
+	if prepared, err := dbc.Prepare(sql); err != nil {
 		return nil, err
 	} else if rs, err := prepared.QueryContext(ctx); err != nil {
 		return nil, err

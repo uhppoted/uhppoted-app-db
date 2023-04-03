@@ -5,15 +5,15 @@
 - [x] `get-acl`
       - [x] sqlite3
       - [x] --with-pin
-      - [ ] Get table name from DSN
+      - [x] Get table name from DSN
 
 - [ ] `put-acl`
       - [x] sqlite3
             - [x] delete all
             - [x] insert
             - [x] commit
+      - [x] Get table name from DSN
       - [ ] --with-pin
-      - [ ] Get table name from DSN
 
 - [ ] `load-acl`
 - [ ] `save-acl`

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -14,7 +15,15 @@ import (
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 
-func PutACL(dsn string, table lib.Table, withPIN bool) (int, error) {
+func PutACL(dsn string, recordset lib.Table, withPIN bool) (int, error) {
+	table := "ACL"
+
+	if match := regexp.MustCompile(`^(.*?)(::.*)$`).FindStringSubmatch(dsn); len(match) > 2 {
+		dsn = match[1]
+		table = match[2][2:]
+	}
+
+	// ... execute
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()
@@ -31,9 +40,9 @@ func PutACL(dsn string, table lib.Table, withPIN bool) (int, error) {
 		return 0, fmt.Errorf("invalid sqlite3 DB (%v)", dbc)
 	} else if tx, err := dbc.BeginTx(ctx, nil); err != nil {
 		return 0, err
-	} else if _, err := clear(dbc, tx, "ACLx"); err != nil {
+	} else if _, err := clear(dbc, tx, table); err != nil {
 		return 0, err
-	} else if count, err := insert(dbc, tx, "ACLx", table); err != nil {
+	} else if count, err := insert(dbc, tx, table, recordset); err != nil {
 		return 0, err
 	} else if err := tx.Commit(); err != nil {
 		return 0, err
