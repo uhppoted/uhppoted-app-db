@@ -42,7 +42,7 @@ func PutACL(dsn string, recordset lib.Table, withPIN bool) (int, error) {
 		return 0, err
 	} else if _, err := clear(dbc, tx, table); err != nil {
 		return 0, err
-	} else if count, err := insert(dbc, tx, table, recordset); err != nil {
+	} else if count, err := insert(dbc, tx, table, recordset, withPIN); err != nil {
 		return 0, err
 	} else if err := tx.Commit(); err != nil {
 		return 0, err
@@ -65,7 +65,7 @@ func clear(dbc *sql.DB, tx *sql.Tx, table string) (int64, error) {
 	}
 }
 
-func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table) (int, error) {
+func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table, withPIN bool) (int, error) {
 	columns := []string{"CardNumber", "StartDate", "EndDate"}
 	index := map[string]int{}
 
@@ -74,6 +74,17 @@ func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table) (int, er
 		if col := normalise(h); col == "cardnumber" {
 			index["cardnumber"] = ix + 1
 			break
+		}
+	}
+
+	if withPIN {
+		columns = []string{"CardNumber", "PIN", "StartDate", "EndDate"}
+		for i, h := range recordset.Header {
+			ix := i
+			if col := normalise(h); col == "pin" {
+				index["pin"] = ix + 1
+				break
+			}
 		}
 	}
 

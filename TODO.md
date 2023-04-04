@@ -7,13 +7,13 @@
       - [x] --with-pin
       - [x] Get table name from DSN
 
-- [ ] `put-acl`
+- [x] `put-acl`
       - [x] sqlite3
             - [x] delete all
             - [x] insert
             - [x] commit
       - [x] Get table name from DSN
-      - [ ] --with-pin
+      - [x] --with-pin
 
 - [ ] `load-acl`
 - [ ] `save-acl`
