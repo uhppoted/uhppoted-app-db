@@ -2,7 +2,7 @@ CMD   = ./bin/uhppoted-app-db
 DIST  ?= development
 DEBUG ?= --debug
 
-.DEFAULT_GOAL := get-acl
+.DEFAULT_GOAL := build-all
 .PHONY: clean
 .PHONY: update
 .PHONY: update-release

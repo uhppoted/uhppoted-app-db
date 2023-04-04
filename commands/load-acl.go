@@ -27,7 +27,6 @@ var LoadACLCmd = LoadACL{
 type LoadACL struct {
 	config   string
 	dsn      string
-	file     string
 	withPIN  bool
 	lockfile string
 	dryrun   bool
