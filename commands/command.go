@@ -107,3 +107,9 @@ func warnf(tag string, format string, args ...any) {
 
 	log.Warnf(f, args...)
 }
+
+func errorf(tag, format string, args ...any) {
+	f := fmt.Sprintf("%-10v %v", tag, format)
+
+	log.Errorf(f, args...)
+}

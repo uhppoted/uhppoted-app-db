@@ -90,7 +90,7 @@ help: build
 	$(CMD) help commands
 	$(CMD) help get-acl
 	$(CMD) help put-acl
-	# $(CMD) help load-acl
+	$(CMD) help load-acl
 	# $(CMD) help store-acl
 	# $(CMD) help compare-acl
 
@@ -113,8 +113,11 @@ put-acl-with-pin: build
 	$(CMD) put-acl --with-pin --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACLx" 
 	sqlite3 ../runtime/uhppoted-app-db/sqlite3/acl.db 'select * from ACLx'
 
+load-acl: build
+	$(CMD) load-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACL"
+
 load-acl-with-pin: build
-	$(CMD) put-acl --with-pin
+	$(CMD) load-acl --with-pin --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACL"
 
 store-acl: build
 	$(CMD) store-acl

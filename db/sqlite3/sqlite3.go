@@ -82,8 +82,8 @@ func warnf(format string, args ...interface{}) {
 	log.Warnf(f, args...)
 }
 
-// func errorf(format string, args ...any) {
-// 	f := fmt.Sprintf("%-10v %v", LogTag, format)
-//
-// 	log.Errorf(f, args...)
-// }
+func errorf(format string, args ...any) {
+	f := fmt.Sprintf("%-10v %v", LogTag, format)
+
+	log.Errorf(f, args...)
+}
