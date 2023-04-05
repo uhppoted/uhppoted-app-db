@@ -4,13 +4,9 @@
 
 - [x] `get-acl`
 - [x] `put-acl`
-- [ ] `load-acl`
-      - [ ] sqlite3
-            -- not actually updating the controllers ???
-      - [ ] --with-pin
-      - [ ] compare
-      - [ ] --force
-      - [ ] --dry-run
+- [x] `load-acl`
+      - [x] sqlite3
+      - [x] --with-pin
 
 - [ ] `save-acl`
 - [ ] `compare-acl`

@@ -9,6 +9,7 @@ Supported operating systems:
 - Linux
 - MacOS
 - Windows
+- ARM
 - ARM7
 
 ### Status 
@@ -19,7 +20,7 @@ Supported operating systems:
 
 | *Version* | *Description*                                                                             |
 | --------- | ----------------------------------------------------------------------------------------- |
-|           |                                                                                           |
+|           | (in progress)                                                                             |
 
 ## Installation
 
@@ -75,11 +76,11 @@ Supported commands:
 
 - `help`
 - `version`
-- `get-acl`
-- `put-acl`
 - `load-acl`
 - `store-acl`
 - `compare-acl`
+- `get-acl`
+- `put-acl`
 
 ### ACL table format
 
@@ -109,50 +110,6 @@ e.g.:
 | Crookshanks       | 10058405   | 1397  | 2023-01-01 | 2023-12-31 | 0         | 1          | 0          | 0         | 0         | 1       | 0       | 1        |
 
 
-### `get-acl`
-
-Fetches tabular data from a database table and stores it to a TSV file. Intended for use in a `cron` task that routinely
-retrieves the ACL from the database for use by scripts on the local host managing the access control system. 
-
-Command line:
-
-```uhppoted-app-db get-acl``` 
-
-```uhppoted-app-db [--debug] get-acl [--with-pin] [--file <TSV>]```
-
-```
-  --with-pin    Includes the card keypad PIN code in the retrieved file
-  --file        Optional file path for the destination TSV file. Defaults to displaying the ACL on the 
-                console.
-  
-  --debug       Displays verbose debugging information such as the internal structure of the ACL and the
-                communications with the UHPPOTE controllers
-```
-
-### `put-acl`
-
-Uploads an ACL from a TSV file to a database table. Intended for use in a `cron` task that routinely transfers information
-to the database from scripts on the local host.
-
-Command line:
-
-```uhppoted-app-db put-acl --file <TSV>``` 
-
-```uhppoted-app-sheets [--debug] put-acl [--with-pin] --file <TSV> [--workdir <dir>]```
-
-```
-  --file        File path for the TSV file to be uploaded
-  --with-pin    Includes the card keypad PIN code in the uploaded data
-  --workdir     Directory for working files, in particular the tokens, revisions, etc
-                that provide access to Google Sheets. Defaults to:
-                - /var/uhppoted on Linux
-                - /usr/local/var/com.github.uhppoted on MacOS
-                - ./uhppoted on Microsoft Windows
-  --debug       Displays verbose debugging information, in particular the communications
-                with the UHPPOTE controllers
-```
-
-
 ### `load-acl`
 
 Fetches an ACL file from the configured database and downloads it to the configured UHPPOTE controllers. Intended for use
@@ -162,16 +119,89 @@ Command line:
 
 ```uhppoted-app-db load-acl```
 
-```uhppoted-app-db load-acl [--debug] [--config <file>] [--no-log] [--no-report] [--workdir <dir>]```
+```uhppoted-app-db  [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN>```
 
 ```
+  --dsn <DSN>   (required) DSN for database. Currently only _sqlite3_ is supported and the DSN takes the form
+                sqlite3:<database filepath>::<optional ACL table>, e.g.
+                --dsn sqlite3:../db/ACL.db
+                --dsn sqlite3:../db/ACL.db::ACL
+
+  --with-pin    Includes the card keypad PIN code when updating the access controllers
+
   --config      Sets the uhppoted.conf file to use for controller configurations
-  --workdir     Sets the working directory for generated report files
-  --with-pin    Updates the card keypad PIN code
-  --no-log      Writes log messages to the console rather than the rotating log file
-  --no-report   Prints the load-acl operational report to the console rather than creating a report file
-  --debug       Displays verbose debugging information, in particular the communications with the UHPPOTE controllers
+  --debug       Displays verbose debugging information such as the internal structure of the ACL and the
+                communications with the UHPPOTE controllers
+
+  Examples:
+
+     uhppoted-app-db load-acl --dsn sqlite3:./db/ACL.db
+     uhppoted-app-db --debug --config .uhppoted.conf load-acl --with-pin --dsn sqlite3:./db/ACL.db
 ```
+
+### `get-acl`
+
+Fetches tabular data from a database table and stores it to a TSV file. Intended for use in a `cron` task that routinely
+retrieves the ACL from the database for use by scripts on the local host managing the access control system. 
+
+Command line:
+
+```uhppoted-app-db get-acl``` 
+
+```uhppoted-app-db [--debug] [--config <file>] get-acl [--with-pin] [--file <TSV>] --dsn <DSN>```
+
+```
+  --dsn <DSN>   (required) DSN for database. Currently only _sqlite3_ is supported and the DSN takes the form
+                sqlite3:<database filepath>::<optional ACL table>, e.g.
+                --dsn sqlite3:../db/ACL.db
+                --dsn sqlite3:../db/ACL.db::ACL
+
+  --with-pin    Includes the card keypad PIN code in the retrieved file
+  --file        Optional file path for the destination TSV file. Defaults to displaying the ACL on the 
+                console.
+  
+  --config      Sets the uhppoted.conf file to use for controller configurations
+  --debug       Displays verbose debugging information such as the internal structure of the ACL and the
+                communications with the UHPPOTE controllers
+
+  Examples:
+
+     uhppoted-app-db get-acl --dsn sqlite3:./db/ACL.db
+     uhppoted-app-db get-acl --dsn sqlite3:./db/ACL.db::ACL --with-pin
+     uhppoted-app-db --debug --config .uhppoted.conf get-acl --dsn sqlite3:./db/ACL.db --with-pin --file ACL.tsv
+```
+
+### `put-acl`
+
+Uploads an ACL from a TSV file to a database table. Intended for use in a `cron` task that routinely transfers information
+to the database from scripts on the local host.
+
+Command line:
+
+```uhppoted-app-db put-acl --file <TSV> --dsn <DSN>``` 
+
+```uhppoted-app-db [--debug] [--config <file>] put-acl [--with-pin] --file <TSV> --dsn <DSN>```
+
+```
+  --dsn <DSN>   (required) DSN for database. Currently only _sqlite3_ is supported and the DSN takes the form
+                sqlite3:<database filepath>::<optional ACL table>, e.g.
+                --dsn sqlite3:../db/ACL.db
+                --dsn sqlite3:../db/ACL.db::ACL
+
+  --file        (required) File path for the TSV file to be uploaded to the database
+
+  --with-pin    Includes the card keypad PIN code in the uploaded data
+
+  --config      Sets the uhppoted.conf file to use for controller configurations
+  --debug       Displays verbose debugging information, in particular the communications
+                with the UHPPOTE controllers
+
+  Examples:
+
+     uhppoted-app-db put-acl --with-pin --file ACL.tsv --dsn sqlite3:./db/ACL.db::ACL
+     uhppoted-app-db --debug --config .uhppoted.conf put-acl --wih-pin --file ACL.tsv --dsn sqlite3:./db/ACL.db
+```
+
 
 ### `store-acl`
 
