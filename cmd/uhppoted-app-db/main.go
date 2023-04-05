@@ -14,6 +14,7 @@ import (
 
 var cli = []uhppoted.Command{
 	&commands.LoadACLCmd,
+	&commands.StoreACLCmd,
 	&commands.GetACLCmd,
 	&commands.PutACLCmd,
 

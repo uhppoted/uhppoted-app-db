@@ -9,10 +9,11 @@ import (
 	"strings"
 
 	"github.com/uhppoted/uhppote-core/uhppote"
-	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 	"github.com/uhppoted/uhppoted-lib/lockfile"
+
+	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 )
 
 var PutACLCmd = PutACL{
@@ -21,8 +22,7 @@ var PutACLCmd = PutACL{
 	file:     "",
 	withPIN:  false,
 	lockfile: "",
-	// strict:   false,
-	debug: false,
+	debug:    false,
 }
 
 type PutACL struct {
@@ -31,8 +31,7 @@ type PutACL struct {
 	file     string
 	withPIN  bool
 	lockfile string
-	// strict   bool
-	debug bool
+	debug    bool
 }
 
 func (cmd *PutACL) Name() string {
@@ -49,7 +48,7 @@ func (cmd *PutACL) Usage() string {
 
 func (cmd *PutACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] put-acl [--with-pin] [--strict] --file <file> --dsn <DSN>\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] put-acl [--with-pin] --file <file> --dsn <DSN>\n", APP)
 	fmt.Println()
 	fmt.Println("  Stores an access control list in a TSV file to a database")
 	fmt.Println()
@@ -68,7 +67,6 @@ func (cmd *PutACL) FlagSet() *flag.FlagSet {
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
 	flagset.StringVar(&cmd.file, "file", cmd.file, "Optional TSV filepath. Defaults to stdout")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code in retrieved ACL information")
-	// flagset.BoolVar(&cmd.withPIN, "strict", cmd.strict, "Fails if the TSV file includes duplicate card numbers.")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
 
 	return flagset
