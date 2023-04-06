@@ -20,7 +20,6 @@ var LoadACLCmd = LoadACL{
 	dsn:      "",
 	withPIN:  false,
 	lockfile: "",
-	dryrun:   false,
 	debug:    false,
 }
 
@@ -29,7 +28,6 @@ type LoadACL struct {
 	dsn      string
 	withPIN  bool
 	lockfile string
-	dryrun   bool
 	debug    bool
 }
 
@@ -98,7 +96,7 @@ func (cmd *LoadACL) Execute(args ...any) error {
 		return err
 	} else {
 		defer func() {
-			infof("get-acl", "Removing lockfile '%v'", lockFile.File)
+			infof("load-acl", "Removing lockfile '%v'", lockFile.File)
 			kraken.Release()
 		}()
 	}
@@ -178,9 +176,9 @@ func (cmd *LoadACL) Execute(args ...any) error {
 func (cmd *LoadACL) load(u uhppote.IUHPPOTE, acl lib.ACL) (map[uint32]lib.Report, []error) {
 	f := func(u uhppote.IUHPPOTE, list lib.ACL) (map[uint32]lib.Report, []error) {
 		if cmd.withPIN {
-			return lib.PutACLWithPIN(u, list, cmd.dryrun)
+			return lib.PutACLWithPIN(u, list, false)
 		} else {
-			return lib.PutACL(u, list, cmd.dryrun)
+			return lib.PutACL(u, list, false)
 		}
 	}
 

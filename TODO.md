@@ -5,16 +5,21 @@
 - [x] `get-acl`
 - [x] `put-acl`
 - [x] `load-acl`
-      - [x] sqlite3
-      - [x] --with-pin
-
 - [x] `store-acl`
-      - [x] sqlite3
-      - [x] --with-pin
       - (?) 0 PINs are stored as blank
 
 - [ ] `compare-acl`
+      - [x] sqlite3
+      - [x] --with-pin
+      - [ ] --file
+
 - [ ] README
+- [ ] Commonalise --dsn
+- [ ] Commonalise --with-pin
+- [ ] Commonalise --lockfile
+- [ ] Commonalise getACL
+- [ ] Commonalise putACL
+
 
 ## TODO
 

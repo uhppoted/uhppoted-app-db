@@ -92,7 +92,7 @@ help: build
 	$(CMD) help put-acl
 	$(CMD) help load-acl
 	$(CMD) help store-acl
-	# $(CMD) help compare-acl
+	$(CMD) help compare-acl
 
 version: build
 	$(CMD) version
@@ -128,7 +128,7 @@ store-acl-with-pin: build
 compare-acl: build
 	$(CMD) compare-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACL"
 
-compare-acl-file-with-pin: build
+compare-acl-with-pin: build
 	$(CMD) compare-acl --with-pin --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACL"
 	
 
