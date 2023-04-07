@@ -17,6 +17,12 @@ import (
 )
 
 var GetACLCmd = GetACL{
+	command: command{
+		name:        "get-acl",
+		description: "Retrieves an access control list from a database and (optionally) saves it to a file",
+		usage:       "--with-pin --dsn <DSN> --file <file>",
+	},
+
 	config:   config.DefaultConfig,
 	dsn:      "",
 	withPIN:  false,
@@ -25,24 +31,13 @@ var GetACLCmd = GetACL{
 }
 
 type GetACL struct {
+	command
 	config   string
 	dsn      string
 	file     string
 	withPIN  bool
 	lockfile string
 	debug    bool
-}
-
-func (cmd *GetACL) Name() string {
-	return "get-acl"
-}
-
-func (cmd *GetACL) Description() string {
-	return "Retrieves an access control list from a database and (optionally) saves it to a file"
-}
-
-func (cmd *GetACL) Usage() string {
-	return "--with-pin --dsn <DSN> --file <file>"
 }
 
 func (cmd *GetACL) Help() {

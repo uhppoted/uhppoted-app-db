@@ -17,6 +17,12 @@ import (
 )
 
 var PutACLCmd = PutACL{
+	command: command{
+		name:        "put-acl",
+		description: "Stores an access control list in a TSV file to a database",
+		usage:       "--with-pin --dsn <DSN> --file <file>",
+	},
+
 	config:   config.DefaultConfig,
 	dsn:      "",
 	file:     "",
@@ -26,24 +32,13 @@ var PutACLCmd = PutACL{
 }
 
 type PutACL struct {
+	command
 	config   string
 	dsn      string
 	file     string
 	withPIN  bool
 	lockfile string
 	debug    bool
-}
-
-func (cmd *PutACL) Name() string {
-	return "put-acl"
-}
-
-func (cmd *PutACL) Description() string {
-	return "Stores an access control list in a TSV file to a database"
-}
-
-func (cmd *PutACL) Usage() string {
-	return "--with-pin --dsn <DSN> --file <file>"
 }
 
 func (cmd *PutACL) Help() {

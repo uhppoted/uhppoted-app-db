@@ -16,6 +16,12 @@ import (
 )
 
 var StoreACLCmd = StoreACL{
+	command: command{
+		name:        "store-acl",
+		description: "Retrieves the ACL from a set of access controllers and stores it in a database table",
+		usage:       "--with-pin --dsn <DSN>",
+	},
+
 	config:   config.DefaultConfig,
 	dsn:      "",
 	withPIN:  false,
@@ -24,23 +30,12 @@ var StoreACLCmd = StoreACL{
 }
 
 type StoreACL struct {
+	command
 	config   string
 	dsn      string
 	withPIN  bool
 	lockfile string
 	debug    bool
-}
-
-func (cmd *StoreACL) Name() string {
-	return "store-acl"
-}
-
-func (cmd *StoreACL) Description() string {
-	return "Retrieves the ACL from a set of access controllers and stores it in a database table"
-}
-
-func (cmd *StoreACL) Usage() string {
-	return "--with-pin --dsn <DSN>"
 }
 
 func (cmd *StoreACL) Help() {

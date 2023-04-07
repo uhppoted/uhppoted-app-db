@@ -20,6 +20,12 @@ import (
 )
 
 var CompareACLCmd = CompareACL{
+	command: command{
+		name:        "compare-acl",
+		description: "Compares the access permissions in the configurated set of access controllers to an access control list in a database",
+		usage:       "--with-pin --dsn <DSN>",
+	},
+
 	config:   config.DefaultConfig,
 	dsn:      "",
 	withPIN:  false,
@@ -39,24 +45,13 @@ var CompareACLCmd = CompareACL{
 }
 
 type CompareACL struct {
+	command
 	config   string
 	dsn      string
 	withPIN  bool
 	template string
 	lockfile string
 	debug    bool
-}
-
-func (cmd *CompareACL) Name() string {
-	return "compare-acl"
-}
-
-func (cmd *CompareACL) Description() string {
-	return "Compares the access permissions in the configurated set of access controllers to an access control list in a database"
-}
-
-func (cmd *CompareACL) Usage() string {
-	return "--with-pin --dsn <DSN>"
 }
 
 func (cmd *CompareACL) Help() {

@@ -20,6 +20,24 @@ type Options struct {
 	Debug  bool
 }
 
+type command struct {
+	name        string
+	description string
+	usage       string
+}
+
+func (cmd command) Name() string {
+	return cmd.name
+}
+
+func (cmd command) Description() string {
+	return cmd.description
+}
+
+func (cmd command) Usage() string {
+	return cmd.usage
+}
+
 func getDevices(conf *config.Config, debug bool) (uhppote.IUHPPOTE, []uhppote.Device) {
 	bind, broadcast, listen := config.DefaultIpAddresses()
 

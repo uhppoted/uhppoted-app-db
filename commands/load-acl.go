@@ -16,6 +16,12 @@ import (
 )
 
 var LoadACLCmd = LoadACL{
+	command: command{
+		name:        "load-acl",
+		description: "Retrieves an access control list from a database and updates the configured set of access controllers",
+		usage:       "--with-pin --dsn <DSN>",
+	},
+
 	config:   config.DefaultConfig,
 	dsn:      "",
 	withPIN:  false,
@@ -24,23 +30,12 @@ var LoadACLCmd = LoadACL{
 }
 
 type LoadACL struct {
+	command
 	config   string
 	dsn      string
 	withPIN  bool
 	lockfile string
 	debug    bool
-}
-
-func (cmd *LoadACL) Name() string {
-	return "load-acl"
-}
-
-func (cmd *LoadACL) Description() string {
-	return "Retrieves an access control list from a database and updates the configured set of access controllers"
-}
-
-func (cmd *LoadACL) Usage() string {
-	return "--with-pin --dsn <DSN>"
 }
 
 func (cmd *LoadACL) Help() {
