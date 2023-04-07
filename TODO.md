@@ -8,10 +8,10 @@
 - [x] `store-acl`
       - (?) 0 PINs are stored as blank
 
-- [ ] `compare-acl`
+- [x] `compare-acl`
       - [x] sqlite3
       - [x] --with-pin
-      - [ ] --file
+      - [x] --file
 
 - [ ] README
 - [ ] Commonalise --dsn

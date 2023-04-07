@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -29,6 +28,7 @@ var CompareACLCmd = CompareACL{
 	config:   config.DefaultConfig,
 	dsn:      "",
 	withPIN:  false,
+	file:     "",
 	lockfile: "",
 	debug:    false,
 
@@ -49,6 +49,7 @@ type CompareACL struct {
 	config   string
 	dsn      string
 	withPIN  bool
+	file     string
 	template string
 	lockfile string
 	debug    bool
@@ -56,7 +57,7 @@ type CompareACL struct {
 
 func (cmd *CompareACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] compare-acl [--with-pin] --dsn <DSN>\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN>\n", APP)
 	fmt.Println()
 	fmt.Println("  Compares the access permissions in the configurated set of access controllers to an access control list in a database")
 	fmt.Println()
@@ -74,6 +75,7 @@ func (cmd *CompareACL) FlagSet() *flag.FlagSet {
 
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code when comparing access controllers")
+	flagset.StringVar(&cmd.file, "file", cmd.file, "Optional filepath for compare report. Defaults to stdout")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
 
 	return flagset
@@ -163,7 +165,18 @@ func (cmd *CompareACL) Execute(args ...any) error {
 			return err
 		}
 
-		if err := cmd.print(os.Stdout, diff); err != nil {
+		bytes, err := cmd.format(diff)
+		if err != nil {
+			return err
+		}
+
+		if cmd.file != "" {
+			if err := os.MkdirAll(filepath.Dir(cmd.file), 0750); err != nil {
+				return err
+			} else if err := os.WriteFile(cmd.file, bytes, 0660); err != nil {
+				return err
+			}
+		} else if _, err := fmt.Printf("%v", string(bytes)); err != nil {
 			return err
 		}
 	}
@@ -192,12 +205,12 @@ func (cmd *CompareACL) compare(u uhppote.IUHPPOTE, devices []uhppote.Device, acl
 	}
 }
 
-func (cmd *CompareACL) print(w io.Writer, diff map[uint32]lib.Diff) error {
+func (cmd *CompareACL) format(diff map[uint32]lib.Diff) ([]byte, error) {
 	var b bytes.Buffer
 
 	t, err := template.New("report").Parse(cmd.template)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	rpt := struct {
@@ -209,10 +222,8 @@ func (cmd *CompareACL) print(w io.Writer, diff map[uint32]lib.Diff) error {
 	}
 
 	if err := t.Execute(&b, rpt); err != nil {
-		return err
+		return nil, err
 	} else {
-		fmt.Fprintf(w, "%v", b.String())
+		return b.Bytes(), nil
 	}
-
-	return nil
 }

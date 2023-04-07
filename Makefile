@@ -130,6 +130,10 @@ compare-acl: build
 
 compare-acl-with-pin: build
 	$(CMD) compare-acl --with-pin --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACL"
+
+compare-acl-to-file: build
+	$(CMD) compare-acl --with-pin --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACL" --file "../runtime/uhppoted-app-db/compare.rpt"
+	cat ../runtime/uhppoted-app-db/compare.rpt
 	
 
 
