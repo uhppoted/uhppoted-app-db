@@ -23,14 +23,15 @@ var CompareACLCmd = CompareACL{
 		name:        "compare-acl",
 		description: "Compares the access permissions in the configurated set of access controllers to an access control list in a database",
 		usage:       "--with-pin --dsn <DSN>",
+
+		dsn:      "",
+		withPIN:  false,
+		lockfile: "",
+		config:   config.DefaultConfig,
 	},
 
-	config:   config.DefaultConfig,
-	dsn:      "",
-	withPIN:  false,
-	file:     "",
-	lockfile: "",
-	debug:    false,
+	file:  "",
+	debug: false,
 
 	template: `ACL DIFF REPORT {{ .DateTime }}
 {{range $id,$value := .Diffs}}
@@ -46,12 +47,8 @@ var CompareACLCmd = CompareACL{
 
 type CompareACL struct {
 	command
-	config   string
-	dsn      string
-	withPIN  bool
 	file     string
 	template string
-	lockfile string
 	debug    bool
 }
 

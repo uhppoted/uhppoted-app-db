@@ -14,11 +14,12 @@
       - [x] --file
 
 - [ ] README
-- [ ] Commonalise --dsn
-- [ ] Commonalise --with-pin
-- [ ] Commonalise --lockfile
+- [x] Commonalise --dsn
+- [x] Commonalise --with-pin
+- [x] Commonalise --lockfile
 - [ ] Commonalise getACL
 - [ ] Commonalise putACL
+- [ ] Commonalise lock/release
 
 
 ## TODO

@@ -20,22 +20,17 @@ var LoadACLCmd = LoadACL{
 		name:        "load-acl",
 		description: "Retrieves an access control list from a database and updates the configured set of access controllers",
 		usage:       "--with-pin --dsn <DSN>",
-	},
 
-	config:   config.DefaultConfig,
-	dsn:      "",
-	withPIN:  false,
-	lockfile: "",
-	debug:    false,
+		dsn:      "",
+		withPIN:  false,
+		lockfile: "",
+		config:   config.DefaultConfig,
+		debug:    false,
+	},
 }
 
 type LoadACL struct {
 	command
-	config   string
-	dsn      string
-	withPIN  bool
-	lockfile string
-	debug    bool
 }
 
 func (cmd *LoadACL) Help() {

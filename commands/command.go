@@ -24,6 +24,12 @@ type command struct {
 	name        string
 	description string
 	usage       string
+
+	dsn      string
+	withPIN  bool
+	lockfile string
+	config   string
+	debug    bool
 }
 
 func (cmd command) Name() string {

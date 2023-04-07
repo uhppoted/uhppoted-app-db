@@ -21,24 +21,20 @@ var PutACLCmd = PutACL{
 		name:        "put-acl",
 		description: "Stores an access control list in a TSV file to a database",
 		usage:       "--with-pin --dsn <DSN> --file <file>",
+
+		dsn:      "",
+		withPIN:  false,
+		lockfile: "",
+		config:   config.DefaultConfig,
+		debug:    false,
 	},
 
-	config:   config.DefaultConfig,
-	dsn:      "",
-	file:     "",
-	withPIN:  false,
-	lockfile: "",
-	debug:    false,
+	file: "",
 }
 
 type PutACL struct {
 	command
-	config   string
-	dsn      string
-	file     string
-	withPIN  bool
-	lockfile string
-	debug    bool
+	file string
 }
 
 func (cmd *PutACL) Help() {

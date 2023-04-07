@@ -20,22 +20,17 @@ var StoreACLCmd = StoreACL{
 		name:        "store-acl",
 		description: "Retrieves the ACL from a set of access controllers and stores it in a database table",
 		usage:       "--with-pin --dsn <DSN>",
-	},
 
-	config:   config.DefaultConfig,
-	dsn:      "",
-	withPIN:  false,
-	lockfile: "",
-	debug:    false,
+		dsn:      "",
+		withPIN:  false,
+		lockfile: "",
+		config:   config.DefaultConfig,
+		debug:    false,
+	},
 }
 
 type StoreACL struct {
 	command
-	config   string
-	dsn      string
-	withPIN  bool
-	lockfile string
-	debug    bool
 }
 
 func (cmd *StoreACL) Help() {
