@@ -6,7 +6,7 @@
 - [x] `put-acl`
 - [x] `load-acl`
 - [x] `store-acl`
-      - (?) 0 PINs are stored as blank
+      - [x] store blank PINs as 0
 
 - [x] `compare-acl`
       - [x] sqlite3

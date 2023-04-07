@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -126,7 +127,7 @@ func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table, withPIN 
 	for _, col := range columns {
 		values = append(values, "?")
 
-		if normalise(col) != "CardNumber" {
+		if normalise(col) != "cardnumber" {
 			conflicts = append(conflicts, fmt.Sprintf("%v=excluded.%v", col, col))
 		}
 	}
@@ -147,7 +148,18 @@ func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table, withPIN 
 			record := make([]any, len(columns))
 			for i, col := range columns {
 				ix := index[normalise(col)] - 1
-				record[i] = row[ix]
+
+				if normalise(col) == "pin" {
+					if row[ix] == "" {
+						record[i] = 0
+					} else if pin, err := strconv.ParseUint(row[ix], 10, 16); err != nil {
+						return 0, err
+					} else {
+						record[i] = pin
+					}
+				} else {
+					record[i] = row[ix]
+				}
 			}
 
 			if result, err := tx.Stmt(prepared).Exec(record...); err != nil {

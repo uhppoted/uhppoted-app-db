@@ -3,8 +3,6 @@ package sqlite3
 import (
 	"fmt"
 	"math"
-	"regexp"
-	"strings"
 	"time"
 
 	lib "github.com/uhppoted/uhppoted-lib/acl"
@@ -139,12 +137,4 @@ func makeTable(columns []string, recordset []record, withPIN bool) (*lib.Table, 
 		Header:  header,
 		Records: rows,
 	}, nil
-}
-
-func normalise(v string) string {
-	return strings.ToLower(strings.ReplaceAll(v, " ", ""))
-}
-
-func clean(v string) string {
-	return regexp.MustCompile(`\s+`).ReplaceAllString(strings.TrimSpace(v), " ")
 }

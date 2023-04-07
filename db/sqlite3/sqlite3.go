@@ -3,6 +3,8 @@ package sqlite3
 import (
 	"database/sql"
 	"fmt"
+	"regexp"
+	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -64,17 +66,26 @@ func row2record(rows *sql.Rows, columns []string, types []*sql.ColumnType) (reco
 	}
 }
 
+func normalise(v string) string {
+	return strings.ToLower(strings.ReplaceAll(v, " ", ""))
+}
+
+func clean(v string) string {
+	return regexp.MustCompile(`\s+`).ReplaceAllString(strings.TrimSpace(v), " ")
+}
+
 func debugf(format string, args ...interface{}) {
 	f := fmt.Sprintf("%-10v %v", LogTag, format)
 
 	log.Debugf(f, args...)
 }
 
-// func infof(format string, args ...interface{}) {
-// 	f := fmt.Sprintf("%-10v %v", LogTag, format)
-//
-// 	log.Infof(f, args...)
-// }
+//lint:ignore U1000 utility function
+func infof(format string, args ...interface{}) {
+	f := fmt.Sprintf("%-10v %v", LogTag, format)
+
+	log.Infof(f, args...)
+}
 
 func warnf(format string, args ...interface{}) {
 	f := fmt.Sprintf("%-10v %v", LogTag, format)
@@ -82,8 +93,9 @@ func warnf(format string, args ...interface{}) {
 	log.Warnf(f, args...)
 }
 
-// func errorf(format string, args ...any) {
-// 	f := fmt.Sprintf("%-10v %v", LogTag, format)
-//
-// 	log.Errorf(f, args...)
-// }
+//lint:ignore U1000 utility function
+func errorf(format string, args ...any) {
+	f := fmt.Sprintf("%-10v %v", LogTag, format)
+
+	log.Errorf(f, args...)
+}

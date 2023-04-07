@@ -121,9 +121,11 @@ load-acl-with-pin: build
 
 store-acl: build
 	$(CMD) store-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACLz"
+	sqlite3 ../runtime/uhppoted-app-db/sqlite3/ACL.db 'select * from ACLz'
 
 store-acl-with-pin: build
 	$(CMD) store-acl --with-pin  --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACLz"
+	sqlite3 ../runtime/uhppoted-app-db/sqlite3/ACL.db 'select * from ACLz'
 
 compare-acl: build
 	$(CMD) compare-acl --dsn "sqlite3:../runtime/uhppoted-app-db/sqlite3/acl.db::ACL"
