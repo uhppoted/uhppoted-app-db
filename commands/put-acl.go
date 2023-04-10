@@ -109,7 +109,6 @@ func (cmd *PutACL) Execute(args ...any) error {
 	_, devices := getDevices(conf, cmd.debug)
 
 	// ... retrieve ACL from TSV file
-
 	if acl, warnings, err := cmd.getACL(devices); err != nil {
 		return err
 	} else {

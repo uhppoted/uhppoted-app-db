@@ -14,8 +14,6 @@ import (
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 	"github.com/uhppoted/uhppoted-lib/lockfile"
-
-	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 )
 
 var CompareACLCmd = CompareACL{
@@ -120,31 +118,17 @@ func (cmd *CompareACL) Execute(args ...any) error {
 	u, devices := getDevices(conf, cmd.debug)
 
 	// ... retrieve ACL from DB
-	var table *lib.Table
-
-	switch {
-	case strings.HasPrefix(cmd.dsn, "sqlite3:"):
-		if t, err := sqlite3.GetACL(cmd.dsn[8:], cmd.withPIN); err != nil {
-			return err
-		} else if t == nil {
-			return fmt.Errorf("invalid ACL table (%v)", table)
-		} else {
-			table = t
-		}
-
-	default:
-		return fmt.Errorf("unsupported DSN (%v)", cmd.dsn)
-	}
-
-	f := func(table *lib.Table, devices []uhppote.Device) (*lib.ACL, []error, error) {
+	f := func(table lib.Table, devices []uhppote.Device) (*lib.ACL, []error, error) {
 		if cmd.withPIN {
-			return lib.ParseTable(table, devices, false)
+			return lib.ParseTable(&table, devices, false)
 		} else {
-			return lib.ParseTable(table, devices, false)
+			return lib.ParseTable(&table, devices, false)
 		}
 	}
 
-	if acl, warnings, err := f(table, devices); err != nil {
+	if table, err := getACL(cmd.dsn, cmd.withPIN); err != nil {
+		return err
+	} else if acl, warnings, err := f(table, devices); err != nil {
 		return err
 	} else if acl == nil {
 		return fmt.Errorf("error creating ACL from DB table (%v)", acl)
