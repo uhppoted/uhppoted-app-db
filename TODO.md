@@ -14,7 +14,7 @@
 - [x] Commonalise putACL
 - [x] Commonalise lock/release
 - [x] README
-- [ ] Include in uhppoted release builds
+- [x] Include in uhppoted release builds
 
 
 ## TODO
