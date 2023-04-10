@@ -14,7 +14,7 @@ Supported operating systems:
 
 ### Status 
 
-** IN DEVELOPMENT **
+** PRE-RELEASE **
 
 ## Releases
 

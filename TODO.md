@@ -13,7 +13,7 @@
 - [x] Commonalise getACL
 - [x] Commonalise putACL
 - [x] Commonalise lock/release
-- [ ] README
+- [x] README
 - [ ] Include in uhppoted release builds
 
 
