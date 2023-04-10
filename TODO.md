@@ -11,7 +11,7 @@
 - [x] Commonalise --with-pin
 - [x] Commonalise --lockfile
 - [x] Commonalise getACL
-- [ ] Commonalise putACL
+- [x] Commonalise putACL
 - [ ] Commonalise lock/release
 - [ ] README
 

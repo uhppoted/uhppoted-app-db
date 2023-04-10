@@ -5,14 +5,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/uhppoted/uhppote-core/uhppote"
-	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 
-	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 	"github.com/uhppoted/uhppoted-app-db/log"
 )
 
@@ -78,22 +75,6 @@ func getDevices(conf *config.Config, debug bool) (uhppote.IUHPPOTE, []uhppote.De
 	u := uhppote.NewUHPPOTE(bind, broadcast, listen, 5*time.Second, devices, debug)
 
 	return u, devices
-}
-
-func getACL(dsn string, withPIN bool) (lib.Table, error) {
-	switch {
-	case strings.HasPrefix(dsn, "sqlite3:"):
-		if table, err := sqlite3.GetACL(dsn[8:], withPIN); err != nil {
-			return lib.Table{}, err
-		} else if table == nil {
-			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", table)
-		} else {
-			return *table, nil
-		}
-
-	default:
-		return lib.Table{}, fmt.Errorf("unsupported DSN (%v)", dsn)
-	}
 }
 
 func write(file string, bytes []byte) error {

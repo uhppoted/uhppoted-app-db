@@ -11,8 +11,6 @@ import (
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 	"github.com/uhppoted/uhppoted-lib/lockfile"
-
-	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 )
 
 var StoreACLCmd = StoreACL{
@@ -104,21 +102,9 @@ func (cmd *StoreACL) Execute(args ...any) error {
 		return err
 	} else if acl == nil {
 		return fmt.Errorf("invalid ACL (%v)", acl)
+	} else if err := putACL(cmd.dsn, *acl, cmd.withPIN); err != nil {
+		return err
 	} else {
-		switch {
-		case strings.HasPrefix(cmd.dsn, "sqlite3:"):
-			if N, err := sqlite3.PutACL(cmd.dsn[8:], *acl, cmd.withPIN); err != nil {
-				return err
-			} else if N == 1 {
-				infof("store-acl", "Stored %v card to DB ACL table", N)
-			} else {
-				infof("store-acl", "Stored %v cards to DB ACL table", N)
-			}
-
-		default:
-			return fmt.Errorf("unsupported DSN (%v)", cmd.dsn)
-		}
-
 		infof("store-acl", "Updated DB ACL table")
 	}
 
