@@ -5,13 +5,11 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/uhppoted/uhppote-core/uhppote"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
-	"github.com/uhppoted/uhppoted-lib/lockfile"
 )
 
 var PutACLCmd = PutACL{
@@ -77,23 +75,11 @@ func (cmd *PutACL) Execute(args ...any) error {
 	}
 
 	// ... locked?
-	lockFile := config.Lockfile{
-		File:   filepath.Join(os.TempDir(), "uhppoted-app-db.lock"),
-		Remove: lockfile.RemoveLockfile,
-	}
-
-	if cmd.lockfile != "" {
-		lockFile = config.Lockfile{
-			File:   cmd.lockfile,
-			Remove: lockfile.RemoveLockfile,
-		}
-	}
-
-	if kraken, err := lockfile.MakeLockFile(lockFile); err != nil {
+	if kraken, err := lock(cmd.lockfile); err != nil {
 		return err
 	} else {
 		defer func() {
-			infof("put-acl", "Removing lockfile '%v'", lockFile.File)
+			infof("put-acl", "Removing lockfile")
 			kraken.Release()
 		}()
 	}

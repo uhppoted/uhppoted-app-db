@@ -12,8 +12,9 @@
 - [x] Commonalise --lockfile
 - [x] Commonalise getACL
 - [x] Commonalise putACL
-- [ ] Commonalise lock/release
+- [x] Commonalise lock/release
 - [ ] README
+- [ ] Include in uhppoted release builds
 
 
 ## TODO

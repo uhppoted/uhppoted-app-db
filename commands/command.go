@@ -9,6 +9,7 @@ import (
 
 	"github.com/uhppoted/uhppote-core/uhppote"
 	"github.com/uhppoted/uhppoted-lib/config"
+	"github.com/uhppoted/uhppoted-lib/lockfile"
 
 	"github.com/uhppoted/uhppoted-app-db/log"
 )
@@ -42,6 +43,22 @@ func (cmd command) Description() string {
 
 func (cmd command) Usage() string {
 	return cmd.usage
+}
+
+func lock(file string) (lockfile.Lockfile, error) {
+	lockFile := config.Lockfile{
+		File:   filepath.Join(os.TempDir(), "uhppoted-app-db.lock"),
+		Remove: lockfile.RemoveLockfile,
+	}
+
+	if file != "" {
+		lockFile = config.Lockfile{
+			File:   file,
+			Remove: lockfile.RemoveLockfile,
+		}
+	}
+
+	return lockfile.MakeLockFile(lockFile)
 }
 
 func getDevices(conf *config.Config, debug bool) (uhppote.IUHPPOTE, []uhppote.Device) {

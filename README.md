@@ -74,13 +74,13 @@ Usage: ```uhppoted-app-db <command> <options>```
 
 Supported commands:
 
-- `help`
-- `version`
 - `load-acl`
 - `store-acl`
 - `compare-acl`
 - `get-acl`
 - `put-acl`
+- `version`
+- `help`
 
 ### ACL table format
 
@@ -171,6 +171,37 @@ Command line:
 ```
 
 
+### `compare-acl`
+
+Fetches an ACL file from a database and compares it to the cards stored in the configured UHPPOTE controllers. Intended for 
+use in a `cron` task that routinely audits the controllers against an authoritative source.
+
+Command line:
+
+```uhppoted-app-db compare-acl```
+
+```uhppoted-app-db [--debug]  [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN>```
+
+```
+  --dsn <DSN>   (required) DSN for database. Currently only _sqlite3_ is supported and the DSN takes the form
+                sqlite3:<database filepath>::<optional ACL table>, e.g.
+                --dsn sqlite3:../db/ACL.db
+                --dsn sqlite3:../db/ACL.db::ACL
+
+  --with-pin    Includes the card keypad PIN code when updating the access controllers
+  --file        Optional file path for the compare report. Defaults to displaying the ACL on the console.
+
+  --config      Sets the uhppoted.conf file to use for controller configurations
+  --debug       Displays verbose debugging information such as the internal structure of the ACL and the
+                communications with the UHPPOTE controllers
+
+  Examples:
+
+     uhppoted-app-db compare-acl --dsn sqlite3:./db/ACL.db
+     uhppoted-app-db --debug --config .uhppoted.conf compare-acl --with-pin --dsn sqlite3:./db/ACL.db
+```
+
+
 ### `get-acl`
 
 Fetches tabular data from a database table and stores it to a TSV file. Intended for use in a `cron` task that routinely
@@ -235,20 +266,3 @@ Command line:
 ```
 
 
-### `compare-acl`
-
-Fetches an ACL file from a database and compares it to the cards stored in the configured UHPPOTE controllers. Intended for 
-use in a `cron` task that routinely audits the controllers against an authoritative source.
-
-Command line:
-
-```uhppoted-app-db compare-acl```
-
-```uhppoted-app-db compare-acl [--debug] [-with-pin] [--no-log] [--config <file>]```
-
-```
-  --config      Sets the uhppoted.conf file to use for controller configurations
-  --with-pin    Includes the card keypad PIN code when comparing cards
-  --no-log      Writes log messages to the console rather than the rotating log file
-  --debug       Displays verbose debugging information, in particular the communications with the UHPPOTE controllers
-```
