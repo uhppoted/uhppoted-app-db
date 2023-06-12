@@ -20,7 +20,7 @@ Supported operating systems:
 
 | *Version* | *Description*                                                                             |
 | --------- | ----------------------------------------------------------------------------------------- |
-|           | (in progress)                                                                             |
+| v0.8.5    | Initial release with sqlite3 support                                                      |
 
 ## Installation
 
