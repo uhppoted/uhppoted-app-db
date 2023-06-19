@@ -114,16 +114,6 @@ func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table, withPIN 
 		}
 	}
 
-	values := []string{}
-	conflicts := []string{}
-	for _, col := range columns {
-		values = append(values, "?")
-
-		if normalise(col) != "cardnumber" {
-			conflicts = append(conflicts, fmt.Sprintf("%v=excluded.%v", col, col))
-		}
-	}
-
 	// ... create all rows with card numbers, ignoring errors
 	insert := fmt.Sprintf("INSERT INTO %v (CardNumber) VALUES (?);", table)
 
