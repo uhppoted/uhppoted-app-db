@@ -4,3 +4,6 @@ dist
 go.work
 go.work.sum
 release-notes.md
+package.json
+package-lock.json
+node_modules
