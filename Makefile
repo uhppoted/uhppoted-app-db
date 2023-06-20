@@ -150,11 +150,18 @@ sqlite3-compare-acl-to-file: build
 mssql-get-acl: build
 	$(CMD) --debug get-acl --dsn "$(MSSQL)"
 	$(CMD)         get-acl --dsn "$(MSSQL)"
+	$(CMD)         get-acl --dsn "$(MSSQL)" --table:ACL ACLx
 
 mssql-get-acl-with-pin: build
 	$(CMD) get-acl --dsn "$(MSSQL)" --with-pin
 
 mssql-put-acl: build
+	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "DELETE FROM ACLx"
 	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(MSSQL)" --table:ACL ACLx
+	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "SELECT * FROM ACLx"
 
+mssql-put-acl-with-pin: build
+	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "DELETE FROM ACLx"
+	$(CMD) put-acl --with-pin --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(MSSQL)" --table:ACL ACLx
+	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "SELECT * FROM ACLx"
 

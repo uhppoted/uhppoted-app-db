@@ -21,8 +21,8 @@ func getACL(dsn string, table string, withPIN bool) (lib.Table, error) {
 			return *t, nil
 		}
 
-	case strings.HasPrefix(dsn, "mssql:"):
-		if t, err := mssql.GetACL(dsn[6:], table, withPIN); err != nil {
+	case strings.HasPrefix(dsn, "sqlserver://"):
+		if t, err := mssql.GetACL(dsn, table, withPIN); err != nil {
 			return lib.Table{}, err
 		} else if t == nil {
 			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", t)
@@ -35,10 +35,10 @@ func getACL(dsn string, table string, withPIN bool) (lib.Table, error) {
 	}
 }
 
-func putACL(dsn string, tableACL string, acl lib.Table, withPIN bool) error {
+func putACL(dsn string, table string, acl lib.Table, withPIN bool) error {
 	switch {
 	case strings.HasPrefix(dsn, "sqlite3://"):
-		if N, err := sqlite3.PutACL(dsn[10:], tableACL, acl, withPIN); err != nil {
+		if N, err := sqlite3.PutACL(dsn[10:], table, acl, withPIN); err != nil {
 			return err
 		} else if N == 1 {
 			infof("put-acl", "Stored %v card to DB ACL table", N)
@@ -46,8 +46,8 @@ func putACL(dsn string, tableACL string, acl lib.Table, withPIN bool) error {
 			infof("put-acl", "Stored %v cards to DB ACL table", N)
 		}
 
-	case strings.HasPrefix(dsn, "mssql:"):
-		if N, err := mssql.PutACL(dsn[6:], tableACL, acl, withPIN); err != nil {
+	case strings.HasPrefix(dsn, "sqlserver://"):
+		if N, err := mssql.PutACL(dsn, table, acl, withPIN); err != nil {
 			return err
 		} else if N == 1 {
 			infof("put-acl", "Stored %v card to DB ACL table", N)
