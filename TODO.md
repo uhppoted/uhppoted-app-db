@@ -4,6 +4,8 @@
 
 - [ ] Microsoft SQL server support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/3)
       - [ ] Move ACL table from DSN to command line parameter
+      - [ ] CHANGELOG
+      - [ ] README
 
 - [ ] MySQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/1)
 - [ ] Audit trail (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)

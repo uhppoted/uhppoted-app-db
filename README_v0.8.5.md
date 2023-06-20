@@ -14,13 +14,6 @@ Supported operating systems:
 
 Supported databases:
 - sqlite3
-- Microsoft SQL Server (in progress)
-
-##### _Version v0.8.5_
-
-_Please note that this README describes the current development version and the command line arguments have changed to 
-support additional drivers. If you are using v0.8.5, please see [README-v0.8.5](README_v0.8.5.md) for a description of
-the command line arguments._
 
 ## Releases
 
