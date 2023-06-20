@@ -4,20 +4,21 @@
 
 - [ ] Microsoft SQL server support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/3)
       - [x] Move ACL table from DSN to command line parameter
-      - [ ] compare-acl
-      - [ ] load-acl
-      - [ ] store-acl
-      - [ ] CHANGELOG
+      - [x] get-acl
+      - [x] put-acl
+      - [x] compare-acl
+      - [x] load-acl
+      - [x] store-acl
+      - [x] CHANGELOG
       - [ ] README
 
-- [ ] MySQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/1)
 - [ ] Audit trail (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
 - [ ] Events (cf. https://github.com/uhppoted/uhppoted-app-db/issues/5)
+- [ ] MySQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/1)
 
 
 ## TODO
 
-- [ ] MySQL
 - [ ] Postgres
 - [ ] Firebase
 - [ ] DynamoDB

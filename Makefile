@@ -174,3 +174,22 @@ mssql-compare-acl-with-pin: build
 mssql-compare-acl-to-file: build
 	$(CMD) compare-acl --with-pin --dsn "$(MSSQL)" --file "../runtime/uhppoted-app-db/compare.rpt"
 	cat ../runtime/uhppoted-app-db/compare.rpt
+
+mssql-load-acl: build
+	$(CMD) load-acl --dsn "$(MSSQL)"
+	$(CMD) load-acl --dsn "$(MSSQL)" --table:ACL ACL
+
+mssql-load-acl-with-pin: build
+	$(CMD) load-acl --with-pin --dsn "$(MSSQL)"
+	$(CMD) load-acl --with-pin --dsn "$(MSSQL)" --table:ACL ACL
+
+mssql-store-acl: build
+	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "DELETE FROM ACLz"
+	$(CMD) store-acl --dsn "$(MSSQL)" --table:ACL ACLz
+	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "SELECT * FROM ACLz"
+
+mssql-store-acl-with-pin: build
+	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "DELETE FROM ACLz"
+	$(CMD) store-acl --with-pin  --dsn "$(MSSQL)" --table:ACL ACLz
+	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "SELECT * FROM ACLz"
+
