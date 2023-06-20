@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"regexp"
 	"time"
 
 	_ "github.com/microsoft/go-mssqldb"
@@ -12,15 +11,7 @@ import (
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 
-func GetACL(dsn string, withPIN bool) (*lib.Table, error) {
-	table := "ACL"
-
-	if match := regexp.MustCompile(`^(.*?)(::.*)$`).FindStringSubmatch(dsn); len(match) > 2 {
-		dsn = match[1]
-		table = match[2][2:]
-	}
-
-	// ... execute
+func GetACL(dsn string, table string, withPIN bool) (*lib.Table, error) {
 	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
 		return nil, err
 	} else if dbc == nil {

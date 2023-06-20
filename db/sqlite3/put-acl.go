@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -16,15 +15,7 @@ import (
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 
-func PutACL(dsn string, recordset lib.Table, withPIN bool) (int, error) {
-	table := "ACL"
-
-	if match := regexp.MustCompile(`^(.*?)(::.*)$`).FindStringSubmatch(dsn); len(match) > 2 {
-		dsn = match[1]
-		table = match[2][2:]
-	}
-
-	// ... execute
+func PutACL(dsn string, table string, recordset lib.Table, withPIN bool) (int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()

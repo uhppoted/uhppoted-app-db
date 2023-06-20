@@ -27,6 +27,7 @@ type command struct {
 	usage       string
 
 	dsn      string
+	tableACL string
 	withPIN  bool
 	lockfile string
 	config   string

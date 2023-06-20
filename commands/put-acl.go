@@ -16,9 +16,10 @@ var PutACLCmd = PutACL{
 	command: command{
 		name:        "put-acl",
 		description: "Stores an access control list in a TSV file to a database",
-		usage:       "--with-pin --dsn <DSN> --file <file>",
+		usage:       "--with-pin --dsn <DSN> --file <file> --table:ACL <table>",
 
 		dsn:      "",
+		tableACL: "ACL",
 		withPIN:  false,
 		lockfile: "",
 		config:   config.DefaultConfig,
@@ -35,7 +36,7 @@ type PutACL struct {
 
 func (cmd *PutACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] put-acl [--with-pin] --file <file> --dsn <DSN>\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] put-acl [--with-pin] --file <file> --dsn <DSN> [--table:ACL <table>]\n", APP)
 	fmt.Println()
 	fmt.Println("  Stores an access control list in a TSV file to a database")
 	fmt.Println()
@@ -44,7 +45,8 @@ func (cmd *PutACL) Help() {
 
 	fmt.Println()
 	fmt.Println("  Examples:")
-	fmt.Println(`    uhppote-app-db --debug put-acl --with-pin --file "ACL.tsv" --dsn "sqlite3:./db/ACL.db"`)
+	fmt.Println(`    uhppote-app-db --debug put-acl --with-pin --file "ACL.tsv" --dsn "sqlite3://./db/ACL.db"`)
+	fmt.Println(`    uhppote-app-db --debug put-acl --with-pin --file "ACL.tsv" --dsn "sqlite3://./db/ACL.db" --table:ACL ACL2`)
 	fmt.Println()
 }
 
@@ -52,6 +54,7 @@ func (cmd *PutACL) FlagSet() *flag.FlagSet {
 	flagset := flag.NewFlagSet("put-acl", flag.ExitOnError)
 
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
+	flagset.StringVar(&cmd.tableACL, "table:ACL", cmd.tableACL, "ACL table name. Defaults to ACL")
 	flagset.StringVar(&cmd.file, "file", cmd.file, "Optional TSV filepath. Defaults to stdout")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code in retrieved ACL information")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
@@ -72,6 +75,10 @@ func (cmd *PutACL) Execute(args ...any) error {
 
 	if strings.TrimSpace(cmd.dsn) == "" {
 		return fmt.Errorf("missing database DSN")
+	}
+
+	if strings.TrimSpace(cmd.tableACL) == "" {
+		return fmt.Errorf("missing ACL table")
 	}
 
 	// ... locked?
@@ -100,7 +107,7 @@ func (cmd *PutACL) Execute(args ...any) error {
 			warnf("put-acl", "%v", w.Error())
 		}
 
-		if err := putACL(cmd.dsn, acl, cmd.withPIN); err != nil {
+		if err := putACL(cmd.dsn, cmd.tableACL, acl, cmd.withPIN); err != nil {
 			return err
 		} else {
 			infof("put-acl", "Updated DB ACL table from %v", cmd.file)

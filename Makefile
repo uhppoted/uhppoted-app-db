@@ -7,7 +7,7 @@ DEBUG ?= --debug
 .PHONY: update
 .PHONY: update-release
 
-SQLITE3 = ../runtime/uhppoted-app-db/sqlite3/acl.db::ACL
+SQLITE3 = ../runtime/uhppoted-app-db/sqlite3/acl.db
 MSSQL = sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
 
 all: test      \
@@ -80,7 +80,7 @@ publish: release
 	--draft --prerelease --title "$(VERSION)-beta" --notes-file release-notes.md
 
 debug: build
-	$(CMD) version
+	$(CMD) get-acl --dsn "$(SQLITE3)" --table:ACL ACLx
 
 godoc:
 	godoc -http=:80 -index_interval=60s
@@ -101,53 +101,60 @@ version: build
 	$(CMD) version
 
 sqlite3-get-acl: build
-	$(CMD) get-acl --dsn "sqlite3:$(SQLITE3)::ACL"
-	$(CMD) get-acl --dsn "sqlite3:$(SQLITE3)" --file "../runtime/uhppoted-app-db/get-acl.tsv"
+	$(CMD) get-acl --dsn "sqlite3://$(SQLITE3)"
+	$(CMD) get-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACLx
+	$(CMD) get-acl --dsn "sqlite3://$(SQLITE3)" --file "../runtime/uhppoted-app-db/get-acl.tsv"
 	cat ../runtime/uhppoted-app-db/get-acl.tsv
 
 sqlite3-get-acl-with-pin: build
-	$(CMD)  --debug get-acl --dsn "sqlite3:$(SQLITE3)" --with-pin
+	$(CMD) --debug get-acl --dsn "sqlite3://$(SQLITE3)" --with-pin
 
 sqlite3-put-acl: build
-	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "sqlite3:$(SQLITE3)::ACLx" 
-	sqlite3 $(SQLITE3) 'select * from ACLx'
+	sqlite3 "$(SQLITE3)" 'delete from ACLx'
+	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "sqlite3://$(SQLITE3)" --table:ACL ACLx
+	sqlite3 "$(SQLITE3)" 'select * from ACLx'
 
 sqlite3-put-acl-with-pin: build
-	$(CMD) put-acl --with-pin --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "sqlite3:$(SQLITE3)::ACLx" 
-	sqlite3 $(SQLITE3) 'select * from ACLx'
+	sqlite3 "$(SQLITE3)" 'delete from ACLx'
+	$(CMD) put-acl --with-pin --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "sqlite3://$(SQLITE3)"  --table:ACL ACLx
+	sqlite3 "$(SQLITE3)" 'select * from ACLx'
 
 sqlite3-load-acl: build
-	$(CMD) load-acl --dsn "sqlite3:$(SQLITE3)::ACL"
+	$(CMD) load-acl --dsn "sqlite3://$(SQLITE3)"
+	$(CMD) load-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL
 
 sqlite3-load-acl-with-pin: build
-	$(CMD) load-acl --with-pin --dsn "sqlite3:$(SQLITE3)::ACL"
+	$(CMD) load-acl --with-pin --dsn "sqlite3://$(SQLITE3)"
+	$(CMD) load-acl --with-pin --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL
 
 sqlite3-store-acl: build
-	$(CMD) store-acl --dsn "sqlite3:$(SQLITE3)::ACLz"
-	sqlite3 $(SQLITE3) 'select * from ACLz'
+	sqlite3 "$(SQLITE3)" 'delete from ACLz'
+	$(CMD) store-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACLz
+	sqlite3 "$(SQLITE3)" 'select * from ACLz'
 
 sqlite3-store-acl-with-pin: build
-	$(CMD) store-acl --with-pin  --dsn "sqlite3:$(SQLITE3)::ACLz"
-	sqlite3 $(SQLITE3) 'select * from ACLz'
+	sqlite3 "$(SQLITE3)" 'delete from ACLz'
+	$(CMD) store-acl --with-pin  --dsn "sqlite3://$(SQLITE3)" --table:ACL ACLz
+	sqlite3 "$(SQLITE3)" 'select * from ACLz'
 
 sqlite3-compare-acl: build
-	$(CMD) compare-acl --dsn "sqlite3:$(SQLITE3)::ACL"
+	$(CMD) compare-acl --dsn "sqlite3://$(SQLITE3)"
 
 sqlite3-compare-acl-with-pin: build
-	$(CMD) compare-acl --with-pin --dsn "sqlite3:$(SQLITE3)::ACL"
+	$(CMD) compare-acl --with-pin --dsn "sqlite3://$(SQLITE3)"
 
 sqlite3-compare-acl-to-file: build
-	$(CMD) compare-acl --with-pin --dsn "sqlite3:$(SQLITE3)::ACL" --file "../runtime/uhppoted-app-db/compare.rpt"
+	$(CMD) compare-acl --with-pin --dsn "sqlite3://$(SQLITE3)" --file "../runtime/uhppoted-app-db/compare.rpt"
 	cat ../runtime/uhppoted-app-db/compare.rpt
 	
 mssql-get-acl: build
-	$(CMD) --debug get-acl --dsn "mssql:$(MSSQL)::ACL"
-	$(CMD)         get-acl --dsn "mssql:$(MSSQL)::ACL"
+	$(CMD) --debug get-acl --dsn "$(MSSQL)"
+	$(CMD)         get-acl --dsn "$(MSSQL)"
 
 mssql-get-acl-with-pin: build
-	$(CMD) get-acl --dsn "mssql:$(MSSQL)" --with-pin
+	$(CMD) get-acl --dsn "$(MSSQL)" --with-pin
 
 mssql-put-acl: build
-	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "mssql:$(MSSQL)::ACLx" 
+	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(MSSQL)" --table:ACL ACLx
 
 

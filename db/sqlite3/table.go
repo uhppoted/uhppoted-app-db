@@ -3,6 +3,7 @@ package sqlite3
 import (
 	"fmt"
 	"math"
+	"strconv"
 	"time"
 
 	lib "github.com/uhppoted/uhppoted-lib/acl"
@@ -113,10 +114,21 @@ func makeTable(columns []string, recordset []record, withPIN bool) (*lib.Table, 
 		}
 
 		for _, h := range doors {
-			if k, ok := index[normalise(h)]; ok {
-				if permission, ok := record[k].(int64); !ok {
+			if k, ok := index[normalise(h)]; !ok {
+				row = append(row, "")
+			} else if s, ok := record[k].(string); ok {
+				if s == "N" || s == "n" {
+					row = append(row, "N")
+				} else if s == "Y" || s == "y" {
+					row = append(row, "Y")
+				} else if v, err := strconv.ParseUint(s, 10, 8); err == nil {
+					row = append(row, fmt.Sprintf("%v", v))
+				} else {
 					row = append(row, "")
-				} else if permission == 0 {
+				}
+
+			} else if permission, ok := record[k].(int64); ok {
+				if permission == 0 {
 					row = append(row, "N")
 				} else if permission == 1 {
 					row = append(row, "Y")
@@ -125,8 +137,6 @@ func makeTable(columns []string, recordset []record, withPIN bool) (*lib.Table, 
 				} else {
 					row = append(row, "")
 				}
-			} else {
-				row = append(row, "")
 			}
 		}
 

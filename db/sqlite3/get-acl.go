@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"regexp"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -14,15 +13,7 @@ import (
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 
-func GetACL(dsn string, withPIN bool) (*lib.Table, error) {
-	table := "ACL"
-
-	if match := regexp.MustCompile(`^(.*?)(::.*)$`).FindStringSubmatch(dsn); len(match) > 2 {
-		dsn = match[1]
-		table = match[2][2:]
-	}
-
-	// ... execute
+func GetACL(dsn string, table string, withPIN bool) (*lib.Table, error) {
 	if _, err := os.Stat(dsn); errors.Is(err, os.ErrNotExist) {
 		return nil, fmt.Errorf("sqlite3 database %v does not exist", dsn)
 	} else if err != nil {

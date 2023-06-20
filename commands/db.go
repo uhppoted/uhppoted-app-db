@@ -10,24 +10,24 @@ import (
 	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 )
 
-func getACL(dsn string, withPIN bool) (lib.Table, error) {
+func getACL(dsn string, table string, withPIN bool) (lib.Table, error) {
 	switch {
-	case strings.HasPrefix(dsn, "sqlite3:"):
-		if table, err := sqlite3.GetACL(dsn[8:], withPIN); err != nil {
+	case strings.HasPrefix(dsn, "sqlite3://"):
+		if t, err := sqlite3.GetACL(dsn[10:], table, withPIN); err != nil {
 			return lib.Table{}, err
-		} else if table == nil {
-			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", table)
+		} else if t == nil {
+			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", t)
 		} else {
-			return *table, nil
+			return *t, nil
 		}
 
 	case strings.HasPrefix(dsn, "mssql:"):
-		if table, err := mssql.GetACL(dsn[6:], withPIN); err != nil {
+		if t, err := mssql.GetACL(dsn[6:], table, withPIN); err != nil {
 			return lib.Table{}, err
-		} else if table == nil {
-			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", table)
+		} else if t == nil {
+			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", t)
 		} else {
-			return *table, nil
+			return *t, nil
 		}
 
 	default:
@@ -35,10 +35,10 @@ func getACL(dsn string, withPIN bool) (lib.Table, error) {
 	}
 }
 
-func putACL(dsn string, acl lib.Table, withPIN bool) error {
+func putACL(dsn string, tableACL string, acl lib.Table, withPIN bool) error {
 	switch {
-	case strings.HasPrefix(dsn, "sqlite3:"):
-		if N, err := sqlite3.PutACL(dsn[8:], acl, withPIN); err != nil {
+	case strings.HasPrefix(dsn, "sqlite3://"):
+		if N, err := sqlite3.PutACL(dsn[10:], tableACL, acl, withPIN); err != nil {
 			return err
 		} else if N == 1 {
 			infof("put-acl", "Stored %v card to DB ACL table", N)
@@ -47,7 +47,7 @@ func putACL(dsn string, acl lib.Table, withPIN bool) error {
 		}
 
 	case strings.HasPrefix(dsn, "mssql:"):
-		if N, err := mssql.PutACL(dsn[6:], acl, withPIN); err != nil {
+		if N, err := mssql.PutACL(dsn[6:], tableACL, acl, withPIN); err != nil {
 			return err
 		} else if N == 1 {
 			infof("put-acl", "Stored %v card to DB ACL table", N)

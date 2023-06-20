@@ -15,9 +15,10 @@ var LoadACLCmd = LoadACL{
 	command: command{
 		name:        "load-acl",
 		description: "Retrieves an access control list from a database and updates the configured set of access controllers",
-		usage:       "--with-pin --dsn <DSN>",
+		usage:       "--with-pin --dsn <DSN> --table:ACL <table>",
 
 		dsn:      "",
+		tableACL: "ACL",
 		withPIN:  false,
 		lockfile: "",
 		config:   config.DefaultConfig,
@@ -31,7 +32,7 @@ type LoadACL struct {
 
 func (cmd *LoadACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN>\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN> [--table:ACL <table>]\n", APP)
 	fmt.Println()
 	fmt.Println("  Retrieves an access control list from a database and updates the configured set of access controllers")
 	fmt.Println()
@@ -40,7 +41,8 @@ func (cmd *LoadACL) Help() {
 
 	fmt.Println()
 	fmt.Println("  Examples:")
-	fmt.Println(`    uhppote-app-db --debug load-acl --with-pin --dsn "sqlite3:./db/ACL.db"`)
+	fmt.Println(`    uhppote-app-db --debug load-acl --with-pin --dsn "sqlite3://./db/ACL.db"`)
+	fmt.Println(`    uhppote-app-db --debug load-acl --with-pin --dsn "sqlite3://./db/ACL.db" --table:ACL ACL`)
 	fmt.Println()
 }
 
@@ -48,6 +50,7 @@ func (cmd *LoadACL) FlagSet() *flag.FlagSet {
 	flagset := flag.NewFlagSet("load-acl", flag.ExitOnError)
 
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
+	flagset.StringVar(&cmd.tableACL, "table:ACL", cmd.tableACL, "ACL table name. Defaults to ACL")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code when updating access controllers")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
 
@@ -63,6 +66,10 @@ func (cmd *LoadACL) Execute(args ...any) error {
 	// ... check parameters
 	if strings.TrimSpace(cmd.dsn) == "" {
 		return fmt.Errorf("invalid database DSN")
+	}
+
+	if strings.TrimSpace(cmd.tableACL) == "" {
+		return fmt.Errorf("invalid ACL table")
 	}
 
 	// ... locked?
@@ -92,7 +99,7 @@ func (cmd *LoadACL) Execute(args ...any) error {
 		}
 	}
 
-	if table, err := getACL(cmd.dsn, cmd.withPIN); err != nil {
+	if table, err := getACL(cmd.dsn, cmd.tableACL, cmd.withPIN); err != nil {
 		return err
 	} else if acl, warnings, err := f(table, devices); err != nil {
 		return err
