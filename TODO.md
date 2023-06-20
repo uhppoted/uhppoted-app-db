@@ -2,7 +2,7 @@
 
 ## IN PROGRESS
 
-- [ ] Microsoft SQL server support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/3)
+- [x] Microsoft SQL server support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/3)
       - [x] Move ACL table from DSN to command line parameter
       - [x] get-acl
       - [x] put-acl
@@ -10,7 +10,7 @@
       - [x] load-acl
       - [x] store-acl
       - [x] CHANGELOG
-      - [ ] README
+      - [x] README
 
 - [ ] Audit trail (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
 - [ ] Events (cf. https://github.com/uhppoted/uhppoted-app-db/issues/5)

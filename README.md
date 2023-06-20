@@ -115,6 +115,19 @@ e.g.:
 | Hermione Grainger | 10058404   | 82953 | 2023-01-01 | 2023-12-31 | 1         | 1          | 0          | 0         | 0         | 0       | 1       | 29       |
 | Crookshanks       | 10058405   | 1397  | 2023-01-01 | 2023-12-31 | 0         | 1          | 0          | 0         | 0         | 1       | 0       | 1        |
 
+### DSN
+
+The `uhppoted-app-db` commands require a DSN command line argument to specify the database connection.
+
+1. For sqlite3, this takes the form `sqlite3://<filepath>`, where the file path is the path to the sqlite3
+   database file.
+   e.g. sqlite3://../db/ACL.db
+
+2. For Microsoft SQL Server, DSN is any DSN accepted by the Microsoft SQL Server driver, as specified in the
+   official [documentation](https://pkg.go.dev/github.com/microsoft/go-mssqldb). Typically a SQL Server DSN
+   takes the form `sqlserver://<uid>:<password>@<host>?database=<database>`.
+   e.g. sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
+
 
 ### `load-acl`
 
@@ -128,21 +141,13 @@ Command line:
 ```uhppoted-app-db  [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN> [--table:ACL <table>]```
 
 ```
-  --dsn <DSN>   (required) DSN for database. Currently only _sqlite3_ and Microsft SQL server are supported. 
-                The sqlite3 DSN takes the form 'sqlite3://<filepath>>', e.g.:
-                  e.g. sqlite3://../db/ACL.db
+  --dsn <DSN>          (required) DSN for database as described above. 
+  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
+  --with-pin           Includes the card keypad PIN code when updating the access controllers
 
-                The SQL server DSN is a standard SQL server DSN of the form 
-                sqlserver://<uid>:<password>@<host>?database=<database>....
-                e.g. sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
-
-  --table:ACL <tablename>  (optional) ACL table. Defaults to ACL.
-
-  --with-pin    Includes the card keypad PIN code when updating the access controllers
-
-  --config      Sets the uhppoted.conf file to use for controller configurations
-  --debug       Displays verbose debugging information such as the internal structure of the ACL and the
-                communications with the UHPPOTE controllers
+  --config  Sets the uhppoted.conf file to use for controller configurations
+  --debug   Displays verbose debugging information such as the internal structure of the ACL and the
+            communications with the UHPPOTE controllers
 
   Examples:
 
@@ -164,21 +169,13 @@ Command line:
 ```uhppoted-app-db [--debug]  [--config <file>] store-acl [--with-pin]  --dsn <DSN> [--table:ACL <table>]```
 
 ```
-  --dsn <DSN>   (required) DSN for database. Currently only _sqlite3_ and Microsft SQL server are supported. 
-                The sqlite3 DSN takes the form 'sqlite3://<filepath>>'
-                e.g. sqlite3://../db/ACL.db
+  --dsn <DSN>          (required) DSN for database as described above. 
+  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
+  --with-pin           Includes the card keypad PIN code in the information retrieved from the access controllers
 
-                The SQL server DSN is a standard SQL server DSN of the form 
-                sqlserver://<uid>:<password>@<host>?database=<database>....
-                e.g. sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
-
-  --table:ACL <tablename>  (optional) ACL table. Defaults to ACL.
-
-  --with-pin    Includes the card keypad PIN code when updating the access controllers
-
-  --config      Sets the uhppoted.conf file to use for controller configurations
-  --debug       Displays verbose debugging information such as the internal structure of the ACL and the
-                communications with the UHPPOTE controllers
+  --config  Sets the uhppoted.conf file to use for controller configurations
+  --debug   Displays verbose debugging information such as the internal structure of the ACL and the
+            communications with the UHPPOTE controllers
 
   Examples:
 
@@ -199,22 +196,14 @@ Command line:
 ```uhppoted-app-db [--debug]  [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN> [--table:ACL <table>```
 
 ```
-  --dsn <DSN>   (required) DSN for database. Currently only _sqlite3_ and Microsft SQL server are supported. 
-                The sqlite3 DSN takes the form 'sqlite3://<filepath>>'
-                e.g. sqlite3://../db/ACL.db
+  --dsn <DSN>          (required) DSN for database as described above. 
+  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
+  --with-pin           Includes the card keypad PIN code when comparing card records from  the access controllers
+  --file               Optional file path for the compare report. Defaults to displaying the ACL on the console.
 
-                The SQL server DSN is a standard SQL server DSN of the form 
-                sqlserver://<uid>:<password>@<host>?database=<database>....
-                e.g. sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
-
-  --table:ACL <tablename>  (optional) ACL table. Defaults to ACL.
-
-  --with-pin    Includes the card keypad PIN code when updating the access controllers
-  --file        Optional file path for the compare report. Defaults to displaying the ACL on the console.
-
-  --config      Sets the uhppoted.conf file to use for controller configurations
-  --debug       Displays verbose debugging information such as the internal structure of the ACL and the
-                communications with the UHPPOTE controllers
+  --config  Sets the uhppoted.conf file to use for controller configurations
+  --debug   Displays verbose debugging information such as the internal structure of the ACL and the
+            communications with the UHPPOTE controllers
 
   Examples:
 
@@ -235,23 +224,15 @@ Command line:
 ```uhppoted-app-db [--debug] [--config <file>] get-acl [--with-pin] [--file <TSV>] --dsn <DSN> [--table:ACL <table>]```
 
 ```
-  --dsn <DSN>   (required) DSN for database. Currently only _sqlite3_ and Microsft SQL server are supported. 
-                The sqlite3 DSN takes the form 'sqlite3://<filepath>>'
-                e.g. sqlite3://../db/ACL.db
-
-                The SQL server DSN is a standard SQL server DSN of the form 
-                sqlserver://<uid>:<password>@<host>?database=<database>....
-                e.g. sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
-
-  --table:ACL <tablename>  (optional) ACL table. Defaults to ACL.
-
-  --with-pin    Includes the card keypad PIN code in the retrieved file
-  --file        Optional file path for the destination TSV file. Defaults to displaying the ACL on the 
-                console.
+  --dsn <DSN>          (required) DSN for database as described above. 
+  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
+  --with-pin           Includes the card keypad PIN code when retrieving the cards from the access controllers
+  --file               Optional file path for the destination TSV file. Defaults to displaying the ACL on
+                       the console.
   
-  --config      Sets the uhppoted.conf file to use for controller configurations
-  --debug       Displays verbose debugging information such as the internal structure of the ACL and the
-                communications with the UHPPOTE controllers
+  --config  Sets the uhppoted.conf file to use for controller configurations
+  --debug   Displays verbose debugging information such as the internal structure of the ACL and the
+            communications with the UHPPOTE controllers
 
   Examples:
 
@@ -272,23 +253,14 @@ Command line:
 ```uhppoted-app-db [--debug] [--config <file>] put-acl [--with-pin] --file <TSV> --dsn <DSN> [--table:ACL <table>]```
 
 ```
-  --dsn <DSN>   (required) DSN for database. Currently only _sqlite3_ and Microsft SQL server are supported. 
-                The sqlite3 DSN takes the form 'sqlite3://<filepath>>'
-                e.g. sqlite3://../db/ACL.db
+  --dsn <DSN>          (required) DSN for database as described above. 
+  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
+  --with-pin           Includes the card keypad PIN code in the uploaded data
+  --file               (required) File path for the TSV file to be uploaded to the database
 
-                The SQL server DSN is a standard SQL server DSN of the form 
-                sqlserver://<uid>:<password>@<host>?database=<database>....
-                e.g. sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
-
-  --table:ACL <tablename>  (optional) ACL table. Defaults to ACL.
-
-  --file        (required) File path for the TSV file to be uploaded to the database
-
-  --with-pin    Includes the card keypad PIN code in the uploaded data
-
-  --config      Sets the uhppoted.conf file to use for controller configurations
-  --debug       Displays verbose debugging information, in particular the communications
-                with the UHPPOTE controllers
+  --config  Sets the uhppoted.conf file to use for controller configurations
+  --debug   Displays verbose debugging information such as the internal structure of the ACL and the
+            communications with the UHPPOTE controllers
 
   Examples:
 
