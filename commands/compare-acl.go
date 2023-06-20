@@ -19,7 +19,7 @@ var CompareACLCmd = CompareACL{
 	command: command{
 		name:        "compare-acl",
 		description: "Compares the access permissions in the configurated set of access controllers to an access control list in a database",
-		usage:       "--with-pin --dsn <DSN>",
+		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [--file <file>]",
 
 		dsn:      "",
 		tableACL: "ACL",

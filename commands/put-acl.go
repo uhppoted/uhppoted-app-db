@@ -16,7 +16,7 @@ var PutACLCmd = PutACL{
 	command: command{
 		name:        "put-acl",
 		description: "Stores an access control list in a TSV file to a database",
-		usage:       "--with-pin --dsn <DSN> --file <file> --table:ACL <table>",
+		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [--file <file>]",
 
 		dsn:      "",
 		tableACL: "ACL",

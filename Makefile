@@ -165,3 +165,12 @@ mssql-put-acl-with-pin: build
 	$(CMD) put-acl --with-pin --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(MSSQL)" --table:ACL ACLx
 	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "SELECT * FROM ACLx"
 
+mssql-compare-acl: build
+	$(CMD) compare-acl --dsn "$(MSSQL)"
+
+mssql-compare-acl-with-pin: build
+	$(CMD) compare-acl --with-pin --dsn "$(MSSQL)"
+
+mssql-compare-acl-to-file: build
+	$(CMD) compare-acl --with-pin --dsn "$(MSSQL)" --file "../runtime/uhppoted-app-db/compare.rpt"
+	cat ../runtime/uhppoted-app-db/compare.rpt

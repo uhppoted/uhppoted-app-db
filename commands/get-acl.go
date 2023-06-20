@@ -16,7 +16,7 @@ var GetACLCmd = GetACL{
 	command: command{
 		name:        "get-acl",
 		description: "Retrieves an access control list from a database and (optionally) saves it to a file",
-		usage:       "--with-pin --dsn <DSN> --table:ACL <table> --file <file>",
+		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [--file <file>]",
 
 		dsn:      "",
 		tableACL: "ACL",
