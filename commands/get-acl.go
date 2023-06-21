@@ -18,8 +18,10 @@ var GetACLCmd = GetACL{
 		description: "Retrieves an access control list from a database and (optionally) saves it to a file",
 		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [--file <file>]",
 
-		dsn:      "",
-		tableACL: "ACL",
+		dsn: "",
+		tables: tables{
+			ACL: "ACL",
+		},
 		withPIN:  false,
 		lockfile: "",
 		config:   config.DefaultConfig,
@@ -52,7 +54,7 @@ func (cmd *GetACL) FlagSet() *flag.FlagSet {
 	flagset := flag.NewFlagSet("get-acl", flag.ExitOnError)
 
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
-	flagset.StringVar(&cmd.tableACL, "table:ACL", cmd.tableACL, "ACL table name. Defaults to ACL")
+	flagset.StringVar(&cmd.tables.ACL, "table:ACL", cmd.tables.ACL, "ACL table name. Defaults to ACL")
 	flagset.StringVar(&cmd.file, "file", cmd.file, "Optional TSV filepath. Defaults to stdout")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code in retrieved ACL information")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
@@ -71,7 +73,7 @@ func (cmd *GetACL) Execute(args ...any) error {
 		return fmt.Errorf("invalid database DSN")
 	}
 
-	if strings.TrimSpace(cmd.tableACL) == "" {
+	if strings.TrimSpace(cmd.tables.ACL) == "" {
 		return fmt.Errorf("invalid ACL table")
 	}
 
@@ -102,7 +104,7 @@ func (cmd *GetACL) Execute(args ...any) error {
 		}
 	}
 
-	if table, err := getACL(cmd.dsn, cmd.tableACL, cmd.withPIN); err != nil {
+	if table, err := getACL(cmd.dsn, cmd.tables.ACL, cmd.withPIN); err != nil {
 		return err
 	} else if acl, warnings, err := f(table, devices); err != nil {
 		return err

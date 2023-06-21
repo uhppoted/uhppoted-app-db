@@ -27,11 +27,16 @@ type command struct {
 	usage       string
 
 	dsn      string
-	tableACL string
+	tables   tables
 	withPIN  bool
 	lockfile string
 	config   string
 	debug    bool
+}
+
+type tables struct {
+	ACL   string
+	Audit string
 }
 
 func (cmd command) Name() string {

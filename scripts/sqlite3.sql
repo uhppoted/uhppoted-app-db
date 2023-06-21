@@ -14,6 +14,15 @@ CREATE TABLE ACL (
     Hogsmeade  INTEGER DEFAULT 0
 );
 
+CREATE TABLE Audit (
+    Timestamp  DATETIME DEFAULT (datetime(CURRENT_TIMESTAMP, 'localtime')),
+    Operation  TEXT     DEFAULT '',
+    Controller INTEGER  DEFAULT 0,
+    CardNumber INTEGER  DEFAULT 0,
+    Status     TEXT     DEFAULT '',
+    Card       TEXT     DEFAULT ''
+);
+
 INSERT INTO ACL    (Name, CardNumber,PIN,StartDate,EndDate,GreatHall,Gryffindor,HufflePuff,Ravenclaw,Slytherin,Kitchen,Dungeon,Hogsmeade)
             VALUES ('Albus Dumbledore', 10058400, 0, '2023-01-01', '2023-12-31', 1,1,1,1,1,1,1,1);
 

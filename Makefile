@@ -80,8 +80,9 @@ publish: release
 	--draft --prerelease --title "$(VERSION)-beta" --notes-file release-notes.md
 
 debug: build
-	$(CMD) get-acl --dsn "$(SQLITE3)" --table:ACL ACLx
-
+	$(CMD) compare-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit
+	$(CMD) compare-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit --with-pin
+	
 godoc:
 	godoc -http=:80 -index_interval=60s
 
@@ -139,6 +140,7 @@ sqlite3-store-acl-with-pin: build
 
 sqlite3-compare-acl: build
 	$(CMD) compare-acl --dsn "sqlite3://$(SQLITE3)"
+	$(CMD) compare-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit
 
 sqlite3-compare-acl-with-pin: build
 	$(CMD) compare-acl --with-pin --dsn "sqlite3://$(SQLITE3)"
@@ -146,7 +148,7 @@ sqlite3-compare-acl-with-pin: build
 sqlite3-compare-acl-to-file: build
 	$(CMD) compare-acl --with-pin --dsn "sqlite3://$(SQLITE3)" --file "../runtime/uhppoted-app-db/compare.rpt"
 	cat ../runtime/uhppoted-app-db/compare.rpt
-	
+
 mssql-get-acl: build
 	$(CMD) --debug get-acl --dsn "$(MSSQL)"
 	$(CMD)         get-acl --dsn "$(MSSQL)"

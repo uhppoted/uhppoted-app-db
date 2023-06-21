@@ -16,8 +16,10 @@ var StoreACLCmd = StoreACL{
 		description: "Retrieves the ACL from a set of access controllers and stores it in a database table",
 		usage:       "--with-pin --dsn <DSN> --table:ACL <table>",
 
-		dsn:      "",
-		tableACL: "ACL",
+		dsn: "",
+		tables: tables{
+			ACL: "ACL",
+		},
 		withPIN:  false,
 		lockfile: "",
 		config:   config.DefaultConfig,
@@ -49,7 +51,7 @@ func (cmd *StoreACL) FlagSet() *flag.FlagSet {
 	flagset := flag.NewFlagSet("store-acl", flag.ExitOnError)
 
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
-	flagset.StringVar(&cmd.tableACL, "table:ACL", cmd.tableACL, "ACL table name. Defaults to ACL")
+	flagset.StringVar(&cmd.tables.ACL, "table:ACL", cmd.tables.ACL, "ACL table name. Defaults to ACL")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code in retrieved ACL information")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
 
@@ -90,7 +92,7 @@ func (cmd *StoreACL) Execute(args ...any) error {
 		return err
 	} else if acl == nil {
 		return fmt.Errorf("invalid ACL (%v)", acl)
-	} else if err := putACL(cmd.dsn, cmd.tableACL, *acl, cmd.withPIN); err != nil {
+	} else if err := putACL(cmd.dsn, cmd.tables.ACL, *acl, cmd.withPIN); err != nil {
 		return err
 	} else {
 		infof("store-acl", "Updated DB ACL table")

@@ -6,6 +6,7 @@ import (
 
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 
+	"github.com/uhppoted/uhppoted-app-db/db"
 	"github.com/uhppoted/uhppoted-app-db/db/mssql"
 	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 )
@@ -54,6 +55,47 @@ func putACL(dsn string, table string, acl lib.Table, withPIN bool) error {
 		} else {
 			infof("put-acl", "Stored %v cards to DB ACL table", N)
 		}
+
+	default:
+		return fmt.Errorf("unsupported DSN (%v)", dsn)
+	}
+
+	return nil
+}
+
+func store(operation string, dsn string, table string, diff map[uint32]lib.Diff, withPIN bool) error {
+	recordset := []db.AuditRecord{}
+
+	for controller, v := range diff {
+		for _, card := range v.Updated {
+			recordset = append(recordset, db.NewAuditRecord(operation, controller, card, "incorrect", withPIN))
+		}
+
+		for _, card := range v.Added {
+			recordset = append(recordset, db.NewAuditRecord(operation, controller, card, "missing", withPIN))
+		}
+
+		for _, card := range v.Deleted {
+			recordset = append(recordset, db.NewAuditRecord(operation, controller, card, "extra", withPIN))
+		}
+	}
+
+	switch {
+	case strings.HasPrefix(dsn, "sqlite3://"):
+		if N, err := sqlite3.AuditTrail(dsn[10:], table, recordset); err != nil {
+			return err
+		} else if N == 1 {
+			infof("audit", "Added 1 record to audit trail table")
+		} else {
+			infof("audit", "Added %v records to audit trail table", N)
+		}
+
+	// case strings.HasPrefix(dsn, "sqlserver://"):
+	// 	if err := mssql.StoreDiff(dsn, table, diff); err != nil {
+	// 		return err
+	// 	} else {
+	// 		infof("audit", "Added diff to audit trail table")
+	// 	}
 
 	default:
 		return fmt.Errorf("unsupported DSN (%v)", dsn)

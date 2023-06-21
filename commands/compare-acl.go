@@ -19,10 +19,13 @@ var CompareACLCmd = CompareACL{
 	command: command{
 		name:        "compare-acl",
 		description: "Compares the access permissions in the configurated set of access controllers to an access control list in a database",
-		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [--file <file>]",
+		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>] [--file <file>]",
 
-		dsn:      "",
-		tableACL: "ACL",
+		dsn: "",
+		tables: tables{
+			ACL:   "ACL",
+			Audit: "",
+		},
 		withPIN:  false,
 		lockfile: "",
 		config:   config.DefaultConfig,
@@ -52,7 +55,7 @@ type CompareACL struct {
 
 func (cmd *CompareACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN> [--table:ACL <table>]\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>]\n", APP)
 	fmt.Println()
 	fmt.Println("  Compares the access permissions in the configurated set of access controllers to an access control list in a database")
 	fmt.Println()
@@ -62,7 +65,7 @@ func (cmd *CompareACL) Help() {
 	fmt.Println()
 	fmt.Println("  Examples:")
 	fmt.Println(`    uhppote-app-db --debug compare-acl --with-pin --dsn "sqlite3://./db/ACL.db"`)
-	fmt.Println(`    uhppote-app-db --debug compare-acl --with-pin --dsn "sqlite3://./db/ACL.db" --table:ACL ACL2`)
+	fmt.Println(`    uhppote-app-db --debug compare-acl --with-pin --dsn "sqlite3://./db/ACL.db" --table:ACL ACL2 --table:audit AuditTrail`)
 	fmt.Println()
 }
 
@@ -70,7 +73,8 @@ func (cmd *CompareACL) FlagSet() *flag.FlagSet {
 	flagset := flag.NewFlagSet("compare-acl", flag.ExitOnError)
 
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
-	flagset.StringVar(&cmd.tableACL, "table:ACL", cmd.tableACL, "ACL table name. Defaults to ACL")
+	flagset.StringVar(&cmd.tables.ACL, "table:ACL", cmd.tables.ACL, "ACL table name. Defaults to ACL")
+	flagset.StringVar(&cmd.tables.Audit, "table:audit", cmd.tables.Audit, "Audit trail table name. Defaults to ''")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code when comparing access controllers")
 	flagset.StringVar(&cmd.file, "file", cmd.file, "Optional filepath for compare report. Defaults to stdout")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
@@ -89,7 +93,7 @@ func (cmd *CompareACL) Execute(args ...any) error {
 		return fmt.Errorf("invalid database DSN")
 	}
 
-	if strings.TrimSpace(cmd.tableACL) == "" {
+	if strings.TrimSpace(cmd.tables.ACL) == "" {
 		return fmt.Errorf("invalid ACL table")
 	}
 
@@ -120,7 +124,7 @@ func (cmd *CompareACL) Execute(args ...any) error {
 		}
 	}
 
-	if table, err := getACL(cmd.dsn, cmd.tableACL, cmd.withPIN); err != nil {
+	if table, err := getACL(cmd.dsn, cmd.tables.ACL, cmd.withPIN); err != nil {
 		return err
 	} else if acl, warnings, err := f(table, devices); err != nil {
 		return err
@@ -143,6 +147,12 @@ func (cmd *CompareACL) Execute(args ...any) error {
 		bytes, err := cmd.format(diff)
 		if err != nil {
 			return err
+		}
+
+		if cmd.tables.Audit != "" {
+			if err := store("compare", cmd.dsn, cmd.tables.Audit, diff, cmd.withPIN); err != nil {
+				return err
+			}
 		}
 
 		if cmd.file != "" {
