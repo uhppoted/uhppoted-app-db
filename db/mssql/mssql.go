@@ -19,8 +19,8 @@ const LogTag = "mssql"
 
 type record map[string]any
 
-func open(path string, maxLifetime time.Duration, maxOpen int, maxIdle int) (*sql.DB, error) {
-	dbc, err := sql.Open("mssql", "sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted")
+func open(dsn string, maxLifetime time.Duration, maxOpen int, maxIdle int) (*sql.DB, error) {
+	dbc, err := sql.Open("mssql", dsn)
 	if err != nil {
 		return nil, err
 	}

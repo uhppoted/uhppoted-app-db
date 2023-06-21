@@ -7,6 +7,7 @@
       - [ ] `compare-acl`
              - [ ] sqlite3
              - [ ] SQL Server
+             - (?) Store card detail only if the table has a 'Card' column
       - [ ] `load-acl`
              - [ ] sqlite3
              - [ ] SQL Server
