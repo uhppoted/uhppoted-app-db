@@ -14,7 +14,7 @@ Supported operating systems:
 
 Supported databases:
 - sqlite3
-- Microsoft SQL Server (in progress)
+- Microsoft SQL Server
 
 ##### _Version v0.8.5_
 
@@ -121,12 +121,12 @@ The `uhppoted-app-db` commands require a DSN command line argument to specify th
 
 1. For sqlite3, this takes the form `sqlite3://<filepath>`, where the file path is the path to the sqlite3
    database file.
-   e.g. sqlite3://../db/ACL.db
+   e.g. `sqlite3://../db/ACL.db`
 
 2. For Microsoft SQL Server, DSN is any DSN accepted by the Microsoft SQL Server driver, as specified in the
    official [documentation](https://pkg.go.dev/github.com/microsoft/go-mssqldb). Typically a SQL Server DSN
    takes the form `sqlserver://<uid>:<password>@<host>?database=<database>`.
-   e.g. sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
+   e.g. `sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted`
 
 
 ### `load-acl`
