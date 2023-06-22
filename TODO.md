@@ -5,9 +5,9 @@
 - [x] Microsoft SQL server support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/3)
 - [ ] Audit trail (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
       - [ ] `compare-acl`
-             - [ ] sqlite3
+             - [x] sqlite3
+             - [x] Store card detail only if the table has a 'Card' column
              - [ ] SQL Server
-             - (?) Store card detail only if the table has a 'Card' column
       - [ ] `load-acl`
              - [ ] sqlite3
              - [ ] SQL Server

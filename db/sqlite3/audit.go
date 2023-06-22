@@ -40,20 +40,58 @@ func AuditTrail(dsn string, table string, recordset []db.AuditRecord) (int, erro
 }
 
 func appendToAuditTrail(dbc *sql.DB, tx *sql.Tx, table string, recordset []db.AuditRecord) (int, error) {
-	count := 0
-	sql := fmt.Sprintf("INSERT INTO %v (Operation, Controller, CardNumber, Status, Card) VALUES (?,?,?,?,?);", table)
+	cardNumber := false
+	card := false
 
-	if prepared, err := dbc.Prepare(sql); err != nil {
+	// ... get columns
+	sql := fmt.Sprintf(`SELECT * FROM %v WHERE 1=2;`, table)
+	if rs, err := tx.Query(sql); err != nil {
+		return 0, err
+	} else {
+		defer rs.Close()
+
+		if columns, err := rs.Columns(); err != nil {
+			return 0, err
+		} else {
+			for _, col := range columns {
+				if normalise(col) == "card" {
+					card = true
+				}
+
+				if normalise(col) == "cardnumber" {
+					cardNumber = true
+				}
+			}
+		}
+	}
+
+	// ... append records
+	count := 0
+	insert := func() string {
+		if card && cardNumber {
+			return fmt.Sprintf("INSERT INTO %v (Operation, Controller, CardNumber, Status, Card) VALUES (?,?,?,?,?);", table)
+		} else if card {
+			return fmt.Sprintf("INSERT INTO %v (Operation, Controller, Status, Card) VALUES (?,?,?,?);", table)
+		} else {
+			return fmt.Sprintf("INSERT INTO %v (Operation, Controller, CardNumber, Status) VALUES (?,?,?,?);", table)
+		}
+	}
+
+	g := func(r db.AuditRecord) []any {
+		if card && cardNumber {
+			return []any{r.Operation, r.Controller, r.CardNumber, r.Status, r.Card}
+		} else if card {
+			return []any{r.Operation, r.Controller, r.Status, r.Card}
+		} else {
+			return []any{r.Operation, r.Controller, r.CardNumber, r.Status}
+		}
+	}
+
+	if prepared, err := dbc.Prepare(insert()); err != nil {
 		return 0, err
 	} else {
 		for _, record := range recordset {
-			row := []any{
-				record.Operation,
-				record.Controller,
-				record.CardNumber,
-				record.Status,
-				record.Card,
-			}
+			row := g(record)
 
 			if result, err := tx.Stmt(prepared).Exec(row...); err != nil {
 				return 0, err
