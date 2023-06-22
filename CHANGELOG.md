@@ -4,6 +4,7 @@
 
 ### Added
 1. Added support for Microsoft SQL Server.
+2. Added optional audit trail for _compare-acl_ and _load-acl_.
 
 ### Updated
 1. Reworked command line arguments to specify ACL table using --table:ACL option.

@@ -115,6 +115,24 @@ e.g.:
 | Hermione Grainger | 10058404   | 82953 | 2023-01-01 | 2023-12-31 | 1         | 1          | 0          | 0         | 0         | 0       | 1       | 29       |
 | Crookshanks       | 10058405   | 1397  | 2023-01-01 | 2023-12-31 | 0         | 1          | 0          | 0         | 0         | 1       | 0       | 1        |
 
+### Audit trail table format
+
+The audit trail table is optional but if specified on the command line with the`--table:audit` option it is expected to
+have the following structure:
+
+| Column     | Data Type    | Description                                                                                |
+|------------|--------------|--------------------------------------------------------------------------------------------|
+| Timestamp  | DATETIME     | DEFAULT value should be the current date/time                                              |
+| Operation  | string       | 'compare', 'load', etc. VARCHAR(64) (or equivalent)                                        |
+| Controller | uint32       | Controller ID. INT (or equivalent)                                                         |
+| CardNumber | uint32       | Card number. INT (or equivalent)                                                           |
+| Status     | string       | Card status. VARCHAR(64) (or equivalent)                                                   |
+| Card       | string       | Optional card details. VARCHAR(255) (or equivalent)                                        |
+
+Notes:
+1. The table can have either or both of the _CardNumber_ or the _Card_ columns.
+2. For sqlite3 and SQL Server the _Timestamp_ column is expected to be filled automatically.
+
 ### DSN
 
 The `uhppoted-app-db` commands require a DSN command line argument to specify the database connection.
@@ -138,7 +156,7 @@ Command line:
 
 ```uhppoted-app-db load-acl```
 
-```uhppoted-app-db  [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN> [--table:ACL <table>]```
+```uhppoted-app-db  [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN> [--table:ACL <table>] [--table:audit <table>```
 
 ```
   --dsn <DSN>          (required) DSN for database as described above. 
@@ -169,9 +187,10 @@ Command line:
 ```uhppoted-app-db [--debug]  [--config <file>] store-acl [--with-pin]  --dsn <DSN> [--table:ACL <table>]```
 
 ```
-  --dsn <DSN>          (required) DSN for database as described above. 
-  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
-  --with-pin           Includes the card keypad PIN code in the information retrieved from the access controllers
+  --dsn <DSN>            (required) DSN for database as described above. 
+  --table:ACL   <table>  (optional) ACL table. Defaults to ACL.
+  --table:audit <table>  (optional) audit trail table. Defaults to no audit trail.
+  --with-pin             Includes the card keypad PIN code in the information retrieved from the access controllers
 
   --config  Sets the uhppoted.conf file to use for controller configurations
   --debug   Displays verbose debugging information such as the internal structure of the ACL and the
@@ -193,13 +212,14 @@ Command line:
 
 ```uhppoted-app-db compare-acl```
 
-```uhppoted-app-db [--debug]  [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN> [--table:ACL <table>```
+```uhppoted-app-db [--debug]  [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN> [--table:ACL <table> [--table:audit <table>```
 
 ```
-  --dsn <DSN>          (required) DSN for database as described above. 
-  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
-  --with-pin           Includes the card keypad PIN code when comparing card records from  the access controllers
-  --file               Optional file path for the compare report. Defaults to displaying the ACL on the console.
+  --dsn <DSN>            (required) DSN for database as described above. 
+  --table:ACL <table>    (optional) ACL table. Defaults to ACL.
+  --table:audit <table>  (optional) audit trail table. Defaults to no audit trail.
+  --with-pin             Includes the card keypad PIN code when comparing card records from  the access controllers
+  --file                 Optional file path for the compare report. Defaults to displaying the ACL on the console.
 
   --config  Sets the uhppoted.conf file to use for controller configurations
   --debug   Displays verbose debugging information such as the internal structure of the ACL and the

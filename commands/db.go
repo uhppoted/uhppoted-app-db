@@ -69,17 +69,19 @@ func stash(operation string, dsn string, table string, recordset []db.AuditRecor
 		if N, err := sqlite3.AuditTrail(dsn[10:], table, recordset); err != nil {
 			return err
 		} else if N == 1 {
-			infof("audit", "Added 1 record to audit trail table")
+			infof("audit", "Added 1 record to audit trail")
 		} else {
-			infof("audit", "Added %v records to audit trail table", N)
+			infof("audit", "Added %v records to audit trail", N)
 		}
 
-	// case strings.HasPrefix(dsn, "sqlserver://"):
-	// 	if err := mssql.StoreDiff(dsn, table, diff); err != nil {
-	// 		return err
-	// 	} else {
-	// 		infof("audit", "Added diff to audit trail table")
-	// 	}
+	case strings.HasPrefix(dsn, "sqlserver://"):
+		if N, err := mssql.AuditTrail(dsn, table, recordset); err != nil {
+			return err
+		} else if N == 1 {
+			infof("audit", "Added 1 record to audit trail")
+		} else {
+			infof("audit", "Added %v records to audit trail", N)
+		}
 
 	default:
 		return fmt.Errorf("unsupported DSN (%v)", dsn)

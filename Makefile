@@ -80,8 +80,8 @@ publish: release
 	--draft --prerelease --title "$(VERSION)-beta" --notes-file release-notes.md
 
 debug: build
-	$(CMD) compare-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit --with-pin
-	$(CMD) load-acl    --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit
+	$(CMD) compare-acl --dsn "$(MSSQL)" --table:ACL ACL --table:audit Audit --with-pin
+	$(CMD) load-acl    --dsn "$(MSSQL)" --table:ACL ACL --table:audit Audit
 
 godoc:
 	godoc -http=:80 -index_interval=60s
@@ -171,9 +171,11 @@ mssql-put-acl-with-pin: build
 
 mssql-compare-acl: build
 	$(CMD) compare-acl --dsn "$(MSSQL)"
+	$(CMD) compare-acl --dsn "$(MSSQL)" --table:ACL ACL --table:audit Audit
 
 mssql-compare-acl-with-pin: build
 	$(CMD) compare-acl --with-pin --dsn "$(MSSQL)"
+	$(CMD) compare-acl --with-pin --dsn "$(MSSQL)" --table:ACL ACL --table:audit Audit
 
 mssql-compare-acl-to-file: build
 	$(CMD) compare-acl --with-pin --dsn "$(MSSQL)" --file "../runtime/uhppoted-app-db/compare.rpt"
@@ -182,10 +184,12 @@ mssql-compare-acl-to-file: build
 mssql-load-acl: build
 	$(CMD) load-acl --dsn "$(MSSQL)"
 	$(CMD) load-acl --dsn "$(MSSQL)" --table:ACL ACL
+	$(CMD) load-acl --dsn "$(MSSQL)" --table:ACL ACL --table:audit Audit
 
 mssql-load-acl-with-pin: build
 	$(CMD) load-acl --with-pin --dsn "$(MSSQL)"
 	$(CMD) load-acl --with-pin --dsn "$(MSSQL)" --table:ACL ACL
+	$(CMD) load-acl --with-pin --dsn "$(MSSQL)" --table:ACL ACL --table:audit Audit
 
 mssql-store-acl: build
 	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "DELETE FROM ACLz"

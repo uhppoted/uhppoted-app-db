@@ -3,13 +3,23 @@
 ## IN PROGRESS
 
 - [x] Microsoft SQL server support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/3)
-- [ ] Audit trail (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
-      - [ ] `compare-acl`
+- [x] Audit trail (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
+      - [x] `compare-acl`
              - [x] sqlite3
              - [x] Store card detail only if the table has a 'Card' column
+             - [x] SQL Server
+      - [x] `load-acl`
+             - [x] sqlite3
+             - [x] SQL Server
+      - [x] CHANGELOG
+      - [x] README
+
+- [ ] Operations log (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
+      - [ ] `compare-acl`
+             - [ ] sqlite3
              - [ ] SQL Server
       - [ ] `load-acl`
-             - [x] sqlite3
+             - [ ] sqlite3
              - [ ] SQL Server
       - [ ] README
       - [ ] CHANGELOG
