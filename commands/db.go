@@ -63,23 +63,7 @@ func putACL(dsn string, table string, acl lib.Table, withPIN bool) error {
 	return nil
 }
 
-func store(operation string, dsn string, table string, diff map[uint32]lib.Diff, withPIN bool) error {
-	recordset := []db.AuditRecord{}
-
-	for controller, v := range diff {
-		for _, card := range v.Updated {
-			recordset = append(recordset, db.NewAuditRecord(operation, controller, card, "incorrect", withPIN))
-		}
-
-		for _, card := range v.Added {
-			recordset = append(recordset, db.NewAuditRecord(operation, controller, card, "missing", withPIN))
-		}
-
-		for _, card := range v.Deleted {
-			recordset = append(recordset, db.NewAuditRecord(operation, controller, card, "extra", withPIN))
-		}
-	}
-
+func stash(operation string, dsn string, table string, recordset []db.AuditRecord) error {
 	switch {
 	case strings.HasPrefix(dsn, "sqlite3://"):
 		if N, err := sqlite3.AuditTrail(dsn[10:], table, recordset); err != nil {

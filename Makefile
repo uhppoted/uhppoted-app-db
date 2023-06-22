@@ -80,9 +80,9 @@ publish: release
 	--draft --prerelease --title "$(VERSION)-beta" --notes-file release-notes.md
 
 debug: build
-	$(CMD) compare-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit
 	$(CMD) compare-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit --with-pin
-	
+	$(CMD) load-acl    --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit
+
 godoc:
 	godoc -http=:80 -index_interval=60s
 
@@ -123,10 +123,12 @@ sqlite3-put-acl-with-pin: build
 sqlite3-load-acl: build
 	$(CMD) load-acl --dsn "sqlite3://$(SQLITE3)"
 	$(CMD) load-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL
+	$(CMD) load-acl --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit
 
 sqlite3-load-acl-with-pin: build
 	$(CMD) load-acl --with-pin --dsn "sqlite3://$(SQLITE3)"
 	$(CMD) load-acl --with-pin --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL
+	$(CMD) load-acl --with-pin --dsn "sqlite3://$(SQLITE3)" --table:ACL ACL --table:audit Audit
 
 sqlite3-store-acl: build
 	sqlite3 "$(SQLITE3)" 'delete from ACLz'

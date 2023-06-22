@@ -9,7 +9,7 @@
              - [x] Store card detail only if the table has a 'Card' column
              - [ ] SQL Server
       - [ ] `load-acl`
-             - [ ] sqlite3
+             - [x] sqlite3
              - [ ] SQL Server
       - [ ] README
       - [ ] CHANGELOG

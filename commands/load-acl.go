@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/uhppoted/uhppote-core/uhppote"
+	"github.com/uhppoted/uhppoted-app-db/db"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 )
@@ -128,6 +130,13 @@ func (cmd *LoadACL) Execute(args ...any) error {
 			}
 		}
 
+		if cmd.tables.Audit != "" {
+			recordset := report2recordset(report)
+			if err := stash("load", cmd.dsn, cmd.tables.Audit, recordset); err != nil {
+				return err
+			}
+		}
+
 		summary := lib.Summarize(report)
 		format := "%v  unchanged:%v  updated:%v  added:%v  deleted:%v  failed:%v  errors:%v"
 		for _, v := range summary {
@@ -154,4 +163,44 @@ func (cmd *LoadACL) load(u uhppote.IUHPPOTE, acl lib.ACL) (map[uint32]lib.Report
 	}
 
 	return f(u, acl)
+}
+
+func report2recordset(report map[uint32]lib.Report) []db.AuditRecord {
+	now := time.Now()
+	recordset := []db.AuditRecord{}
+
+	auditRecord := func(controller uint32, card uint32, status string) db.AuditRecord {
+		return db.AuditRecord{
+			Timestamp:  now,
+			Operation:  "load",
+			Controller: controller,
+			CardNumber: card,
+			Status:     status,
+			Card:       "",
+		}
+	}
+
+	for controller, v := range report {
+		for _, card := range v.Updated {
+			recordset = append(recordset, auditRecord(controller, card, "updated"))
+		}
+
+		for _, card := range v.Added {
+			recordset = append(recordset, auditRecord(controller, card, "added"))
+		}
+
+		for _, card := range v.Deleted {
+			recordset = append(recordset, auditRecord(controller, card, "deleted"))
+		}
+
+		for _, card := range v.Failed {
+			recordset = append(recordset, auditRecord(controller, card, "failed"))
+		}
+
+		for _, card := range v.Errored {
+			recordset = append(recordset, auditRecord(controller, card, "error"))
+		}
+	}
+
+	return recordset
 }

@@ -10,7 +10,9 @@ import (
 	"text/template"
 	"time"
 
+	core "github.com/uhppoted/uhppote-core/types"
 	"github.com/uhppoted/uhppote-core/uhppote"
+	"github.com/uhppoted/uhppoted-app-db/db"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 )
@@ -150,7 +152,8 @@ func (cmd *CompareACL) Execute(args ...any) error {
 		}
 
 		if cmd.tables.Audit != "" {
-			if err := store("compare", cmd.dsn, cmd.tables.Audit, diff, cmd.withPIN); err != nil {
+			recordset := diff2recordset(diff, cmd.withPIN)
+			if err := stash("compare", cmd.dsn, cmd.tables.Audit, recordset); err != nil {
 				return err
 			}
 		}
@@ -210,5 +213,71 @@ func (cmd *CompareACL) format(diff map[uint32]lib.Diff) ([]byte, error) {
 		return nil, err
 	} else {
 		return b.Bytes(), nil
+	}
+}
+
+func diff2recordset(diff lib.SystemDiff, withPIN bool) []db.AuditRecord {
+	now := time.Now()
+	recordset := []db.AuditRecord{}
+
+	auditRecord := func(controller uint32, card core.Card, status string) db.AuditRecord {
+		return db.AuditRecord{
+			Timestamp:  now,
+			Operation:  "compare",
+			Controller: controller,
+			CardNumber: card.CardNumber,
+			Status:     status,
+			Card:       format(card, withPIN),
+		}
+	}
+
+	for controller, v := range diff {
+		for _, card := range v.Updated {
+			recordset = append(recordset, auditRecord(controller, card, "incorrect"))
+		}
+
+		for _, card := range v.Added {
+			recordset = append(recordset, auditRecord(controller, card, "missing"))
+		}
+
+		for _, card := range v.Deleted {
+			recordset = append(recordset, auditRecord(controller, card, "extra"))
+		}
+	}
+
+	return recordset
+}
+
+func format(c core.Card, withPIN bool) string {
+	door := func(door uint8, access uint8) string {
+		switch access {
+		case 0:
+			return "N"
+		case 1:
+			return "Y"
+		default:
+			return fmt.Sprintf("%v", access)
+		}
+	}
+
+	if withPIN {
+		return fmt.Sprintf("%-10v %-10s %-10s %-3v %-3v %-3v %-3v %-5v",
+			c.CardNumber,
+			c.From,
+			c.To,
+			door(1, c.Doors[1]),
+			door(2, c.Doors[2]),
+			door(3, c.Doors[3]),
+			door(4, c.Doors[4]),
+			c.PIN)
+	} else {
+		return fmt.Sprintf("%-10v %-10s %-10s %-3v %-3v %-3v %-3v",
+			c.CardNumber,
+			c.From,
+			c.To,
+			door(1, c.Doors[1]),
+			door(2, c.Doors[2]),
+			door(3, c.Doors[3]),
+			door(4, c.Doors[4]))
 	}
 }
