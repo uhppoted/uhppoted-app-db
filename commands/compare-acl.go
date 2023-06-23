@@ -21,12 +21,13 @@ var CompareACLCmd = CompareACL{
 	command: command{
 		name:        "compare-acl",
 		description: "Compares the access permissions in the configurated set of access controllers to an access control list in a database",
-		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>] [--file <file>]",
+		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>] [-table:log <table>] [--file <file>]",
 
 		dsn: "",
 		tables: tables{
 			ACL:   "ACL",
 			Audit: "",
+			Log:   "",
 		},
 		withPIN:  false,
 		lockfile: "",
@@ -57,7 +58,7 @@ type CompareACL struct {
 
 func (cmd *CompareACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>]\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>] [-table:log <table>]\n", APP)
 	fmt.Println()
 	fmt.Println("  Compares the access permissions in the configurated set of access controllers to an access control list in a database")
 	fmt.Println()
@@ -67,7 +68,7 @@ func (cmd *CompareACL) Help() {
 	fmt.Println()
 	fmt.Println("  Examples:")
 	fmt.Println(`    uhppote-app-db --debug compare-acl --with-pin --dsn "sqlite3://./db/ACL.db"`)
-	fmt.Println(`    uhppote-app-db --debug compare-acl --with-pin --dsn "sqlite3://./db/ACL.db" --table:ACL ACL2 --table:audit AuditTrail`)
+	fmt.Println(`    uhppote-app-db --debug compare-acl --with-pin --dsn "sqlite3://./db/ACL.db" --table:ACL ACL2 --table:audit AuditTrail --table:log OpsLog`)
 	fmt.Println()
 }
 
@@ -77,6 +78,7 @@ func (cmd *CompareACL) FlagSet() *flag.FlagSet {
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
 	flagset.StringVar(&cmd.tables.ACL, "table:ACL", cmd.tables.ACL, "ACL table name. Defaults to ACL")
 	flagset.StringVar(&cmd.tables.Audit, "table:audit", cmd.tables.Audit, "Audit trail table name. Defaults to ''")
+	flagset.StringVar(&cmd.tables.Log, "table:log", cmd.tables.Log, "Operations log table name. Defaults to ''")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code when comparing access controllers")
 	flagset.StringVar(&cmd.file, "file", cmd.file, "Optional filepath for compare report. Defaults to stdout")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
@@ -152,8 +154,15 @@ func (cmd *CompareACL) Execute(args ...any) error {
 		}
 
 		if cmd.tables.Audit != "" {
-			recordset := diff2recordset(diff, cmd.withPIN)
-			if err := stash("compare", cmd.dsn, cmd.tables.Audit, recordset); err != nil {
+			recordset := diff2audit(diff, cmd.withPIN)
+			if err := stashToAudit(cmd.dsn, cmd.tables.Audit, recordset); err != nil {
+				return err
+			}
+		}
+
+		if cmd.tables.Log != "" {
+			recordset := diff2log(diff)
+			if err := stashToLog(cmd.dsn, cmd.tables.Log, recordset); err != nil {
 				return err
 			}
 		}
@@ -216,7 +225,7 @@ func (cmd *CompareACL) format(diff map[uint32]lib.Diff) ([]byte, error) {
 	}
 }
 
-func diff2recordset(diff lib.SystemDiff, withPIN bool) []db.AuditRecord {
+func diff2audit(diff lib.SystemDiff, withPIN bool) []db.AuditRecord {
 	now := time.Now()
 	recordset := []db.AuditRecord{}
 
@@ -243,6 +252,32 @@ func diff2recordset(diff lib.SystemDiff, withPIN bool) []db.AuditRecord {
 		for _, card := range v.Deleted {
 			recordset = append(recordset, auditRecord(controller, card, "extra"))
 		}
+	}
+
+	return recordset
+}
+
+func diff2log(diff lib.SystemDiff) []db.LogRecord {
+	now := time.Now()
+	recordset := []db.LogRecord{}
+
+	logRecord := func(controller uint32, row lib.Diff) db.LogRecord {
+		detail := fmt.Sprintf("unchanged:%-4v incorrect:%-4v missing:%-4v extra:%-4v",
+			len(row.Unchanged),
+			len(row.Updated),
+			len(row.Added),
+			len(row.Deleted))
+
+		return db.LogRecord{
+			Timestamp:  now,
+			Operation:  "compare",
+			Controller: controller,
+			Detail:     detail,
+		}
+	}
+
+	for controller, v := range diff {
+		recordset = append(recordset, logRecord(controller, v))
 	}
 
 	return recordset

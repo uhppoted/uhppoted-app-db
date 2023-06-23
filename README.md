@@ -88,6 +88,20 @@ Supported commands:
 - `version`
 - `help`
 
+### DSN
+
+The `uhppoted-app-db` commands require a DSN command line argument to specify the database connection.
+
+1. For sqlite3, this takes the form `sqlite3://<filepath>`, where the file path is the path to the sqlite3
+   database file.
+   e.g. `sqlite3://../db/ACL.db`
+
+2. For Microsoft SQL Server, DSN is any DSN accepted by the Microsoft SQL Server driver, as specified in the
+   official [documentation](https://pkg.go.dev/github.com/microsoft/go-mssqldb). Typically a SQL Server DSN
+   takes the form `sqlserver://<uid>:<password>@<host>?database=<database>`.
+   e.g. `sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted`
+
+
 ### ACL table format
 
 The ACL table is expected to have the following structure:
@@ -133,18 +147,20 @@ Notes:
 1. The table can have either or both of the _CardNumber_ or the _Card_ columns.
 2. For sqlite3 and SQL Server the _Timestamp_ column is expected to be filled automatically.
 
-### DSN
+### Log table format
 
-The `uhppoted-app-db` commands require a DSN command line argument to specify the database connection.
+The operations log table is optional but if specified on the command line with the`--table:log` option it is expected to
+have the following structure:
 
-1. For sqlite3, this takes the form `sqlite3://<filepath>`, where the file path is the path to the sqlite3
-   database file.
-   e.g. `sqlite3://../db/ACL.db`
+| Column     | Data Type    | Description                                                                                |
+|------------|--------------|--------------------------------------------------------------------------------------------|
+| Timestamp  | DATETIME     | DEFAULT value should be the current date/time                                              |
+| Operation  | string       | 'compare', 'load', etc. VARCHAR(64) (or equivalent)                                        |
+| Controller | uint32       | Controller ID. Nullable INT (or equivalent)                                                |
+| Detail     | string       | Operation summary. VARCHAR(255) (or equivalent)                                            |
 
-2. For Microsoft SQL Server, DSN is any DSN accepted by the Microsoft SQL Server driver, as specified in the
-   official [documentation](https://pkg.go.dev/github.com/microsoft/go-mssqldb). Typically a SQL Server DSN
-   takes the form `sqlserver://<uid>:<password>@<host>?database=<database>`.
-   e.g. `sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted`
+Notes:
+1. For sqlite3 and SQL Server the _Timestamp_ column is expected to be filled automatically.
 
 
 ### `load-acl`

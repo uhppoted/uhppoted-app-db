@@ -63,7 +63,7 @@ func putACL(dsn string, table string, acl lib.Table, withPIN bool) error {
 	return nil
 }
 
-func stash(operation string, dsn string, table string, recordset []db.AuditRecord) error {
+func stashToAudit(dsn string, table string, recordset []db.AuditRecord) error {
 	switch {
 	case strings.HasPrefix(dsn, "sqlite3://"):
 		if N, err := sqlite3.AuditTrail(dsn[10:], table, recordset); err != nil {
@@ -81,6 +81,33 @@ func stash(operation string, dsn string, table string, recordset []db.AuditRecor
 			infof("audit", "Added 1 record to audit trail")
 		} else {
 			infof("audit", "Added %v records to audit trail", N)
+		}
+
+	default:
+		return fmt.Errorf("unsupported DSN (%v)", dsn)
+	}
+
+	return nil
+}
+
+func stashToLog(dsn string, table string, recordset []db.LogRecord) error {
+	switch {
+	case strings.HasPrefix(dsn, "sqlite3://"):
+		if N, err := sqlite3.Log(dsn[10:], table, recordset); err != nil {
+			return err
+		} else if N == 1 {
+			infof("log", "Added 1 record to operations log")
+		} else {
+			infof("log", "Added %v records to operations log", N)
+		}
+
+	case strings.HasPrefix(dsn, "sqlserver://"):
+		if N, err := mssql.Log(dsn, table, recordset); err != nil {
+			return err
+		} else if N == 1 {
+			infof("log", "Added 1 record to operations log")
+		} else {
+			infof("log", "Added %v records to operations log", N)
 		}
 
 	default:

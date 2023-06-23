@@ -37,6 +37,7 @@ type command struct {
 type tables struct {
 	ACL   string
 	Audit string
+	Log   string
 }
 
 func (cmd command) Name() string {

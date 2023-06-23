@@ -4,8 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/uhppoted/uhppote-core/uhppote"
+	"github.com/uhppoted/uhppoted-app-db/db"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 )
@@ -14,11 +16,12 @@ var StoreACLCmd = StoreACL{
 	command: command{
 		name:        "store-acl",
 		description: "Retrieves the ACL from a set of access controllers and stores it in a database table",
-		usage:       "--with-pin --dsn <DSN> --table:ACL <table>",
+		usage:       "--with-pin --dsn <DSN> [--table:ACL <table>] [--table:log <table>]",
 
 		dsn: "",
 		tables: tables{
 			ACL: "ACL",
+			Log: "",
 		},
 		withPIN:  false,
 		lockfile: "",
@@ -33,7 +36,7 @@ type StoreACL struct {
 
 func (cmd *StoreACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] store-acl [--with-pin] --dsn <DSN>\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] store-acl [--with-pin] --dsn <DSN> [--table:ACL <table>] [--table:log <table>]\n", APP)
 	fmt.Println()
 	fmt.Println("  Retrieves the ACL from a set of access controllers and stores it in a database table")
 	fmt.Println()
@@ -43,7 +46,7 @@ func (cmd *StoreACL) Help() {
 	fmt.Println()
 	fmt.Println("  Examples:")
 	fmt.Println(`    uhppote-app-db --debug store-acl --with-pin --dsn "sqlite3://./db/ACL.db::ACL"`)
-	fmt.Println(`    uhppote-app-db --debug store-acl --with-pin --dsn "sqlite3://./db/ACL.db::ACL" --table:ACL ACL2`)
+	fmt.Println(`    uhppote-app-db --debug store-acl --with-pin --dsn "sqlite3://./db/ACL.db::ACL" --table:ACL ACL2 --table:log OpsLog`)
 	fmt.Println()
 }
 
@@ -52,6 +55,7 @@ func (cmd *StoreACL) FlagSet() *flag.FlagSet {
 
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
 	flagset.StringVar(&cmd.tables.ACL, "table:ACL", cmd.tables.ACL, "ACL table name. Defaults to ACL")
+	flagset.StringVar(&cmd.tables.Log, "table:log", cmd.tables.Log, "Operations log table name. Defaults to ''")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code in retrieved ACL information")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
 
@@ -96,6 +100,20 @@ func (cmd *StoreACL) Execute(args ...any) error {
 		return err
 	} else {
 		infof("store-acl", "Updated DB ACL table")
+
+		if cmd.tables.Log != "" {
+			recordset := []db.LogRecord{
+				db.LogRecord{
+					Timestamp: time.Now(),
+					Operation: "store",
+					Detail:    fmt.Sprintf("records:%v", len(acl.Records)),
+				},
+			}
+
+			if err := stashToLog(cmd.dsn, cmd.tables.Log, recordset); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

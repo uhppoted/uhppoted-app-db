@@ -17,7 +17,7 @@ var LoadACLCmd = LoadACL{
 	command: command{
 		name:        "load-acl",
 		description: "Retrieves an access control list from a database and updates the configured set of access controllers",
-		usage:       "--with-pin --dsn <DSN> --table:ACL <table> [-table:audit <table>]",
+		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>] [-table:log <table>]",
 
 		dsn: "",
 		tables: tables{
@@ -37,7 +37,7 @@ type LoadACL struct {
 
 func (cmd *LoadACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN> [--table:ACL <table>] [--table:ACL <table>]\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN> [--table:ACL <table>] [--table:ACL <table>] [-table:log <table>]\n", APP)
 	fmt.Println()
 	fmt.Println("  Retrieves an access control list from a database and updates the configured set of access controllers")
 	fmt.Println()
@@ -47,7 +47,7 @@ func (cmd *LoadACL) Help() {
 	fmt.Println()
 	fmt.Println("  Examples:")
 	fmt.Println(`    uhppote-app-db --debug load-acl --with-pin --dsn "sqlite3://./db/ACL.db"`)
-	fmt.Println(`    uhppote-app-db --debug load-acl --with-pin --dsn "sqlite3://./db/ACL.db" --table:ACL ACL --table:audit AuditTrail`)
+	fmt.Println(`    uhppote-app-db --debug load-acl --with-pin --dsn "sqlite3://./db/ACL.db" --table:ACL ACL --table:audit AuditTrail --table:log OpsLog`)
 	fmt.Println()
 }
 
@@ -57,6 +57,7 @@ func (cmd *LoadACL) FlagSet() *flag.FlagSet {
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
 	flagset.StringVar(&cmd.tables.ACL, "table:ACL", cmd.tables.ACL, "ACL table name. Defaults to ACL")
 	flagset.StringVar(&cmd.tables.Audit, "table:audit", cmd.tables.Audit, "Audit trail table name. Defaults to ''")
+	flagset.StringVar(&cmd.tables.Log, "table:log", cmd.tables.Log, "Operations log table name. Defaults to ''")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code when updating access controllers")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
 
@@ -131,8 +132,15 @@ func (cmd *LoadACL) Execute(args ...any) error {
 		}
 
 		if cmd.tables.Audit != "" {
-			recordset := report2recordset(report)
-			if err := stash("load", cmd.dsn, cmd.tables.Audit, recordset); err != nil {
+			recordset := report2audit(report)
+			if err := stashToAudit(cmd.dsn, cmd.tables.Audit, recordset); err != nil {
+				return err
+			}
+		}
+
+		if cmd.tables.Log != "" {
+			recordset := report2log(report)
+			if err := stashToLog(cmd.dsn, cmd.tables.Log, recordset); err != nil {
 				return err
 			}
 		}
@@ -165,7 +173,7 @@ func (cmd *LoadACL) load(u uhppote.IUHPPOTE, acl lib.ACL) (map[uint32]lib.Report
 	return f(u, acl)
 }
 
-func report2recordset(report map[uint32]lib.Report) []db.AuditRecord {
+func report2audit(report map[uint32]lib.Report) []db.AuditRecord {
 	now := time.Now()
 	recordset := []db.AuditRecord{}
 
@@ -200,6 +208,34 @@ func report2recordset(report map[uint32]lib.Report) []db.AuditRecord {
 		for _, card := range v.Errored {
 			recordset = append(recordset, auditRecord(controller, card, "error"))
 		}
+	}
+
+	return recordset
+}
+
+func report2log(report map[uint32]lib.Report) []db.LogRecord {
+	now := time.Now()
+	recordset := []db.LogRecord{}
+
+	logRecord := func(controller uint32, row lib.Report) db.LogRecord {
+		detail := fmt.Sprintf("unchanged:%-4v updated:%-4v   added:%-4v   deleted:%-4v failed:%-4v errors:%-4v",
+			len(row.Unchanged),
+			len(row.Updated),
+			len(row.Added),
+			len(row.Deleted),
+			len(row.Failed),
+			len(row.Errored))
+
+		return db.LogRecord{
+			Timestamp:  now,
+			Operation:  "load",
+			Controller: controller,
+			Detail:     detail,
+		}
+	}
+
+	for controller, v := range report {
+		recordset = append(recordset, logRecord(controller, v))
 	}
 
 	return recordset

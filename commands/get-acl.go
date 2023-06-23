@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/uhppoted/uhppote-core/uhppote"
+	"github.com/uhppoted/uhppoted-app-db/db"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 	"github.com/uhppoted/uhppoted-lib/config"
 )
@@ -16,11 +18,12 @@ var GetACLCmd = GetACL{
 	command: command{
 		name:        "get-acl",
 		description: "Retrieves an access control list from a database and (optionally) saves it to a file",
-		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [--file <file>]",
+		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:log <table>] [--file <file>]",
 
 		dsn: "",
 		tables: tables{
 			ACL: "ACL",
+			Log: "",
 		},
 		withPIN:  false,
 		lockfile: "",
@@ -36,7 +39,7 @@ type GetACL struct {
 
 func (cmd *GetACL) Help() {
 	fmt.Println()
-	fmt.Printf("  Usage: %s [--debug] [--config <file>] get-acl [--with-pin] --dsn <DSN> [--table:ACL <table>] [--file <file>]\n", APP)
+	fmt.Printf("  Usage: %s [--debug] [--config <file>] get-acl [--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:log <table>] [--file <file>]\n", APP)
 	fmt.Println()
 	fmt.Println("  Retrieves an access control list from a database and optionally saves the ACL to a TSV file")
 	fmt.Println()
@@ -46,7 +49,7 @@ func (cmd *GetACL) Help() {
 	fmt.Println()
 	fmt.Println("  Examples:")
 	fmt.Println(`    uhppote-app-db --debug get-acl --with-pin --dsn "sqlite3://./db/ACL.db" --file "ACL.tsv"`)
-	fmt.Println(`    uhppote-app-db --debug get-acl --with-pin --dsn "sqlite3://./db/ACL.db" --table:ACL ACL --file "ACL.tsv"`)
+	fmt.Println(`    uhppote-app-db --debug get-acl --with-pin --dsn "sqlite3://./db/ACL.db" --table:ACL ACL -table:log OpsLog --file "ACL.tsv"`)
 	fmt.Println()
 }
 
@@ -55,6 +58,7 @@ func (cmd *GetACL) FlagSet() *flag.FlagSet {
 
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
 	flagset.StringVar(&cmd.tables.ACL, "table:ACL", cmd.tables.ACL, "ACL table name. Defaults to ACL")
+	flagset.StringVar(&cmd.tables.Log, "table:log", cmd.tables.Log, "Operations log table name. Defaults to ''")
 	flagset.StringVar(&cmd.file, "file", cmd.file, "Optional TSV filepath. Defaults to stdout")
 	flagset.BoolVar(&cmd.withPIN, "with-pin", cmd.withPIN, "Include card keypad PIN code in retrieved ACL information")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
@@ -113,6 +117,21 @@ func (cmd *GetACL) Execute(args ...any) error {
 	} else {
 		for _, w := range warnings {
 			warnf("get-acl", "%v", w.Error())
+		}
+
+		// ... update operations log
+		if cmd.tables.Log != "" {
+			recordset := []db.LogRecord{
+				db.LogRecord{
+					Timestamp: time.Now(),
+					Operation: "get",
+					Detail:    fmt.Sprintf("records:%v", len(table.Records)),
+				},
+			}
+
+			if err := stashToLog(cmd.dsn, cmd.tables.Log, recordset); err != nil {
+				return err
+			}
 		}
 
 		// ... write to TSV file
