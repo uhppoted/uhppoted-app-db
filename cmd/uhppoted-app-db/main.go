@@ -18,6 +18,7 @@ var cli = []uhppoted.Command{
 	&commands.CompareACLCmd,
 	&commands.GetACLCmd,
 	&commands.PutACLCmd,
+	&commands.GetEventsCmd,
 
 	&uhppoted.Version{
 		Application: commands.APP,

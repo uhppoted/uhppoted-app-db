@@ -14,6 +14,19 @@ CREATE TABLE ACL (
     Hogsmeade  INTEGER DEFAULT 0
 );
 
+CREATE TABLE Events (
+    Controller   INTEGER  NOT NULL,
+    EventIndex   INTEGER  NOT NULL,
+    Timestamp    DATETIME NULL,
+    Type         INTEGER  NULL,
+    Granted      INTEGER  NULL,
+    Door         INTEGER  NULL,
+    Direction    INTEGER  NULL,
+    CardNumber   INTEGER  NULL,
+    Reason       INTEGER  NULL,
+    CONSTRAINT ControllerEventIndex UNIQUE (Controller, EventIndex) ON CONFLICT REPLACE
+);
+
 CREATE TABLE Audit (
     Timestamp  DATETIME DEFAULT (datetime(CURRENT_TIMESTAMP, 'localtime')),
     Operation  TEXT     DEFAULT '',

@@ -80,11 +80,8 @@ publish: release
 	--draft --prerelease --title "$(VERSION)-beta" --notes-file release-notes.md
 
 debug: build
-	$(CMD) compare-acl --with-pin --dsn "$(MSSQL)" --table:ACL ACL  --table:audit Audit --table:log OperationsLog
-	$(CMD) load-acl               --dsn "$(MSSQL)" --table:ACL ACL  --table:audit Audit --table:log OperationsLog
-	$(CMD) get-acl                --dsn "$(MSSQL)" --table:ACL ACL  --table:log OperationsLog
-	$(CMD) put-acl                --dsn "$(MSSQL)" --table:ACL ACLx --table:log OperationsLog --file "../runtime/uhppoted-app-db/acl.tsv" 
-	$(CMD) store-acl              --dsn "$(MSSQL)" --table:ACL ACLz --table:log OperationsLog
+	$(CMD) --debug get-events --dsn "sqlite3://$(SQLITE3)"
+	$(CMD) --debug get-events --dsn "$(MSSQL)"
 
 godoc:
 	godoc -http=:80 -index_interval=60s
@@ -154,6 +151,9 @@ sqlite3-compare-acl-to-file: build
 	$(CMD) compare-acl --with-pin --dsn "sqlite3://$(SQLITE3)" --file "../runtime/uhppoted-app-db/compare.rpt"
 	cat ../runtime/uhppoted-app-db/compare.rpt
 
+sqlite3-get-events: build
+	$(CMD) get-events --dsn "sqlite3://$(SQLITE3)"
+
 mssql-get-acl: build
 	$(CMD) --debug get-acl --dsn "$(MSSQL)"
 	$(CMD)         get-acl --dsn "$(MSSQL)"
@@ -204,3 +204,5 @@ mssql-store-acl-with-pin: build
 	$(CMD) store-acl --with-pin  --dsn "$(MSSQL)" --table:ACL ACLz
 	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "SELECT * FROM ACLz"
 
+mssql-get-events: build
+	$(CMD) get-events --dsn "sqlite3://$(MSSQL)"

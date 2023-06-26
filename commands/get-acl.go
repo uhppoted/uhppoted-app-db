@@ -86,7 +86,7 @@ func (cmd *GetACL) Execute(args ...any) error {
 		return err
 	} else {
 		defer func() {
-			infof("get-acl", "Removing lockfile")
+			infof("get-acl", "removing lockfile")
 			kraken.Release()
 		}()
 	}
@@ -124,7 +124,7 @@ func (cmd *GetACL) Execute(args ...any) error {
 			recordset := []db.LogRecord{
 				db.LogRecord{
 					Timestamp: time.Now(),
-					Operation: "get",
+					Operation: "get-acl",
 					Detail:    fmt.Sprintf("records:%v", len(table.Records)),
 				},
 			}

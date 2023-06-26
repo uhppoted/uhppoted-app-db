@@ -106,7 +106,7 @@ func (cmd *CompareACL) Execute(args ...any) error {
 		return err
 	} else {
 		defer func() {
-			infof("compare-acl", "Removing lockfile")
+			infof("compare-acl", "removing lockfile")
 			kraken.Release()
 		}()
 	}
@@ -270,7 +270,7 @@ func diff2log(diff lib.SystemDiff) []db.LogRecord {
 
 		return db.LogRecord{
 			Timestamp:  now,
-			Operation:  "compare",
+			Operation:  "compare-acl",
 			Controller: controller,
 			Detail:     detail,
 		}

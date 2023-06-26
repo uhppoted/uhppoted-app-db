@@ -78,7 +78,7 @@ func (cmd *StoreACL) Execute(args ...any) error {
 		return err
 	} else {
 		defer func() {
-			infof("store-acl", "Removing lockfile")
+			infof("store-acl", "removing lockfile")
 			kraken.Release()
 		}()
 	}
@@ -105,7 +105,7 @@ func (cmd *StoreACL) Execute(args ...any) error {
 			recordset := []db.LogRecord{
 				db.LogRecord{
 					Timestamp: time.Now(),
-					Operation: "store",
+					Operation: "store-acl",
 					Detail:    fmt.Sprintf("records:%v", len(acl.Records)),
 				},
 			}

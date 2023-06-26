@@ -84,7 +84,7 @@ func (cmd *LoadACL) Execute(args ...any) error {
 		return err
 	} else {
 		defer func() {
-			infof("load-acl", "Removing lockfile")
+			infof("load-acl", "removing lockfile")
 			kraken.Release()
 		}()
 	}
@@ -228,7 +228,7 @@ func report2log(report map[uint32]lib.Report) []db.LogRecord {
 
 		return db.LogRecord{
 			Timestamp:  now,
-			Operation:  "load",
+			Operation:  "load-acl",
 			Controller: controller,
 			Detail:     detail,
 		}

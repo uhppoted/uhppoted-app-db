@@ -35,9 +35,10 @@ type command struct {
 }
 
 type tables struct {
-	ACL   string
-	Audit string
-	Log   string
+	ACL    string
+	Audit  string
+	Events string
+	Log    string
 }
 
 func (cmd command) Name() string {
@@ -142,6 +143,12 @@ func helpOptions(flagset *flag.FlagSet) {
 			fmt.Printf("    --%-13s %s\n", f.Name, f.Usage)
 		})
 	}
+}
+
+func debugf(tag string, format string, args ...any) {
+	f := fmt.Sprintf("%-10v %v", tag, format)
+
+	log.Debugf(f, args...)
 }
 
 func infof(tag string, format string, args ...any) {

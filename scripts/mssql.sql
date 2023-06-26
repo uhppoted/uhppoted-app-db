@@ -14,6 +14,19 @@ CREATE TABLE ACL (
     Hogsmeade  TINYINT DEFAULT 0
 );
 
+CREATE TABLE Events (
+    Controller   INT  NOT NULL,
+    EventIndex   INT  NOT NULL,
+    Timestamp    DATETIME NULL,
+    Type         INT  NULL,
+    Granted      INT  NULL,
+    Door         INT  NULL,
+    Direction    INT  NULL,
+    CardNumber   INT  NULL,
+    Reason       INT  NULL,
+    CONSTRAINT ControllerEventIndex UNIQUE (Controller, EventIndex)
+);
+
 CREATE TABLE Audit (
     Timestamp  DATETIME     DEFAULT GETUTCDATE(),
     Operation  VARCHAR(64)  DEFAULT '',

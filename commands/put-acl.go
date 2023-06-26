@@ -92,7 +92,7 @@ func (cmd *PutACL) Execute(args ...any) error {
 		return err
 	} else {
 		defer func() {
-			infof("put-acl", "Removing lockfile")
+			infof("put-acl", "removing lockfile")
 			kraken.Release()
 		}()
 	}
@@ -122,7 +122,7 @@ func (cmd *PutACL) Execute(args ...any) error {
 				recordset := []db.LogRecord{
 					db.LogRecord{
 						Timestamp: time.Now(),
-						Operation: "put",
+						Operation: "put-acl",
 						Detail:    fmt.Sprintf("records:%v", len(acl.Records)),
 					},
 				}

@@ -5,19 +5,17 @@
 - [x] Microsoft SQL server support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/3)
 - [x] Audit trail (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
 - [x] Operations log (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
+- [ ] Events (cf. https://github.com/uhppoted/uhppoted-app-db/issues/5)
+      - [x] `get-events` command
+      - [ ] fill in missing events
       - [x] sqlite3
       - [x] SQL Server
-      - [x] `compare-acl`
-      - [x] `load-acl`
-      - [x] `get-acl`
-      - [x] `put-acl`
-      - [x] `store-acl`
-      - [x] README
-      - [x] CHANGELOG
+      - [ ] README
+      - [ ] CHANGELOG
 
-- [ ] Events (cf. https://github.com/uhppoted/uhppoted-app-db/issues/5)
 - [ ] MySQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/1)
-
+- [ ] sqlite3: replace UPSERTs with TABLE ON CONFLICT REPLACE clause
+- [ ] Clean up DSN/DB logic
 
 ## TODO
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	core "github.com/uhppoted/uhppote-core/types"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 
 	"github.com/uhppoted/uhppoted-app-db/db"
@@ -54,6 +55,33 @@ func putACL(dsn string, table string, acl lib.Table, withPIN bool) error {
 			infof("put-acl", "Stored %v card to DB ACL table", N)
 		} else {
 			infof("put-acl", "Stored %v cards to DB ACL table", N)
+		}
+
+	default:
+		return fmt.Errorf("unsupported DSN (%v)", dsn)
+	}
+
+	return nil
+}
+
+func store(dsn string, table string, events []core.Event) error {
+	switch {
+	case strings.HasPrefix(dsn, "sqlite3://"):
+		if N, err := sqlite3.StoreEvents(dsn[10:], table, events); err != nil {
+			return err
+		} else if N == 1 {
+			infof("get-events", "Stored %v event to DB events table", N)
+		} else {
+			infof("get-events", "Stored %v events to DB events table", N)
+		}
+
+	case strings.HasPrefix(dsn, "sqlserver://"):
+		if N, err := mssql.StoreEvents(dsn, table, events); err != nil {
+			return err
+		} else if N == 1 {
+			infof("put-acl", "Stored %v event to DB events table", N)
+		} else {
+			infof("put-acl", "Stored %v events to DB events table", N)
 		}
 
 	default:
