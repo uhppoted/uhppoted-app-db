@@ -152,7 +152,7 @@ sqlite3-compare-acl-to-file: build
 	cat ../runtime/uhppoted-app-db/compare.rpt
 
 sqlite3-get-events: build
-	$(CMD) get-events --dsn "sqlite3://$(SQLITE3)"
+	$(CMD) get-events --dsn "sqlite3://$(SQLITE3)" --table:log OperationsLog
 
 mssql-get-acl: build
 	$(CMD) --debug get-acl --dsn "$(MSSQL)"
@@ -205,4 +205,4 @@ mssql-store-acl-with-pin: build
 	mssql-cli -U sa -P UBxNxrQiKWsjncow7mMx -d uhppoted -Q "SELECT * FROM ACLz"
 
 mssql-get-events: build
-	$(CMD) get-events --dsn "sqlite3://$(MSSQL)"
+	$(CMD) get-events --dsn "$(MSSQL)" --table:log OperationsLog

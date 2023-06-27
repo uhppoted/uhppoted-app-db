@@ -24,8 +24,8 @@ func (i interval) contains(v uint32) bool {
 	return i.from <= v && i.to >= v
 }
 
-const BATCHSIZE = 5 // maximum controller events to fetch
-const GAPS = 2      // fix at most 2 gaps in a controller event record
+const BATCHSIZE = 128 // maximum controller events to fetch
+const GAPS = 2        // fix at most 2 gaps in a controller event record
 
 var GetEventsCmd = GetEvents{
 	command: command{
@@ -72,7 +72,7 @@ func (cmd *GetEvents) FlagSet() *flag.FlagSet {
 	flagset.StringVar(&cmd.dsn, "dsn", cmd.dsn, "DSN for database")
 	flagset.StringVar(&cmd.tables.Events, "table:events", cmd.tables.Events, "Events table name. Defaults to 'events'")
 	flagset.StringVar(&cmd.tables.Log, "table:log", cmd.tables.Log, "Operations log table name. Defaults to ''")
-	flagset.UintVar(&cmd.batchSize, "batch-size", cmd.batchSize, "Maximum events (per controller) to retrieve per invocation. Defaults to 100.")
+	flagset.UintVar(&cmd.batchSize, "batch-size", cmd.batchSize, "Maximum events (per controller) to retrieve per invocation. Defaults to 128.")
 	flagset.StringVar(&cmd.lockfile, "lockfile", cmd.lockfile, "Filepath for lock file. Defaults to <tmp>/uhppoted-app-db.lock")
 
 	return flagset
@@ -139,7 +139,7 @@ func (cmd *GetEvents) Execute(args ...any) error {
 			db.LogRecord{
 				Timestamp: time.Now(),
 				Operation: "get-events",
-				Detail:    fmt.Sprintf("records:%v  errors:%v", len(events), len(errors)),
+				Detail:    fmt.Sprintf("records:%-4v errors:%-4v", len(events), len(errors)),
 			},
 		}
 

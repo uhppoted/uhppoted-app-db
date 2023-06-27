@@ -80,11 +80,12 @@ Usage: ```uhppoted-app-db <command> <options>```
 
 Supported commands:
 
-- `load-acl`
-- `store-acl`
-- `compare-acl`
-- `get-acl`
-- `put-acl`
+- [`load-acl`](#load-acl)
+- [`store-acl`](#store-acl)
+- [`compare-acl`](#compare-acl)
+- [`get-acl`](#get-acl)
+- [`put-acl`](#put-acl)
+- [`get-events`](#get-events)
 - `version`
 - `help`
 
@@ -168,16 +169,21 @@ Notes:
 Fetches an ACL file from the configured database and downloads it to the configured UHPPOTE controllers. Intended for use
 in a `cron` task that routinely updates the controllers on a scheduled basis.
 
+A list of the changes made to the controllers can optionally be stored in an audit trail and a summary of the operation can
+optionally be stored in a log table.
+
 Command line:
 
-```uhppoted-app-db load-acl```
+```uhppoted-app-db load-acl --dsn <DSN>```
 
-```uhppoted-app-db  [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN> [--table:ACL <table>] [--table:audit <table>```
+```uhppoted-app-db  [--debug] [--config <file>] load-acl [--with-pin] --dsn <DSN> [--table:ACL <table>] [--table:audit <table>] [--table:log <table>]```
 
 ```
-  --dsn <DSN>          (required) DSN for database as described above. 
-  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
-  --with-pin           Includes the card keypad PIN code when updating the access controllers
+  --dsn <DSN>            (required) DSN for database as described above. 
+  --table:ACL   <table>  (optional) ACL table. Defaults to _ACL_.
+  --table:audit <table>  (optional) audit trail table. Defaults to no audit trail.
+  --table:log   <table>  (optional) log table. Defaults to no log.
+  --with-pin             Includes the card keypad PIN code when updating the access controllers
 
   --config  Sets the uhppoted.conf file to use for controller configurations
   --debug   Displays verbose debugging information such as the internal structure of the ACL and the
@@ -196,16 +202,19 @@ Fetches the cards stored in the set of configured access controllers, creates a 
 configuration and stores it in a database table. Intended for use in a `cron` task that routinely audits the cards stored
 on the controllers against an authoritative source. 
 
+A summary of the operation can optionally be appended to stored in a log table.
+
 Command line:
 
-```uhppoted-app-db store-acl```
+```uhppoted-app-db store-acl --dsn <DSN>```
 
-```uhppoted-app-db [--debug]  [--config <file>] store-acl [--with-pin]  --dsn <DSN> [--table:ACL <table>]```
+```uhppoted-app-db [--debug]  [--config <file>] store-acl [--with-pin]  --dsn <DSN> [--table:ACL <table>] [--table:log <table>]```
 
 ```
   --dsn <DSN>            (required) DSN for database as described above. 
-  --table:ACL   <table>  (optional) ACL table. Defaults to ACL.
+  --table:ACL   <table>  (optional) ACL table. Defaults to _ACL_.
   --table:audit <table>  (optional) audit trail table. Defaults to no audit trail.
+  --table:log   <table>  (optional) log table. Defaults to no log.
   --with-pin             Includes the card keypad PIN code in the information retrieved from the access controllers
 
   --config  Sets the uhppoted.conf file to use for controller configurations
@@ -224,16 +233,20 @@ Command line:
 Fetches an ACL file from a database and compares it to the cards stored in the configured UHPPOTE controllers. Intended for 
 use in a `cron` task that routinely audits the controllers against an authoritative source.
 
+A list of the differences can optionally be stored in an audit trail and a summary of the operation can optionally be stored
+in a log table.
+
 Command line:
 
-```uhppoted-app-db compare-acl```
+```uhppoted-app-db compare-acl --dsn <DSN>```
 
-```uhppoted-app-db [--debug]  [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN> [--table:ACL <table> [--table:audit <table>```
+```uhppoted-app-db [--debug]  [--config <file>] compare-acl [--with-pin] [--file <file>] --dsn <DSN> [--table:ACL <table> [--table:audit <table> [--table:log <table>]```
 
 ```
   --dsn <DSN>            (required) DSN for database as described above. 
-  --table:ACL <table>    (optional) ACL table. Defaults to ACL.
+  --table:ACL <table>    (optional) ACL table. Defaults to _ACL_.
   --table:audit <table>  (optional) audit trail table. Defaults to no audit trail.
+  --table:log   <table>  (optional) log table. Defaults to no log.
   --with-pin             Includes the card keypad PIN code when comparing card records from  the access controllers
   --file                 Optional file path for the compare report. Defaults to displaying the ACL on the console.
 
@@ -253,15 +266,18 @@ Command line:
 Fetches tabular data from a database table and stores it to a TSV file. Intended for use in a `cron` task that routinely
 retrieves the ACL from the database for use by scripts on the local host managing the access control system. 
 
+A summary of the operation can optionally be stored in a log table.
+
 Command line:
 
-```uhppoted-app-db get-acl``` 
+```uhppoted-app-db get-acl --dsn <DSN>``` 
 
-```uhppoted-app-db [--debug] [--config <file>] get-acl [--with-pin] [--file <TSV>] --dsn <DSN> [--table:ACL <table>]```
+```uhppoted-app-db [--debug] [--config <file>] get-acl [--with-pin] [--file <TSV>] --dsn <DSN> [--table:ACL <table>] [--table:log <table>]```
 
 ```
   --dsn <DSN>          (required) DSN for database as described above. 
-  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
+  --table:ACL <table>  (optional) ACL table. Defaults to _ACL_.
+  --table:log <table>  (optional) log table. Defaults to no log.
   --with-pin           Includes the card keypad PIN code when retrieving the cards from the access controllers
   --file               Optional file path for the destination TSV file. Defaults to displaying the ACL on
                        the console.
@@ -282,15 +298,18 @@ Command line:
 Uploads an ACL from a TSV file to a database table. Intended for use in a `cron` task that routinely transfers information
 to the database from scripts on the local host.
 
+A summary of the operation can optionally be stored in a log table.
+
 Command line:
 
 ```uhppoted-app-db put-acl --file <TSV> --dsn <DSN>``` 
 
-```uhppoted-app-db [--debug] [--config <file>] put-acl [--with-pin] --file <TSV> --dsn <DSN> [--table:ACL <table>]```
+```uhppoted-app-db [--debug] [--config <file>] put-acl [--with-pin] --file <TSV> --dsn <DSN> [--table:ACL <table>] [--table:log <table>]```
 
 ```
   --dsn <DSN>          (required) DSN for database as described above. 
-  --table:ACL <table>  (optional) ACL table. Defaults to ACL.
+  --table:ACL <table>  (optional) ACL table. Defaults to _ACL_.
+  --table:log <table>  (optional) log table. Defaults to no log.
   --with-pin           Includes the card keypad PIN code in the uploaded data
   --file               (required) File path for the TSV file to be uploaded to the database
 
@@ -304,4 +323,33 @@ Command line:
      uhppoted-app-db --debug --config .uhppoted.conf put-acl --wih-pin --file ACL.tsv --dsn sqlite3://./db/ACL.db
 ```
 
+
+### `get-events`
+
+Retrieves events from the set of configured controllers and stores them in a database table, incrementally filling any
+gaps in the event list for each controller. 
+
+A summary of the operation can optionally be stored in a log table.
+
+Command line:
+
+```uhppoted-app-db get-events --dsn <DSN>```
+
+```uhppoted-app-db [--debug]  [--config <file>] get-events --dsn <DSN> [--table:events <table>] [--table:log <table>] [--batch-size]```
+
+```
+  --dsn <DSN>          (required) DSN for database as described above. 
+  --table:ACL <table>  (optional) Events table. Defaults to _Events_.
+  --table:log <table>  (optional) log table. Defaults to no log.
+  --batch-size         Maximum number of events to retrieve (per controller) per invocation. Defaults to 128.
+
+  --config  Sets the uhppoted.conf file to use for controller configurations
+  --debug   Displays verbose debugging information such as the internal structure of the ACL and the
+            communications with the UHPPOTE controllers
+
+  Examples:
+
+     uhppoted-app-db get-events --dsn sqlite3://./db/ACL.db 
+     uhppoted-app-db --debug --config .uhppoted.conf get-events --dsn sqlite3://./db/ACL.db --table:events Events2 --batch-size 64
+```
 
