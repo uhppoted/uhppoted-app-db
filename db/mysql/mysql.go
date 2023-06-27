@@ -96,6 +96,7 @@ func clean(v string) string {
 	return regexp.MustCompile(`\s+`).ReplaceAllString(strings.TrimSpace(v), " ")
 }
 
+//lint:ignore U1000 utility function
 func debugf(format string, args ...interface{}) {
 	f := fmt.Sprintf("%-10v %v", LogTag, format)
 
