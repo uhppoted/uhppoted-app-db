@@ -7,7 +7,7 @@
 - [x] Operations log (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
 - [ ] Events (cf. https://github.com/uhppoted/uhppoted-app-db/issues/5)
       - [x] `get-events` command
-      - [ ] fill in missing events
+      - [x] fill in missing events
       - [x] sqlite3
       - [x] SQL Server
       - [ ] README
@@ -24,6 +24,7 @@
 - [ ] DynamoDB
 - [ ] [Xata](https://xata.io)
 - [ ] [liveblocks](https://liveblocks.io)
+- [ ] [MyCelial](https://github.com/mycelial)
 
 ## Notes
 

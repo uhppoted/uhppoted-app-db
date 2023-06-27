@@ -11,6 +11,40 @@ import (
 	core "github.com/uhppoted/uhppote-core/types"
 )
 
+func GetEvents(dsn string, table string, controller uint32) ([]uint32, error) {
+	query := fmt.Sprintf(`SELECT EventIndex FROM %v WHERE Controller=?;`, table)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	defer cancel()
+
+	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
+		return nil, err
+	} else if dbc == nil {
+		return nil, fmt.Errorf("invalid SQL Server DB (%v)", dbc)
+	} else if prepared, err := dbc.Prepare(query); err != nil {
+		return nil, err
+	} else if rs, err := prepared.QueryContext(ctx, controller); err != nil {
+		return nil, err
+	} else if rs == nil {
+		return nil, fmt.Errorf("invalid resultset (%v)", rs)
+	} else {
+		defer rs.Close()
+
+		events := []uint32{}
+
+		for rs.Next() {
+			var event uint32
+			if err := rs.Scan(&event); err != nil {
+				return nil, err
+			} else {
+				events = append(events, event)
+			}
+		}
+
+		return events, nil
+	}
+}
+
 func StoreEvents(dsn string, table string, events []core.Event) (int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 

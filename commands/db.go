@@ -64,7 +64,28 @@ func putACL(dsn string, table string, acl lib.Table, withPIN bool) error {
 	return nil
 }
 
-func store(dsn string, table string, events []core.Event) error {
+func getEvents(dsn string, table string, controller uint32) ([]uint32, error) {
+	switch {
+	case strings.HasPrefix(dsn, "sqlite3://"):
+		if events, err := sqlite3.GetEvents(dsn[10:], table, controller); err != nil {
+			return nil, err
+		} else {
+			return events, nil
+		}
+
+	case strings.HasPrefix(dsn, "sqlserver://"):
+		if events, err := mssql.GetEvents(dsn, table, controller); err != nil {
+			return nil, err
+		} else {
+			return events, nil
+		}
+
+	default:
+		return nil, fmt.Errorf("unsupported DSN (%v)", dsn)
+	}
+}
+
+func putEvents(dsn string, table string, events []core.Event) error {
 	switch {
 	case strings.HasPrefix(dsn, "sqlite3://"):
 		if N, err := sqlite3.StoreEvents(dsn[10:], table, events); err != nil {

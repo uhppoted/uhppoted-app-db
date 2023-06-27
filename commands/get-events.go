@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"math"
+	"sort"
 	"strings"
 	"time"
 
@@ -119,7 +120,7 @@ func (cmd *GetEvents) Execute(args ...any) error {
 	for _, device := range devices {
 		controller := device.DeviceID
 
-		if list, err := getEvents(u, controller, cmd.batchSize); err != nil {
+		if list, err := cmd.getEvents(u, controller); err != nil {
 			warnf("get-events", "%v  %v", controller, err)
 			errors = append(errors, err)
 		} else {
@@ -128,7 +129,7 @@ func (cmd *GetEvents) Execute(args ...any) error {
 	}
 
 	// ... store to DB
-	if err := store(cmd.dsn, cmd.tables.Events, events); err != nil {
+	if err := putEvents(cmd.dsn, cmd.tables.Events, events); err != nil {
 		return err
 	}
 
@@ -150,7 +151,7 @@ func (cmd *GetEvents) Execute(args ...any) error {
 	return nil
 }
 
-func getEvents(u uhppote.IUHPPOTE, controller uint32, batchSize uint) ([]core.Event, error) {
+func (cmd *GetEvents) getEvents(u uhppote.IUHPPOTE, controller uint32) ([]core.Event, error) {
 	infof("get-events", "%v  retrieving events", controller)
 
 	if first, last, current, err := getEventIndices(u, controller); err != nil {
@@ -158,7 +159,12 @@ func getEvents(u uhppote.IUHPPOTE, controller uint32, batchSize uint) ([]core.Ev
 	} else {
 		debugf("get-events", "%v  first:%-6v last:%-6v current:%-6v\n", controller, first, last, current)
 
-		intervals := getMissing(GAPS, controller)
+		var intervals []interval
+		if list, err := cmd.getMissing(GAPS, controller); err != nil {
+			return nil, err
+		} else {
+			intervals = list
+		}
 
 		for _, interval := range intervals {
 			if interval.contains(last) || interval.contains(first) || (interval.from >= first && interval.to <= last) {
@@ -202,7 +208,7 @@ func getEvents(u uhppote.IUHPPOTE, controller uint32, batchSize uint) ([]core.Ev
 					index = first
 				}
 
-				for index <= last && count < batchSize {
+				for index <= last && count < cmd.batchSize {
 					f(index)
 					index++
 				}
@@ -214,7 +220,7 @@ func getEvents(u uhppote.IUHPPOTE, controller uint32, batchSize uint) ([]core.Ev
 					index = last
 				}
 
-				for index >= first && count < batchSize {
+				for index >= first && count < cmd.batchSize {
 					f(index)
 					index--
 				}
@@ -232,6 +238,50 @@ func getEvents(u uhppote.IUHPPOTE, controller uint32, batchSize uint) ([]core.Ev
 
 		return events, nil
 	}
+}
+
+func (cmd *GetEvents) getMissing(gaps int, controller uint32) ([]interval, error) {
+	var events []uint32
+	var intervals []interval
+
+	if list, err := getEvents(cmd.dsn, cmd.tables.Events, controller); err != nil {
+		return nil, err
+	} else {
+		events = list
+	}
+
+	sort.Slice(events, func(i, j int) bool { return events[i] < events[j] })
+
+	first := uint32(0)
+	last := uint32(0)
+
+	if N := len(events); N > 0 {
+		first = events[0]
+		last = events[N-1]
+	}
+
+	intervals = append(intervals, interval{from: last + 1, to: math.MaxUint32})
+	if first > 1 {
+		intervals = append(intervals, interval{from: 1, to: first - 1})
+	}
+
+	slice := events[0:]
+	for len(slice) > 0 && gaps != 0 {
+		ix := sort.Search(len(slice), func(i int) bool {
+			return slice[i] != slice[0]+uint32(i)
+		})
+
+		if ix != len(slice) {
+			from := slice[ix-1] + 1
+			to := slice[ix] - 1
+			intervals = append(intervals, interval{from: from, to: to})
+			gaps--
+		}
+
+		slice = slice[ix:]
+	}
+
+	return intervals, nil
 }
 
 func getEventIndices(u uhppote.IUHPPOTE, controller uint32) (uint32, uint32, uint32, error) {
@@ -258,60 +308,4 @@ func getEventIndices(u uhppote.IUHPPOTE, controller uint32) (uint32, uint32, uin
 	}
 
 	return first, last, current, nil
-}
-
-func getMissing(gaps int, controller uint32) []interval {
-	missing := []interval{}
-
-	// if cache.events.dirty {
-	// 	m := map[uint32][]uint32{}
-	// 	for _, e := range ee.events {
-	// 		var k = e.DeviceID
-	// 		var l = m[k]
-
-	// 		m[k] = append(l, e.Index)
-	// 	}
-
-	// 	for k, list := range m {
-	// 		sort.Slice(list, func(i, j int) bool { return list[i] < list[j] })
-	// 		m[k] = list
-	// 	}
-
-	// 	cache.events.dirty = false
-	// 	cache.events.events = m
-	// }
-
-	// for _, c := range controllers {
-	// first := uint32(0)
-	last := uint32(0)
-	// 	list := cache.events.events[c]
-
-	// 	if N := len(list); N > 0 {
-	// 		first = list[0]
-	// 		last = list[N-1]
-	// 	}
-
-	missing = append(missing, interval{from: last + 1, to: math.MaxUint32})
-	// if first > 1 {
-	// 	missing = append(missing, interval{from: 1, to: first - 1})
-	// }
-
-	// 	slice := list[0:]
-	// 	for len(slice) > 0 && gaps != 0 {
-	// 		ix := sort.Search(len(slice), func(i int) bool {
-	// 			return slice[i] != slice[0]+uint32(i)
-	// 		})
-
-	// 		if ix != len(slice) {
-	// 			from := slice[ix-1] + 1
-	// 			to := slice[ix] - 1
-	// 			missing[c] = append(missing[c], types.Interval{From: from, To: to})
-	// 			gaps--
-	// 		}
-
-	// 		slice = slice[ix:]
-	// 	}
-	// }
-
-	return missing
 }
