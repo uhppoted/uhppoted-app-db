@@ -9,6 +9,7 @@ import (
 
 	"github.com/uhppoted/uhppoted-app-db/db"
 	"github.com/uhppoted/uhppoted-app-db/db/mssql"
+	"github.com/uhppoted/uhppoted-app-db/db/mysql"
 	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 )
 
@@ -25,6 +26,15 @@ func getACL(dsn string, table string, withPIN bool) (lib.Table, error) {
 
 	case strings.HasPrefix(dsn, "sqlserver://"):
 		if t, err := mssql.GetACL(dsn, table, withPIN); err != nil {
+			return lib.Table{}, err
+		} else if t == nil {
+			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", t)
+		} else {
+			return *t, nil
+		}
+
+	case strings.HasPrefix(dsn, "mysql://"):
+		if t, err := mysql.GetACL(dsn[8:], table, withPIN); err != nil {
 			return lib.Table{}, err
 		} else if t == nil {
 			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", t)

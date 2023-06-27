@@ -3,6 +3,7 @@ module github.com/uhppoted/uhppoted-app-db
 go 1.20
 
 require (
+	github.com/go-sql-driver/mysql v1.7.1
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/microsoft/go-mssqldb v1.1.0
 	github.com/uhppoted/uhppote-core v0.8.5

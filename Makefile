@@ -8,7 +8,8 @@ DEBUG ?= --debug
 .PHONY: update-release
 
 SQLITE3 = ../runtime/uhppoted-app-db/sqlite3/acl.db
-MSSQL = sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
+MSSQL   = sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
+MYSQL   = mysql://uhppoted:qwerty@/uhppoted
 
 all: test      \
      benchmark \
@@ -206,3 +207,6 @@ mssql-store-acl-with-pin: build
 
 mssql-get-events: build
 	$(CMD) get-events --dsn "$(MSSQL)" --table:log OperationsLog
+
+mysql-get-acl: build
+	$(CMD) get-acl --dsn "$(MYSQL)"
