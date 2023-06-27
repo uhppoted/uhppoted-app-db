@@ -9,7 +9,9 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 
+	"github.com/uhppoted/uhppoted-app-db/db"
 	"github.com/uhppoted/uhppoted-app-db/log"
+	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 
 const MaxLifetime = 5 * time.Minute
@@ -18,6 +20,20 @@ const MaxOpen = 5
 const LogTag = "sqlite3"
 
 type record map[string]any
+
+type dbi struct {
+	dsn string
+}
+
+func NewDB(dsn string) db.DB {
+	return dbi{
+		dsn: dsn,
+	}
+}
+
+func (d dbi) GetACL(table string, withPIN bool) (*lib.Table, error) {
+	return GetACL(d.dsn, table, withPIN)
+}
 
 func open(path string, maxLifetime time.Duration, maxOpen int, maxIdle int) (*sql.DB, error) {
 	dbc, err := sql.Open("sqlite3", path)

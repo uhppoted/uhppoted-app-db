@@ -13,37 +13,31 @@ import (
 	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 )
 
-func getACL(dsn string, table string, withPIN bool) (lib.Table, error) {
+func fromDSN(dsn string) (db.DB, error) {
 	switch {
 	case strings.HasPrefix(dsn, "sqlite3://"):
-		if t, err := sqlite3.GetACL(dsn[10:], table, withPIN); err != nil {
-			return lib.Table{}, err
-		} else if t == nil {
-			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", t)
-		} else {
-			return *t, nil
-		}
+		return sqlite3.NewDB(dsn[10:]), nil
 
 	case strings.HasPrefix(dsn, "sqlserver://"):
-		if t, err := mssql.GetACL(dsn, table, withPIN); err != nil {
-			return lib.Table{}, err
-		} else if t == nil {
-			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", t)
-		} else {
-			return *t, nil
-		}
+		return mssql.NewDB(dsn), nil
 
 	case strings.HasPrefix(dsn, "mysql://"):
-		if t, err := mysql.GetACL(dsn[8:], table, withPIN); err != nil {
-			return lib.Table{}, err
-		} else if t == nil {
-			return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", t)
-		} else {
-			return *t, nil
-		}
+		return mysql.NewDB(dsn[8:]), nil
 
 	default:
-		return lib.Table{}, fmt.Errorf("unsupported DSN (%v)", dsn)
+		return nil, fmt.Errorf("unsupported DSN (%v)", dsn)
+	}
+}
+
+func getACL(dsn string, table string, withPIN bool) (lib.Table, error) {
+	if dbi, err := fromDSN(dsn); err != nil {
+		return lib.Table{}, err
+	} else if t, err := dbi.GetACL(table, withPIN); err != nil {
+		return lib.Table{}, err
+	} else if t == nil {
+		return lib.Table{}, fmt.Errorf("invalid ACL table (%v)", t)
+	} else {
+		return *t, nil
 	}
 }
 

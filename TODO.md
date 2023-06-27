@@ -27,6 +27,13 @@
       - [ ] CHANGELOG
 
 - [ ] Clean up DSN/DB logic
+      - [x] get-acl
+      - [ ] put-acl
+      - [ ] load-acl
+      - [ ] store-acl
+      - [ ] compare-acl
+      - [ ] get-events
+
 - [ ] sqlite3: replace UPSERTs with TABLE ON CONFLICT REPLACE clause
 
 ## TODO
