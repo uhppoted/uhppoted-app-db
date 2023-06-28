@@ -15,6 +15,7 @@ Supported operating systems:
 Supported databases:
 - sqlite3
 - Microsoft SQL Server
+- MySQL
 
 ##### _Version v0.8.5_
 
@@ -94,13 +95,19 @@ Supported commands:
 The `uhppoted-app-db` commands require a DSN command line argument to specify the database connection.
 
 1. For sqlite3, this takes the form `sqlite3://<filepath>`, where the file path is the path to the sqlite3
-   database file.
+   database file.  
    e.g. `sqlite3://../db/ACL.db`
 
 2. For Microsoft SQL Server, DSN is any DSN accepted by the Microsoft SQL Server driver, as specified in the
    official [documentation](https://pkg.go.dev/github.com/microsoft/go-mssqldb). Typically a SQL Server DSN
-   takes the form `sqlserver://<uid>:<password>@<host>?database=<database>`.
+   takes the form `sqlserver://<uid>:<password>@<host>?database=<database>`.  
    e.g. `sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted`
+
+3. For MySQL the DSN takes the form `mysql://<DSN>` where the DSN is a [MySQL DSN](https://github.com/go-sql-driver/mysql#dsn-data-source-name), typically of the form `[username[:password]@][protocol[(address)]]/<dbname>`  
+   e.g. `mysql://qwerty:uiop@tcp(127.0.0.1:3306)/uhppoted`.
+   The database name is required, the other parameters are optional:  
+   e.g. a minimal MySQL DSN would be `mysql:///uhppoted` and would use the default connection, user and password to connect
+   to database _uhppoted_.
 
 
 ### ACL table format
@@ -146,7 +153,8 @@ have the following structure:
 
 Notes:
 1. The table can have either or both of the _CardNumber_ or the _Card_ columns.
-2. For sqlite3 and SQL Server the _Timestamp_ column is expected to be filled automatically.
+2. For sqlite3, SQL Server and MySQL the _Timestamp_ column is expected to be filled automatically with the
+   CURRENT_TIMESTAMP.
 
 ### Log table format
 

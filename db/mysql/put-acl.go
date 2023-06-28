@@ -1,14 +1,14 @@
-package sqlite3
+package mysql
 
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	_ "github.com/microsoft/go-mssqldb"
 
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
@@ -18,19 +18,11 @@ func PutACL(dsn string, table string, recordset lib.Table, withPIN bool) (int, e
 
 	defer cancel()
 
-	if _, err := os.Stat(dsn); errors.Is(err, os.ErrNotExist) {
-		return 0, fmt.Errorf("sqlite3 database %v does not exist", dsn)
-	} else if err != nil {
-		return 0, err
-	}
-
 	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
 		return 0, err
 	} else if dbc == nil {
-		return 0, fmt.Errorf("invalid sqlite3 DB (%v)", dbc)
+		return 0, fmt.Errorf("invalid MySQL DB (%v)", dbc)
 	} else if tx, err := dbc.BeginTx(ctx, nil); err != nil {
-		return 0, err
-	} else if _, err := clear(dbc, tx, table); err != nil {
 		return 0, err
 	} else if count, err := insert(dbc, tx, table, recordset, withPIN); err != nil {
 		return 0, err
@@ -38,20 +30,6 @@ func PutACL(dsn string, table string, recordset lib.Table, withPIN bool) (int, e
 		return 0, err
 	} else {
 		return count, nil
-	}
-}
-
-func clear(dbc *sql.DB, tx *sql.Tx, table string) (int64, error) {
-	sql := fmt.Sprintf("DELETE FROM %v;", table)
-
-	if prepared, err := dbc.Prepare(sql); err != nil {
-		return 0, err
-	} else if result, err := tx.Stmt(prepared).Exec(); err != nil {
-		return 0, err
-	} else if N, err := result.RowsAffected(); err != nil {
-		return N, err
-	} else {
-		return N, nil
 	}
 }
 
@@ -112,52 +90,58 @@ func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table, withPIN 
 	}
 
 	values := []string{}
-	conflicts := []string{}
-	for _, col := range columns {
+	for range columns {
 		values = append(values, "?")
-
-		if normalise(col) != "cardnumber" {
-			conflicts = append(conflicts, fmt.Sprintf("%v=excluded.%v", col, col))
-		}
 	}
 
-	sql := fmt.Sprintf("INSERT INTO %v (%v) VALUES (%v) ON CONFLICT(CardNumber) DO UPDATE SET %v;",
+	replace := fmt.Sprintf("REPLACE INTO %v (%v) VALUES (%v);",
 		table,
 		strings.Join(columns, ","),
-		strings.Join(values, ","),
-		strings.Join(conflicts, ","))
+		strings.Join(values, ","))
 
 	// ... execute
 	count := 0
 
-	if prepared, err := dbc.Prepare(sql); err != nil {
+	if prepared, err := dbc.Prepare(replace); err != nil {
 		return 0, err
 	} else {
 		for _, row := range recordset.Records {
-			record := make([]any, len(columns))
-			for i, col := range columns {
+			card := row[index["cardnumber"]-1]
+			record := []any{}
+			for _, col := range columns {
 				ix := index[normalise(col)] - 1
+				column := normalise(col)
 
-				if normalise(col) == "pin" {
+				if column == "cardnumber" {
+					record = append(record, card)
+				} else if column == "pin" {
 					if row[ix] == "" {
-						record[i] = 0
+						record = append(record, 0)
 					} else if pin, err := strconv.ParseUint(row[ix], 10, 16); err != nil {
 						return 0, err
 					} else {
-						record[i] = pin
+						record = append(record, pin)
 					}
+				} else if column == "startdate" {
+					record = append(record, row[ix])
+				} else if column == "enddate" {
+					record = append(record, row[ix])
 				} else {
-					record[i] = row[ix]
+					if row[ix] == "N" {
+						record = append(record, 0)
+					} else if row[ix] == "Y" {
+						record = append(record, 1)
+					} else {
+						record = append(record, row[ix])
+					}
 				}
 			}
 
-			if result, err := tx.Stmt(prepared).Exec(record...); err != nil {
-				return 0, err
-			} else if id, err := result.LastInsertId(); err != nil {
+			if _, err := tx.Stmt(prepared).Exec(record...); err != nil {
 				return 0, err
 			} else {
 				count++
-				debugf("put-acl: stored card %v@%v", row[index["cardnumber"]], id)
+				debugf("put-acl: stored card %v", card)
 			}
 		}
 	}

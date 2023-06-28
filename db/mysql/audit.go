@@ -1,11 +1,9 @@
-package sqlite3
+package mysql
 
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/uhppoted/uhppoted-app-db/db"
@@ -16,16 +14,10 @@ func AuditTrail(dsn string, table string, recordset []db.AuditRecord) (int, erro
 
 	defer cancel()
 
-	if _, err := os.Stat(dsn); errors.Is(err, os.ErrNotExist) {
-		return 0, fmt.Errorf("sqlite3 database %v does not exist", dsn)
-	} else if err != nil {
-		return 0, err
-	}
-
 	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
 		return 0, err
 	} else if dbc == nil {
-		return 0, fmt.Errorf("invalid sqlite3 DB (%v)", dbc)
+		return 0, fmt.Errorf("invalid MySQL DB (%v)", dbc)
 	} else if tx, err := dbc.BeginTx(ctx, nil); err != nil {
 		return 0, err
 	} else if N, err := appendToAuditTrail(dbc, tx, table, recordset); err != nil {
@@ -42,23 +34,16 @@ func appendToAuditTrail(dbc *sql.DB, tx *sql.Tx, table string, recordset []db.Au
 	card := false
 
 	// ... get columns
-	sql := fmt.Sprintf(`SELECT * FROM %v WHERE 1=2;`, table)
-	if rs, err := tx.Query(sql); err != nil {
+	if columns, err := getColumns(dbc, tx, table); err != nil {
 		return 0, err
 	} else {
-		defer rs.Close()
+		for _, col := range columns {
+			if normalise(col) == "card" {
+				card = true
+			}
 
-		if columns, err := rs.Columns(); err != nil {
-			return 0, err
-		} else {
-			for _, col := range columns {
-				if normalise(col) == "card" {
-					card = true
-				}
-
-				if normalise(col) == "cardnumber" {
-					cardNumber = true
-				}
+			if normalise(col) == "cardnumber" {
+				cardNumber = true
 			}
 		}
 	}
@@ -91,16 +76,31 @@ func appendToAuditTrail(dbc *sql.DB, tx *sql.Tx, table string, recordset []db.Au
 		for _, record := range recordset {
 			row := g(record)
 
-			if result, err := tx.Stmt(prepared).Exec(row...); err != nil {
-				return 0, err
-			} else if id, err := result.LastInsertId(); err != nil {
+			if _, err := tx.Stmt(prepared).Exec(row...); err != nil {
 				return 0, err
 			} else {
 				count++
-				debugf("audit: stored audit record for card %v@%v", record.CardNumber, id)
+				debugf("audit: stored audit record for card %v", record.CardNumber)
 			}
 		}
 	}
 
 	return count, nil
+}
+
+// Ref. https://stackoverflow.com/questions/47406876/unexpected-eof-and-busy-buffer-in-go-sql-driver-mysql-packets-go
+func getColumns(dbc *sql.DB, tx *sql.Tx, table string) ([]string, error) {
+	sql := fmt.Sprintf(`SELECT * FROM %v WHERE 1=2;`, table)
+
+	if rs, err := tx.Query(sql); err != nil {
+		return nil, err
+	} else {
+		defer rs.Close()
+
+		if columns, err := rs.Columns(); err != nil {
+			return nil, err
+		} else {
+			return columns, nil
+		}
+	}
 }

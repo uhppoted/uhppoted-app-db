@@ -8,8 +8,6 @@ import (
 	"os"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
-
 	core "github.com/uhppoted/uhppote-core/types"
 )
 
@@ -53,7 +51,7 @@ func GetEvents(dsn string, table string, controller uint32) ([]uint32, error) {
 	}
 }
 
-func StoreEvents(dsn string, table string, events []core.Event) (int, error) {
+func PutEvents(dsn string, table string, events []core.Event) (int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()

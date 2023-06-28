@@ -8,6 +8,7 @@
 3. Added optional operations log for all ACL commands.
 4. Implemented `get-events` command to retrieve events from a controller and store
    them in a database table.
+5. Added support for MySQL.
 
 ### Updated
 1. Reworked command line arguments to specify ACL table using --table:ACL option.

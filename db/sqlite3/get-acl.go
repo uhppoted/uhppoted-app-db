@@ -8,8 +8,6 @@ import (
 	"os"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
-
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 

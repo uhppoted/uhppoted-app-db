@@ -6,33 +6,28 @@
 - [x] Audit trail (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
 - [x] Operations log (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
 - [x] Events (cf. https://github.com/uhppoted/uhppoted-app-db/issues/5)
-      - [x] `get-events` command
-      - [x] fill in missing events
-      - [x] sqlite3
-      - [x] SQL Server
+- [ ] MySQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/1)
+      - [x] get-acl
+      - [x] put-acl
+      - [x] load-acl
+      - [x] store-acl
+      - [x] compare-acl
+      - [x] get-events
+      - [x] audit trail
+      - [x] log
+      - [x] DSN: host/port
+      - [ ] record2row: use []uint8 for DATE fields
+      - [x] Rename StoreEvents to PutEvents
       - [x] README
       - [x] CHANGELOG
 
-- [ ] MySQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/1)
-      - [ ] DSN: host/port
+- [x] Clean up DSN/DB logic
       - [x] get-acl
-      - [ ] put-acl
-      - [ ] load-acl
-      - [ ] store-acl
-      - [ ] compare-acl
-      - [ ] get-events
-      - [ ] audit trail
-      - [ ] log
-      - [ ] README
-      - [ ] CHANGELOG
-
-- [ ] Clean up DSN/DB logic
-      - [x] get-acl
-      - [ ] put-acl
-      - [ ] load-acl
-      - [ ] store-acl
-      - [ ] compare-acl
-      - [ ] get-events
+      - [x] put-acl
+      - [x] load-acl
+      - [x] store-acl
+      - [x] compare-acl
+      - [x] get-events
 
 - [ ] sqlite3: replace UPSERTs with TABLE ON CONFLICT REPLACE clause
 

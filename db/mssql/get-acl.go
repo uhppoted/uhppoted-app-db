@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	_ "github.com/microsoft/go-mssqldb"
-
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 

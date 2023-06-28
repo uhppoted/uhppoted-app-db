@@ -209,4 +209,21 @@ mssql-get-events: build
 	$(CMD) get-events --dsn "$(MSSQL)" --table:log OperationsLog
 
 mysql-get-acl: build
-	$(CMD) get-acl --dsn "$(MYSQL)"
+	$(CMD) get-acl --dsn "$(MYSQL)" --with-pin
+#	$(CMD) get-acl --dsn "mysql://uhppoted:qwerty@tcp(127.0.0.1:3306)/uhppoted" 
+
+mysql-put-acl: build
+	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(MYSQL)" --table:ACL ACLx
+
+mysql-compare-acl: build
+	$(CMD) compare-acl --dsn "$(MYSQL)" --table:ACL ACL --table:audit Audit --with-pin
+
+mysql-load-acl: build
+	$(CMD) load-acl --dsn "$(MYSQL)" --table:ACL ACL --table:log OperationsLog
+
+mysql-store-acl: build
+	$(CMD) store-acl --dsn "$(MYSQL)" --table:ACL ACLz
+
+mysql-get-events: build
+	$(CMD) get-events --dsn "$(MYSQL)" --table:log OperationsLog --batch-size 5
+

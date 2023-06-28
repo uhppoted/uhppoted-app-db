@@ -35,7 +35,7 @@ var GetEventsCmd = GetEvents{
 
 		dsn: "",
 		tables: tables{
-			Events: "events",
+			Events: "Events",
 			Log:    "",
 		},
 		lockfile: "",

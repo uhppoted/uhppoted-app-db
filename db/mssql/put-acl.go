@@ -8,8 +8,6 @@ import (
 	"strings"
 	"time"
 
-	_ "github.com/microsoft/go-mssqldb"
-
 	lib "github.com/uhppoted/uhppoted-lib/acl"
 )
 
@@ -21,7 +19,7 @@ func PutACL(dsn string, table string, recordset lib.Table, withPIN bool) (int, e
 	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
 		return 0, err
 	} else if dbc == nil {
-		return 0, fmt.Errorf("invalid %v DB (%v)", "SQL Server", dbc)
+		return 0, fmt.Errorf("invalid SQL Server DB (%v)", dbc)
 	} else if tx, err := dbc.BeginTx(ctx, nil); err != nil {
 		return 0, err
 	} else if _, err := clear(dbc, tx, table); err != nil {

@@ -9,6 +9,7 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 
+	core "github.com/uhppoted/uhppote-core/types"
 	"github.com/uhppoted/uhppoted-app-db/db"
 	"github.com/uhppoted/uhppoted-app-db/log"
 	lib "github.com/uhppoted/uhppoted-lib/acl"
@@ -33,6 +34,26 @@ func NewDB(dsn string) db.DB {
 
 func (d dbi) GetACL(table string, withPIN bool) (*lib.Table, error) {
 	return GetACL(d.dsn, table, withPIN)
+}
+
+func (d dbi) PutACL(table string, acl lib.Table, withPIN bool) (int, error) {
+	return PutACL(d.dsn, table, acl, withPIN)
+}
+
+func (d dbi) GetEvents(table string, controller uint32) ([]uint32, error) {
+	return GetEvents(d.dsn, table, controller)
+}
+
+func (d dbi) PutEvents(table string, events []core.Event) (int, error) {
+	return PutEvents(d.dsn, table, events)
+}
+
+func (d dbi) AuditTrail(table string, trail []db.AuditRecord) (int, error) {
+	return AuditTrail(d.dsn, table, trail)
+}
+
+func (d dbi) Log(table string, rs []db.LogRecord) (int, error) {
+	return Log(d.dsn, table, rs)
 }
 
 func open(path string, maxLifetime time.Duration, maxOpen int, maxIdle int) (*sql.DB, error) {
