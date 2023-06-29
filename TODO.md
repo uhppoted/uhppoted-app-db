@@ -6,7 +6,7 @@
 - [x] Audit trail (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
 - [x] Operations log (cf. https://github.com/uhppoted/uhppoted-app-db/issues/4)
 - [x] Events (cf. https://github.com/uhppoted/uhppoted-app-db/issues/5)
-- [ ] MySQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/1)
+- [x] MySQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/1)
       - [x] get-acl
       - [x] put-acl
       - [x] load-acl
@@ -16,10 +16,10 @@
       - [x] audit trail
       - [x] log
       - [x] DSN: host/port
-      - [ ] record2row: use []uint8 for DATE fields
       - [x] Rename StoreEvents to PutEvents
       - [x] README
       - [x] CHANGELOG
+      - [x] record2row: use []uint8 for DATE fields
 
 - [x] Clean up DSN/DB logic
       - [x] get-acl

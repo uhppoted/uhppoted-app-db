@@ -78,8 +78,9 @@ func row2record(rows *sql.Rows, columns []string, types []*sql.ColumnType) (reco
 		case "VARCHAR":
 			values[i] = ""
 
+			// NTS: the MySQL driver always uses []uint8 rather than time.Time or sql.NullTime
 		case "DATE":
-			values[i] = time.Time{}
+			values[i] = make([]uint8, 16)
 
 		case "INT":
 			values[i] = uint32(0)
