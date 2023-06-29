@@ -1,6 +1,6 @@
 CREATE TABLE ACL (
     Name       TEXT    DEFAULT '',
-    CardNumber INTEGER UNIQUE,
+    CardNumber INTEGER UNIQUE ON CONFLICT REPLACE,
     PIN        INTEGER DEFAULT 0,
     StartDate  TEXT    DEFAULT '',
     EndDate    TEXT    DEFAULT '',

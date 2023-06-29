@@ -112,9 +112,7 @@ sqlite3-get-acl-with-pin: build
 	$(CMD) --debug get-acl --dsn "sqlite3://$(SQLITE3)" --with-pin
 
 sqlite3-put-acl: build
-	sqlite3 "$(SQLITE3)" 'delete from ACLx'
 	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "sqlite3://$(SQLITE3)" --table:ACL ACLx --table:log OperationsLog
-	sqlite3 "$(SQLITE3)" 'select * from ACLx'
 
 sqlite3-put-acl-with-pin: build
 	sqlite3 "$(SQLITE3)" 'delete from ACLx'

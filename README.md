@@ -19,9 +19,13 @@ Supported databases:
 
 ##### _Version v0.8.5_
 
-_Please note that this README describes the current development version and the command line arguments have changed to 
+1. _Please note that this README describes the current development version and the command line arguments have changed to 
 support additional drivers. If you are using v0.8.5, please see [README-v0.8.5](README_v0.8.5.md) for a description of
 the command line arguments._
+
+2. The _sqlite3_ implementation has also changed to expect the ACL table to include an ON CONFLICT REPLACE clause when
+creating the table rather than implementing an UPSERT.
+
 
 ## Releases
 

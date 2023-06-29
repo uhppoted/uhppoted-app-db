@@ -112,20 +112,14 @@ func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table, withPIN 
 	}
 
 	values := []string{}
-	conflicts := []string{}
-	for _, col := range columns {
+	for range columns {
 		values = append(values, "?")
-
-		if normalise(col) != "cardnumber" {
-			conflicts = append(conflicts, fmt.Sprintf("%v=excluded.%v", col, col))
-		}
 	}
 
-	sql := fmt.Sprintf("INSERT INTO %v (%v) VALUES (%v) ON CONFLICT(CardNumber) DO UPDATE SET %v;",
+	sql := fmt.Sprintf("INSERT INTO %v (%v) VALUES (%v);",
 		table,
 		strings.Join(columns, ","),
-		strings.Join(values, ","),
-		strings.Join(conflicts, ","))
+		strings.Join(values, ","))
 
 	// ... execute
 	count := 0
