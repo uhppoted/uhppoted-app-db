@@ -10,6 +10,7 @@ import (
 	"github.com/uhppoted/uhppote-core/uhppote"
 	"github.com/uhppoted/uhppoted-lib/config"
 	"github.com/uhppoted/uhppoted-lib/lockfile"
+	lib "github.com/uhppoted/uhppoted-lib/os"
 
 	"github.com/uhppoted/uhppoted-app-db/log"
 )
@@ -119,7 +120,7 @@ func write(file string, bytes []byte) error {
 	dir := filepath.Dir(file)
 	if err := os.MkdirAll(dir, 0770); err != nil {
 		return err
-	} else if err := os.Rename(tmp.Name(), file); err != nil {
+	} else if err := lib.Rename(tmp.Name(), file); err != nil {
 		return err
 	}
 

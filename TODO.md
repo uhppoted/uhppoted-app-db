@@ -9,6 +9,7 @@
 - [x] MySQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/1)
 - [x] Clean up DSN/DB logic
 - [x] sqlite3: replace UPSERTs with TABLE ON CONFLICT REPLACE clause
+- [x] Replace os.Rename with lib implementation for tmpfs support (cf. https://github.com/uhppoted/uhppoted-httpd/issues/20)
 
 ## TODO
 

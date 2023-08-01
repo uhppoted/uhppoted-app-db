@@ -7,7 +7,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/microsoft/go-mssqldb v1.1.0
 	github.com/uhppoted/uhppote-core v0.8.6-0.20230714164141-912d472ef6df
-	github.com/uhppoted/uhppoted-lib v0.8.6-0.20230714155133-57e68f2d1360
+	github.com/uhppoted/uhppoted-lib v0.8.6-0.20230801163955-16b4119234e5
 )
 
 require (

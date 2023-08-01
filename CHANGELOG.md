@@ -14,6 +14,7 @@
 1. Reworked command line arguments to specify ACL table using --table:ACL option.
 2. Reworked sqlite3 implementation to replace the UPSERT with an ON CONFLICT REPLACE
    clause in the CREATE TABLE.
+3. Replaced os.Rename with lib implementation for tmpfs support.
 
 
 ## [0.8.5](https://github.com/uhppoted/uhppoted-app-db/releases/tag/v0.8.5) - 2023-06-13
