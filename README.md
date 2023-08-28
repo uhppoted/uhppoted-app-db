@@ -31,6 +31,7 @@ creating the table rather than implementing an UPSERT.
 
 | *Version* | *Description*                                                                             |
 | --------- | ----------------------------------------------------------------------------------------- |
+| v0.8.6    | Adds support for MySQL and Microsoft SQL Server                                           |
 | v0.8.5    | Initial release with sqlite3 support                                                      |
 
 ## Installation
