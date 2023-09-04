@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Updated
+1. Bumped Go version to 1.21
+
 
 ## [0.8.6](https://github.com/uhppoted/uhppoted-app-db/releases/tag/v0.8.6) - 2023-08-30
 
