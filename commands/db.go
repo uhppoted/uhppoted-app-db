@@ -10,6 +10,7 @@ import (
 	"github.com/uhppoted/uhppoted-app-db/db"
 	"github.com/uhppoted/uhppoted-app-db/db/mssql"
 	"github.com/uhppoted/uhppoted-app-db/db/mysql"
+	"github.com/uhppoted/uhppoted-app-db/db/postgres"
 	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
 )
 
@@ -23,6 +24,9 @@ func fromDSN(dsn string) (db.DB, error) {
 
 	case strings.HasPrefix(dsn, "mysql://"):
 		return mysql.NewDB(dsn[8:]), nil
+
+	case strings.HasPrefix(dsn, "postgresql://"):
+		return postgres.NewDB(dsn), nil
 
 	default:
 		return nil, fmt.Errorf("unsupported DSN (%v)", dsn)

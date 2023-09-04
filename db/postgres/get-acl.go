@@ -1,4 +1,4 @@
-package mysql
+package postgres
 
 import (
 	"context"
@@ -13,7 +13,7 @@ func GetACL(dsn string, table string, withPIN bool) (*lib.Table, error) {
 	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
 		return nil, err
 	} else if dbc == nil {
-		return nil, fmt.Errorf("invalid %v DB (%v)", "MySQL", dbc)
+		return nil, fmt.Errorf("invalid %v DB (%v)", "PostgreSQL", dbc)
 	} else {
 		return get(dbc, table, withPIN)
 	}

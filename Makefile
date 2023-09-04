@@ -7,9 +7,10 @@ DEBUG ?= --debug
 .PHONY: update
 .PHONY: update-release
 
-SQLITE3 = ../runtime/uhppoted-app-db/sqlite3/acl.db
-MSSQL   = sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
-MYSQL   = mysql://uhppoted:qwerty@/uhppoted
+SQLITE3  = ../runtime/uhppoted-app-db/sqlite3/acl.db
+MSSQL    = sqlserver://sa:UBxNxrQiKWsjncow7mMx@localhost?database=uhppoted
+MYSQL    = mysql://uhppoted:qwerty@/uhppoted
+POSTGRES = postgresql://uhppoted:qwerty@localhost:5432/uhppoted
 
 all: test      \
      benchmark \
@@ -224,4 +225,9 @@ mysql-store-acl: build
 
 mysql-get-events: build
 	$(CMD) get-events --dsn "$(MYSQL)" --table:log OperationsLog --batch-size 5
+
+postgres-get-acl: build
+	$(CMD) --debug get-acl --dsn "$(POSTGRES)"
+	$(CMD)         get-acl --dsn "$(POSTGRES)"
+	$(CMD)         get-acl --dsn "$(POSTGRES)" --table:ACL ACLx
 
