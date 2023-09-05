@@ -7,7 +7,7 @@
       - [x] get-acl
       - [x] put-acl
       - [x] compare-acl
-      - [ ] load-acl
+      - [x] load-acl
       - [ ] store-acl
       - [ ] get-events
       - [ ] CHANGELOG

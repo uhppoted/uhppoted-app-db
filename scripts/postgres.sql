@@ -26,10 +26,19 @@ CREATE TABLE Audit (
     Card       VARCHAR(255) DEFAULT ''
 );
 
+CREATE TABLE OperationsLog (
+    Timestamp  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    Operation  VARCHAR(64)  DEFAULT '',
+    Controller INT          NULL,
+    Detail     VARCHAR(255) DEFAULT ''
+);
+
 
 CREATE USER uhppoted PASSWORD 'qwerty';
 
-GRANT SELECT,INSERT,UPDATE,DELETE ON ACL TO uhppoted;
+GRANT SELECT,INSERT,UPDATE,DELETE ON ACL           TO uhppoted;
+GRANT SELECT,INSERT,UPDATE,DELETE ON Audit         TO uhppoted;
+GRANT SELECT,INSERT,UPDATE,DELETE ON OperationsLog TO uhppoted;
 
 INSERT INTO ACL    (Name, CardNumber,PIN,StartDate,EndDate,GreatHall,Gryffindor,HufflePuff,Ravenclaw,Slytherin,Kitchen,Dungeon,Hogsmeade)
             VALUES ('Albus Dumbledore', 10058400, 0, '2023-01-01', '2023-12-31', 1,1,1,1,1,1,1,1);

@@ -238,3 +238,6 @@ postgres-put-acl: build
 
 postgres-compare-acl: build
 	$(CMD) compare-acl --dsn "$(POSTGRES)" --table:ACL ACL --table:audit Audit --with-pin
+
+postgres-load-acl: build
+	$(CMD) load-acl --dsn "$(POSTGRES)" --table:ACL ACL --table:log OperationsLog

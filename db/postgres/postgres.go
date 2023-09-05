@@ -55,8 +55,7 @@ func (d dbi) AuditTrail(table string, trail []db.AuditRecord) (int, error) {
 }
 
 func (d dbi) Log(table string, rs []db.LogRecord) (int, error) {
-	return 0, fmt.Errorf("*** not implemented ***")
-	// return Log(d.dsn, table, rs)
+	return Log(d.dsn, table, rs)
 }
 
 func open(dsn string, maxLifetime time.Duration, maxOpen int, maxIdle int) (*sql.DB, error) {
