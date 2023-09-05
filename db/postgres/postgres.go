@@ -37,8 +37,7 @@ func (d dbi) GetACL(table string, withPIN bool) (*lib.Table, error) {
 }
 
 func (d dbi) PutACL(table string, acl lib.Table, withPIN bool) (int, error) {
-	return 0, fmt.Errorf("*** not implemented ***")
-	// return PutACL(d.dsn, table, acl, withPIN)
+	return PutACL(d.dsn, table, acl, withPIN)
 }
 
 func (d dbi) GetEvents(table string, controller uint32) ([]uint32, error) {

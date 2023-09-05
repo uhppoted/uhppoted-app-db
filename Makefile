@@ -228,6 +228,10 @@ mysql-get-events: build
 
 postgres-get-acl: build
 	$(CMD) --debug get-acl --dsn "$(POSTGRES)"
-	$(CMD)         get-acl --dsn "$(POSTGRES)"
+	$(CMD)         get-acl --dsn "$(POSTGRES)" --with-pin
 	$(CMD)         get-acl --dsn "$(POSTGRES)" --table:ACL ACLx
 
+postgres-put-acl: build
+	# $(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(POSTGRES)"
+	# $(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(POSTGRES)" --with-pin
+	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(POSTGRES)" --with-pin --table:ACL ACLx

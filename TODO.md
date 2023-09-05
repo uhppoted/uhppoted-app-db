@@ -5,7 +5,7 @@
 - [ ] PostgreSQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/6)
       - [x] Driver
       - [x] get-acl
-      - [ ] put-acl
+      - [x] put-acl
       - [ ] compare-acl
       - [ ] load-acl
       - [ ] store-acl
@@ -14,6 +14,9 @@
       - [ ] README
       - https://neon.tech
       - https://www.postgresql.org/docs/current/protocol-logical-replication.html
+      - https://superuser.com/questions/244589/prevent-postgresql-from-running-at-startup
+      - https://stackoverflow.com/questions/34173451/stop-postgresql-service-on-mac-via-terminal
+      - https://stackoverflow.com/questions/45671327/correct-way-to-start-stop-postgres-database-pg-ctl-or-service-postgres
 
 ## TODO
 

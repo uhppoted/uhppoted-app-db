@@ -1,4 +1,4 @@
-package mysql
+package postgres
 
 import (
 	"context"
@@ -88,19 +88,27 @@ func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table, withPIN 
 	}
 
 	values := []string{}
-	for range columns {
-		values = append(values, "?")
+	for i, _ := range columns {
+		values = append(values, fmt.Sprintf("$%d", i+1))
 	}
 
-	replace := fmt.Sprintf("REPLACE INTO %v (%v) VALUES (%v);",
+	replace := []string{}
+	for _, col := range columns {
+		if normalise(col) != "cardnumber" {
+			replace = append(replace, fmt.Sprintf("%v=EXCLUDED.%v", col, col))
+		}
+	}
+
+	upsert := fmt.Sprintf("INSERT INTO %v (%v) VALUES (%v) ON CONFLICT(CardNumber) DO UPDATE SET %v;",
 		table,
 		strings.Join(columns, ","),
-		strings.Join(values, ","))
+		strings.Join(values, ","),
+		strings.Join(replace, ","))
 
 	// ... execute
 	count := 0
 
-	if prepared, err := dbc.Prepare(replace); err != nil {
+	if prepared, err := dbc.Prepare(upsert); err != nil {
 		return 0, err
 	} else {
 		for _, row := range recordset.Records {
