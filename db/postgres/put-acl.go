@@ -88,7 +88,7 @@ func insert(dbc *sql.DB, tx *sql.Tx, table string, recordset lib.Table, withPIN 
 	}
 
 	values := []string{}
-	for i, _ := range columns {
+	for i := range columns {
 		values = append(values, fmt.Sprintf("$%d", i+1))
 	}
 

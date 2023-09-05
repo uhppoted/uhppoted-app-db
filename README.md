@@ -16,6 +16,7 @@ Supported databases:
 - sqlite3
 - Microsoft SQL Server
 - MySQL
+- PostgreSQL
 
 ##### _Version v0.8.5_
 
@@ -113,6 +114,9 @@ The `uhppoted-app-db` commands require a DSN command line argument to specify th
    The database name is required, the other parameters are optional:  
    e.g. a minimal MySQL DSN would be `mysql:///uhppoted` and would use the default connection, user and password to connect
    to database _uhppoted_.
+
+3. For PostgreSQL, DSN is the standard PostgreSQL DSN `postgres://{user}:{password}@{hostname}:{port}/{database-name}`,
+   e.g. `postgresql://uhppoted:qwerty@localhost:5432/uhppoted`
 
 
 ### ACL table format

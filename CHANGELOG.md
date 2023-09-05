@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+1. Added support for PostgreSQL.
+
 ### Updated
 1. Bumped Go version to 1.21
 

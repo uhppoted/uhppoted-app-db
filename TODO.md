@@ -2,7 +2,7 @@
 
 ## IN PROGRESS
 
-- [ ] PostgreSQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/6)
+- [x] PostgreSQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/6)
       - [x] Driver
       - [x] get-acl
       - [x] put-acl
@@ -10,8 +10,8 @@
       - [x] load-acl
       - [x] store-acl
       - [x] get-events
-      - [ ] CHANGELOG
-      - [ ] README
+      - [x] CHANGELOG
+      - [x] README
 
 ## TODO
 
