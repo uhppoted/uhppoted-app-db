@@ -17,6 +17,16 @@ CREATE TABLE ACLx (
     Hogsmeade  SMALLINT DEFAULT 0
 );
 
+CREATE TABLE Audit (
+    Timestamp  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    Operation  VARCHAR(64)  DEFAULT '',
+    Controller INT          DEFAULT 0,
+    CardNumber INT          DEFAULT 0,
+    Status     VARCHAR(64)  DEFAULT '',
+    Card       VARCHAR(255) DEFAULT ''
+);
+
+
 CREATE USER uhppoted PASSWORD 'qwerty';
 
 GRANT SELECT,INSERT,UPDATE,DELETE ON ACL TO uhppoted;

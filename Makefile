@@ -235,3 +235,6 @@ postgres-put-acl: build
 	# $(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(POSTGRES)"
 	# $(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(POSTGRES)" --with-pin
 	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(POSTGRES)" --with-pin --table:ACL ACLx
+
+postgres-compare-acl: build
+	$(CMD) compare-acl --dsn "$(POSTGRES)" --table:ACL ACL --table:audit Audit --with-pin

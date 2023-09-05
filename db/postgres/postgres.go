@@ -51,8 +51,7 @@ func (d dbi) PutEvents(table string, events []core.Event) (int, error) {
 }
 
 func (d dbi) AuditTrail(table string, trail []db.AuditRecord) (int, error) {
-	return 0, fmt.Errorf("*** not implemented ***")
-	// return AuditTrail(d.dsn, table, trail)
+	return AuditTrail(d.dsn, table, trail)
 }
 
 func (d dbi) Log(table string, rs []db.LogRecord) (int, error) {

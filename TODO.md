@@ -6,7 +6,7 @@
       - [x] Driver
       - [x] get-acl
       - [x] put-acl
-      - [ ] compare-acl
+      - [x] compare-acl
       - [ ] load-acl
       - [ ] store-acl
       - [ ] get-events
