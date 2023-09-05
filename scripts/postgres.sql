@@ -1,7 +1,7 @@
 CREATE DATABASE uhppoted;
 USE uhppoted;
 
-CREATE TABLE ACLx (
+CREATE TABLE ACL (
     Name       VARCHAR(256) DEFAULT '',
     CardNumber INT      UNIQUE,
     PIN        INT      DEFAULT 0,
@@ -15,6 +15,19 @@ CREATE TABLE ACLx (
     Kitchen    SMALLINT DEFAULT 0,
     Dungeon    SMALLINT DEFAULT 0,
     Hogsmeade  SMALLINT DEFAULT 0
+);
+
+CREATE TABLE Events (
+    Controller   INT       NOT NULL,
+    EventIndex   INT       NOT NULL,
+    Timestamp    TIMESTAMP NULL,
+    Type         SMALLINT  NULL,
+    Granted      SMALLINT  NULL,
+    Door         SMALLINT  NULL,
+    Direction    SMALLINT  NULL,
+    CardNumber   INT       NULL,
+    Reason       SMALLINT  NULL,
+    CONSTRAINT ControllerEventIndex UNIQUE (Controller, EventIndex)
 );
 
 CREATE TABLE Audit (
@@ -37,6 +50,7 @@ CREATE TABLE OperationsLog (
 CREATE USER uhppoted PASSWORD 'qwerty';
 
 GRANT SELECT,INSERT,UPDATE,DELETE ON ACL           TO uhppoted;
+GRANT SELECT,INSERT,UPDATE,DELETE ON Events        TO uhppoted;
 GRANT SELECT,INSERT,UPDATE,DELETE ON Audit         TO uhppoted;
 GRANT SELECT,INSERT,UPDATE,DELETE ON OperationsLog TO uhppoted;
 

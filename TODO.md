@@ -8,15 +8,10 @@
       - [x] put-acl
       - [x] compare-acl
       - [x] load-acl
-      - [ ] store-acl
-      - [ ] get-events
+      - [x] store-acl
+      - [x] get-events
       - [ ] CHANGELOG
       - [ ] README
-      - https://neon.tech
-      - https://www.postgresql.org/docs/current/protocol-logical-replication.html
-      - https://superuser.com/questions/244589/prevent-postgresql-from-running-at-startup
-      - https://stackoverflow.com/questions/34173451/stop-postgresql-service-on-mac-via-terminal
-      - https://stackoverflow.com/questions/45671327/correct-way-to-start-stop-postgres-database-pg-ctl-or-service-postgres
 
 ## TODO
 
@@ -26,6 +21,12 @@
 - [ ] [liveblocks](https://liveblocks.io)
 - [ ] [MyCelial](https://github.com/mycelial)
 
+- (?) PostgreSQL logical replication protocol
+      - https://www.postgresql.org/docs/current/protocol-logical-replication.html
+
 ## Notes
 
 1. https://leerob.io/blog/backend
+2. https://superuser.com/questions/244589/prevent-postgresql-from-running-at-startup
+3. https://stackoverflow.com/questions/34173451/stop-postgresql-service-on-mac-via-terminal
+4. https://stackoverflow.com/questions/45671327/correct-way-to-start-stop-postgres-database-pg-ctl-or-service-postgres

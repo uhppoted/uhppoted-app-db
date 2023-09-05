@@ -232,8 +232,6 @@ postgres-get-acl: build
 	$(CMD)         get-acl --dsn "$(POSTGRES)" --table:ACL ACLx
 
 postgres-put-acl: build
-	# $(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(POSTGRES)"
-	# $(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(POSTGRES)" --with-pin
 	$(CMD) put-acl --file "../runtime/uhppoted-app-db/acl.tsv" --dsn "$(POSTGRES)" --with-pin --table:ACL ACLx
 
 postgres-compare-acl: build
@@ -241,3 +239,9 @@ postgres-compare-acl: build
 
 postgres-load-acl: build
 	$(CMD) load-acl --dsn "$(POSTGRES)" --table:ACL ACL --table:log OperationsLog
+
+postgres-store-acl: build
+	$(CMD) store-acl --dsn "$(POSTGRES)" --table:ACL ACLz
+
+postgres-get-events: build
+	$(CMD) get-events --dsn "$(POSTGRES)" --table:log OperationsLog --batch-size 5

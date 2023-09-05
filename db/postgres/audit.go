@@ -17,7 +17,7 @@ func AuditTrail(dsn string, table string, recordset []db.AuditRecord) (int, erro
 	if dbc, err := open(dsn, MaxLifetime, MaxIdle, MaxOpen); err != nil {
 		return 0, err
 	} else if dbc == nil {
-		return 0, fmt.Errorf("invalid MySQL DB (%v)", dbc)
+		return 0, fmt.Errorf("invalid PostgreSQL DB (%v)", dbc)
 	} else if tx, err := dbc.BeginTx(ctx, nil); err != nil {
 		return 0, err
 	} else if N, err := appendToAuditTrail(dbc, tx, table, recordset); err != nil {

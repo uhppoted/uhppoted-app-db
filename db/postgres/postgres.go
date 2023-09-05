@@ -41,13 +41,11 @@ func (d dbi) PutACL(table string, acl lib.Table, withPIN bool) (int, error) {
 }
 
 func (d dbi) GetEvents(table string, controller uint32) ([]uint32, error) {
-	return nil, fmt.Errorf("*** not implemented ***")
-	// return GetEvents(d.dsn, table, controller)
+	return GetEvents(d.dsn, table, controller)
 }
 
 func (d dbi) PutEvents(table string, events []core.Event) (int, error) {
-	return 0, fmt.Errorf("*** not implemented ***")
-	// return PutEvents(d.dsn, table, events)
+	return PutEvents(d.dsn, table, events)
 }
 
 func (d dbi) AuditTrail(table string, trail []db.AuditRecord) (int, error) {

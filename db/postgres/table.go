@@ -88,7 +88,6 @@ func makeTable(columns []string, recordset []record, withPIN bool) (*lib.Table, 
 			}
 		}
 
-		// NTS: bizarrely, the MySQL driver converts a time.Time value to []uint8
 		if from, ok := record[index["startdate"]].(time.Time); ok {
 			row = append(row, from.Format("2006-01-02"))
 		} else if from, ok := record[index["startdate"]].([]uint8); ok {
@@ -97,7 +96,6 @@ func makeTable(columns []string, recordset []record, withPIN bool) (*lib.Table, 
 			continue
 		}
 
-		// NTS: bizarrely, the MySQL driver converts a time.Time value to []uint8
 		if to, ok := record[index["enddate"]].(time.Time); ok {
 			row = append(row, to.Format("2006-01-02"))
 		} else if to, ok := record[index["enddate"]].([]uint8); ok {
