@@ -16,6 +16,9 @@
 ## TODO
 
 - [ ] Firebase
+- (?) Foreign data wrappers
+      - https://wiki.postgresql.org/wiki/Foreign_data_wrappers
+      - https://github.com/obi1kenobi/trustfall
 - [ ] DynamoDB
 - [ ] [Xata](https://xata.io)
 - [ ] [liveblocks](https://liveblocks.io)
@@ -30,3 +33,4 @@
 2. https://superuser.com/questions/244589/prevent-postgresql-from-running-at-startup
 3. https://stackoverflow.com/questions/34173451/stop-postgresql-service-on-mac-via-terminal
 4. https://stackoverflow.com/questions/45671327/correct-way-to-start-stop-postgres-database-pg-ctl-or-service-postgres
+5. https://news.ycombinator.com/item?id=32093002
