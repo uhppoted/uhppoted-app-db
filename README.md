@@ -18,6 +18,8 @@ Supported databases:
 - MySQL
 - PostgreSQL
 
+## Release Notes
+
 ##### _Version v0.8.5_
 
 1. _Please note that this README describes the current development version and the command line arguments have changed to 
@@ -27,13 +29,12 @@ the command line arguments._
 2. The _sqlite3_ implementation has also changed to expect the ACL table to include an ON CONFLICT REPLACE clause when
 creating the table rather than implementing an UPSERT.
 
+## Current Release
 
-## Releases
+**[v0.8.7](https://github.com/uhppoted/uhppoted-app-db/releases/tag/v0.8.7) - 2023-12-01**
 
-| *Version* | *Description*                                                                             |
-| --------- | ----------------------------------------------------------------------------------------- |
-| v0.8.6    | Adds support for MySQL and Microsoft SQL Server                                           |
-| v0.8.5    | Initial release with sqlite3 support                                                      |
+1. Added support for PostgreSQL.
+2. Bumped Go version to 1.21
 
 ## Installation
 

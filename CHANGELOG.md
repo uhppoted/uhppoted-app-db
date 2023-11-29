@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## [0.8.7](https://github.com/uhppoted/uhppoted-app-db/releases/tag/v0.8.7) - 2023-12-01
 
 ### Added
 1. Added support for PostgreSQL.
