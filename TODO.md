@@ -26,6 +26,7 @@
 
 - (?) PostgreSQL logical replication protocol
       - https://www.postgresql.org/docs/current/protocol-logical-replication.html
+- (?) https://xata.io
 
 ## Notes
 
