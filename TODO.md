@@ -16,6 +16,7 @@
 ## TODO
 
 - [ ] Firebase
+- https://www.pgrs.net/2024/03/21/duckdb-as-the-new-jq/
 - (?) Foreign data wrappers
       - https://wiki.postgresql.org/wiki/Foreign_data_wrappers
       - https://github.com/obi1kenobi/trustfall
