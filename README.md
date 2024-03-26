@@ -31,10 +31,10 @@ creating the table rather than implementing an UPSERT.
 
 ## Current Release
 
-**[v0.8.7](https://github.com/uhppoted/uhppoted-app-db/releases/tag/v0.8.7) - 2023-12-01**
+**[v0.8.8](https://github.com/uhppoted/uhppoted-app-db/releases/tag/v0.8.8) - 2024-03-27**
 
-1. Added support for PostgreSQL.
-2. Bumped Go version to 1.21
+1. Bumped Go version to 1.22
+
 
 ## Installation
 
