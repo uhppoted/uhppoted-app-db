@@ -9,8 +9,8 @@ require (
 	github.com/jackc/pgx/v5 v5.5.4
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/microsoft/go-mssqldb v1.1.0
-	github.com/uhppoted/uhppote-core v0.8.9-0.20240503171818-3b8085301ddc
-	github.com/uhppoted/uhppoted-lib v0.8.9-0.20240503174953-ae8f308d9f67
+	github.com/uhppoted/uhppote-core v0.8.9-0.20240507163420-35508cf9ca2b
+	github.com/uhppoted/uhppoted-lib v0.8.9-0.20240507163849-65273968c355
 )
 
 require (
@@ -21,6 +21,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 )
