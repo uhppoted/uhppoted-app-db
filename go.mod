@@ -9,8 +9,8 @@ require (
 	github.com/jackc/pgx/v5 v5.5.4
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/microsoft/go-mssqldb v1.1.0
-	github.com/uhppoted/uhppote-core v0.8.9-0.20240507163420-35508cf9ca2b
-	github.com/uhppoted/uhppoted-lib v0.8.9-0.20240507163849-65273968c355
+	github.com/uhppoted/uhppote-core v0.8.9-0.20240508154856-915c31b963ec
+	github.com/uhppoted/uhppoted-lib v0.8.9-0.20240508160756-1c8a037202d9
 )
 
 require (
