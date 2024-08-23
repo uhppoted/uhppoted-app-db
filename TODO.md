@@ -2,16 +2,9 @@
 
 ## IN PROGRESS
 
-- [x] PostgreSQL support (cf. https://github.com/uhppoted/uhppoted-app-db/issues/6)
-      - [x] Driver
-      - [x] get-acl
-      - [x] put-acl
-      - [x] compare-acl
-      - [x] load-acl
-      - [x] store-acl
-      - [x] get-events
-      - [x] CHANGELOG
-      - [x] README
+- [x] TCP/IP protocol (cf. https://github.com/uhppoted/uhppote-core/issues/17)
+- [x] Update to Go 1.23 (cf. https://github.com/uhppoted/uhppoted/issues/53)
+
 
 ## TODO
 
