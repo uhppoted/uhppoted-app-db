@@ -10,7 +10,7 @@ Supported operating systems:
 - MacOS
 - Windows
 - ARM
-- ARM7
+- RaspberryPi (ARM/ARM7/ARM6)
 
 Supported databases:
 - sqlite3

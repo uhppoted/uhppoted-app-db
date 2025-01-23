@@ -7,6 +7,7 @@
 
 ### Added
 1. TCP/IP support.
+2. ARMv6 build target (RaspberryPi ZeroW).
 
 ### Updated
 1. Updated to Go 1.23.
