@@ -7,8 +7,8 @@ require (
 	github.com/jackc/pgx/v5 v5.5.4
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/microsoft/go-mssqldb v1.1.0
-	github.com/uhppoted/uhppote-core v0.8.10-0.20250121172632-08d73ff3689e
-	github.com/uhppoted/uhppoted-lib v0.8.10-0.20250121173211-01a4a14fc786
+	github.com/uhppoted/uhppote-core v0.8.10
+	github.com/uhppoted/uhppoted-lib v0.8.10
 )
 
 require (
