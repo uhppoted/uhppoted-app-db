@@ -31,9 +31,9 @@ creating the table rather than implementing an UPSERT.
 
 ## Current Release
 
-**[v0.8.10](https://github.com/uhppoted/uhppoted-app-db/releases/tag/v0.8.10) - 2025-01-30**
+**[v0.8.11](https://github.com/uhppoted/uhppoted-app-db/releases/tag/v0.8.11) - 2025-07-01**
 
-1. Added ARMv6 build target (RaspberryPi ZeroW).
+1. Updated to Go 1.24.
 
 
 ## Installation
