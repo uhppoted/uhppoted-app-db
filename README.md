@@ -80,6 +80,10 @@ The above commands build the `'uhppoted-app-db` executable to the `bin` director
 | ---------------------------------------------------------------------------- | ------------------------------------------ |
 | [com.github/uhppoted/uhppote-core](https://github.com/uhppoted/uhppote-core) | Device level API implementation            |
 | [com.github/uhppoted-lib](https://github.com/uhppoted/uhppoted-lib)          | Shared application library                 |
+| [github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)           | sqlite3 DB driver                          |
+| [github.com/jackc/pgx/v5](https://github.com/jackc/pgx/v5)                   | PostgreSQL DB driver                       |
+| [github.com/go-sql-driver/mysql](https://github.com/go-sql-driver/mysql)     | MySQL DB driver                            |
+| [github.com/microsoft/go-mssqldb](https://github.com/microsoft/go-mssqldb)   | Microsoft SQL Server DB driver             |
 
 
 ## uhppoted-app-db
