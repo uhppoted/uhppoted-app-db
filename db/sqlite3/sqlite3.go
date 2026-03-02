@@ -95,7 +95,7 @@ func row2record(rows *sql.Rows, columns []string, types []*sql.ColumnType) (reco
 	} else {
 		record := record{}
 
-		for i := 0; i < len(columns); i++ {
+		for i := range columns {
 			record[columns[i]] = values[i]
 		}
 
@@ -111,20 +111,20 @@ func clean(v string) string {
 	return regexp.MustCompile(`\s+`).ReplaceAllString(strings.TrimSpace(v), " ")
 }
 
-func debugf(format string, args ...interface{}) {
+func debugf(format string, args ...any) {
 	f := fmt.Sprintf("%-10v %v", LogTag, format)
 
 	log.Debugf(f, args...)
 }
 
 //lint:ignore U1000 utility function
-func infof(format string, args ...interface{}) {
+func infof(format string, args ...any) {
 	f := fmt.Sprintf("%-10v %v", LogTag, format)
 
 	log.Infof(f, args...)
 }
 
-func warnf(format string, args ...interface{}) {
+func warnf(format string, args ...any) {
 	f := fmt.Sprintf("%-10v %v", LogTag, format)
 
 	log.Warnf(f, args...)

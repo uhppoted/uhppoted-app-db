@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"math"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -203,10 +204,7 @@ func (cmd *GetEvents) getEvents(u uhppote.IUHPPOTE, controller uint32) ([]core.E
 
 		for _, interval := range intervals {
 			if interval.contains(last) {
-				index := interval.from
-				if index < first {
-					index = first
-				}
+				index := max(interval.from, first)
 
 				for index <= last && count < cmd.batchSize {
 					f(index)
@@ -215,10 +213,7 @@ func (cmd *GetEvents) getEvents(u uhppote.IUHPPOTE, controller uint32) ([]core.E
 			}
 
 			if interval.contains(first) {
-				index := interval.to
-				if index > last {
-					index = last
-				}
+				index := min(interval.to, last)
 
 				for index >= first && count < cmd.batchSize {
 					f(index)
@@ -250,7 +245,7 @@ func (cmd *GetEvents) getMissing(gaps int, controller uint32) ([]interval, error
 		events = list
 	}
 
-	sort.Slice(events, func(i, j int) bool { return events[i] < events[j] })
+	slices.Sort(events)
 
 	first := uint32(0)
 	last := uint32(0)
