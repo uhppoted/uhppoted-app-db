@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	core "github.com/uhppoted/uhppote-core/types"
-	"github.com/uhppoted/uhppote-core/uhppote"
-	"github.com/uhppoted/uhppoted-app-db/db"
-	"github.com/uhppoted/uhppoted-app-db/log"
-	"github.com/uhppoted/uhppoted-lib/config"
+	"codeberg.org/uhppoted/uhppoted-app-db/db"
+	"codeberg.org/uhppoted/uhppoted-app-db/log"
+	core "codeberg.org/uhppoted/uhppoted-core/types"
+	"codeberg.org/uhppoted/uhppoted-core/uhppote"
+	"codeberg.org/uhppoted/uhppoted-lib/config"
 )
 
 type interval struct {

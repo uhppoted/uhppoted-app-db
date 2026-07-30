@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/uhppoted/uhppote-core/uhppote"
-	"github.com/uhppoted/uhppoted-app-db/db"
-	lib "github.com/uhppoted/uhppoted-lib/acl"
-	"github.com/uhppoted/uhppoted-lib/config"
+	"codeberg.org/uhppoted/uhppoted-app-db/db"
+	"codeberg.org/uhppoted/uhppoted-core/uhppote"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
+	"codeberg.org/uhppoted/uhppoted-lib/config"
 )
 
 var LoadACLCmd = LoadACL{
@@ -100,9 +100,9 @@ func (cmd *LoadACL) Execute(args ...any) error {
 	// ... retrieve ACL from DB
 	f := func(table lib.Table, devices []uhppote.Device) (*lib.ACL, []error, error) {
 		if cmd.withPIN {
-			return lib.ParseTable(&table, devices, false)
+			return lib.ParseTable(&table, devices, false, true, false)
 		} else {
-			return lib.ParseTable(&table, devices, false)
+			return lib.ParseTable(&table, devices, false, false, false)
 		}
 	}
 
@@ -164,9 +164,9 @@ func (cmd *LoadACL) Execute(args ...any) error {
 func (cmd *LoadACL) load(u uhppote.IUHPPOTE, acl lib.ACL) (map[uint32]lib.Report, []error) {
 	f := func(u uhppote.IUHPPOTE, list lib.ACL) (map[uint32]lib.Report, []error) {
 		if cmd.withPIN {
-			return lib.PutACLWithPIN(u, list, false)
+			return lib.PutACL(u, list, false, true, false)
 		} else {
-			return lib.PutACL(u, list, false)
+			return lib.PutACL(u, list, false, false, false)
 		}
 	}
 

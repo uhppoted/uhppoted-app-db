@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	lib "github.com/uhppoted/uhppoted-lib/acl"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
 )
 
 func makeTable(columns []string, recordset []record, withPIN bool) (*lib.Table, error) {

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	lib "github.com/uhppoted/uhppoted-lib/acl"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
 )
 
 func PutACL(dsn string, table string, recordset lib.Table, withPIN bool) (int, error) {

@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/uhppoted/uhppoted-app-db/db"
+	"codeberg.org/uhppoted/uhppoted-app-db/db"
 )
 
 func AuditTrail(dsn string, table string, recordset []db.AuditRecord) (int, error) {

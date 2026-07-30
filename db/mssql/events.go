@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	core "github.com/uhppoted/uhppote-core/types"
+	core "codeberg.org/uhppoted/uhppoted-core/types"
 )
 
 func GetEvents(dsn string, table string, controller uint32) ([]uint32, error) {

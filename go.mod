@@ -1,14 +1,14 @@
-module github.com/uhppoted/uhppoted-app-db
+module codeberg.org/uhppoted/uhppoted-app-db
 
 go 1.26
 
 require (
+	codeberg.org/uhppoted/uhppoted-core v0.0.0-20260723154335-7d132936dee1
+	codeberg.org/uhppoted/uhppoted-lib v0.0.0-20260730164853-a9c9795085df
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/jackc/pgx/v5 v5.5.4
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/microsoft/go-mssqldb v1.1.0
-	github.com/uhppoted/uhppote-core v0.9.1-0.20260219172325-1dd279d6cc53
-	github.com/uhppoted/uhppoted-lib v0.9.1-0.20260220173047-f3a88dcbc696
 )
 
 require (
@@ -19,6 +19,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	golang.org/x/crypto v0.45.0 // indirect
 	golang.org/x/sync v0.18.0 // indirect
-	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
 )

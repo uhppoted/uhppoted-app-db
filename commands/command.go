@@ -7,12 +7,12 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/uhppoted/uhppote-core/uhppote"
-	"github.com/uhppoted/uhppoted-lib/config"
-	"github.com/uhppoted/uhppoted-lib/lockfile"
-	lib "github.com/uhppoted/uhppoted-lib/os"
+	"codeberg.org/uhppoted/uhppoted-core/uhppote"
+	"codeberg.org/uhppoted/uhppoted-lib/config"
+	"codeberg.org/uhppoted/uhppoted-lib/lockfile"
+	lib "codeberg.org/uhppoted/uhppoted-lib/os"
 
-	"github.com/uhppoted/uhppoted-app-db/log"
+	"codeberg.org/uhppoted/uhppoted-app-db/log"
 )
 
 const APP = "uhppoted-app-db"

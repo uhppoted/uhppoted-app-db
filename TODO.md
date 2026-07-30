@@ -1,13 +1,8 @@
 # TODO
 
-## IN PROGRESS
+- [x] Migrate to codeberg.org (cf. https://codeberg.org/uhppoted/uhppoted/issues/1)
 
-- [x] TCP/IP protocol (cf. https://github.com/uhppoted/uhppote-core/issues/17)
-- [x] Update to Go 1.23 (cf. https://github.com/uhppoted/uhppoted/issues/53)
-- [x] ARM6 target (cf. https://github.com/uhppoted/uhppoted/issues/55)
-
-
-## TODO
+## To Be Done
 
 - [ ] Firebase
 - https://www.pgrs.net/2024/03/21/duckdb-as-the-new-jq/

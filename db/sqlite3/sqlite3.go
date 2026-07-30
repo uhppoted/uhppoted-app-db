@@ -9,10 +9,10 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 
-	core "github.com/uhppoted/uhppote-core/types"
-	"github.com/uhppoted/uhppoted-app-db/db"
-	"github.com/uhppoted/uhppoted-app-db/log"
-	lib "github.com/uhppoted/uhppoted-lib/acl"
+	"codeberg.org/uhppoted/uhppoted-app-db/db"
+	"codeberg.org/uhppoted/uhppoted-app-db/log"
+	core "codeberg.org/uhppoted/uhppoted-core/types"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
 )
 
 const MaxLifetime = 5 * time.Minute

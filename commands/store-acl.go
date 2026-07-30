@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/uhppoted/uhppote-core/uhppote"
-	"github.com/uhppoted/uhppoted-app-db/db"
-	lib "github.com/uhppoted/uhppoted-lib/acl"
-	"github.com/uhppoted/uhppoted-lib/config"
+	"codeberg.org/uhppoted/uhppoted-app-db/db"
+	"codeberg.org/uhppoted/uhppoted-core/uhppote"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
+	"codeberg.org/uhppoted/uhppoted-lib/config"
 )
 
 var StoreACLCmd = StoreACL{
@@ -130,8 +130,8 @@ func (cmd *StoreACL) getACL(u uhppote.IUHPPOTE, devices []uhppote.Device) (*lib.
 	}
 
 	if cmd.withPIN {
-		return lib.MakeTableWithPIN(acl, devices)
+		return lib.MakeTable(acl, devices, true, false)
 	} else {
-		return lib.MakeTable(acl, devices)
+		return lib.MakeTable(acl, devices, false, false)
 	}
 }

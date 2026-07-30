@@ -3,8 +3,8 @@ package db
 import (
 	"time"
 
-	core "github.com/uhppoted/uhppote-core/types"
-	lib "github.com/uhppoted/uhppoted-lib/acl"
+	core "codeberg.org/uhppoted/uhppoted-core/types"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
 )
 
 type DB interface {

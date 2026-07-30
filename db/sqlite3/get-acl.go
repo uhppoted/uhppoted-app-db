@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	lib "github.com/uhppoted/uhppoted-lib/acl"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
 )
 
 func GetACL(dsn string, table string, withPIN bool) (*lib.Table, error) {

@@ -37,7 +37,7 @@ creating the table rather than implementing an UPSERT.
 
 ## Installation
 
-Executables for all the supported operating systems are packaged in the [releases](https://github.com/uhppoted/uhppoted-app-db/releases). The provided archives contain the executables for all the operating systems - OS specific tarballs can be found in the [uhppoted](https://github.com/uhppoted/uhppoted/releases) releases.
+Executables for all the supported operating systems are packaged in the [releases](https://codeberg.org/uhppoted/uhppoted-app-db/releases). The provided archives contain the executables for all the operating systems - OS specific tarballs can be found in the [uhppoted](https://codeberg.org/uhppoted/uhppoted/releases) releases.
 
 Installation is straightforward - download the archive and extract it to a directory of your choice and then place the executable in a directory in your PATH. The `uhppoted-app-db` utility requires the following additional 
 files:
@@ -48,24 +48,24 @@ files:
 ### `uhppoted.conf`
 
 `uhppoted.conf` is the communal configuration file shared by all the `uhppoted` project modules and is (or will 
-eventually be) documented in [uhppoted](https://github.com/uhppoted/uhppoted). `uhppoted-app-db` requires the 
+eventually be) documented in [uhppoted](https://codeberg.org/uhppoted/uhppoted). `uhppoted-app-db` requires the 
 _devices_ section to resolve non-local controller IP addresses and door to controller door identities.
 
-A sample [uhppoted.conf](https://github.com/uhppoted/uhppoted/blob/master/runtime/simulation/405419896.conf) file is included in the `uhppoted` distribution.
+A sample [uhppoted.conf](https://codeberg.org/uhppoted/uhppoted/blob/master/runtime/simulation/405419896.conf) file is included in the `uhppoted` distribution.
 
 ### Building from source
 
 Assuming you have `Go` and `make` installed:
 
 ```
-git clone https://github.com/uhppoted/uhppoted-app-db.git
+git clone https://codeberg.org/uhppoted/uhppoted-app-db.git
 cd uhppoted-app-db
 make build
 ```
 
 If you prefer not to use `make`:
 ```
-git clone https://github.com/uhppoted/uhppoted-app-db.git
+git clone https://codeberg.org/uhppoted/uhppoted-app-db.git
 cd uhppoted-app-db
 mkdir bin
 go build -trimpath -o bin ./...
@@ -77,8 +77,6 @@ The above commands build the `'uhppoted-app-db` executable to the `bin` director
 
 | *Dependency*                                                                 | *Description*                              |
 | ---------------------------------------------------------------------------- | ------------------------------------------ |
-| [com.github/uhppoted/uhppote-core](https://github.com/uhppoted/uhppote-core) | Device level API implementation            |
-| [com.github/uhppoted-lib](https://github.com/uhppoted/uhppoted-lib)          | Shared application library                 |
 | [github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)           | sqlite3 DB driver                          |
 | [github.com/jackc/pgx/v5](https://github.com/jackc/pgx/v5)                   | PostgreSQL DB driver                       |
 | [github.com/go-sql-driver/mysql](https://github.com/go-sql-driver/mysql)     | MySQL DB driver                            |

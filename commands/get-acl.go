@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/uhppoted/uhppote-core/uhppote"
-	"github.com/uhppoted/uhppoted-app-db/db"
-	lib "github.com/uhppoted/uhppoted-lib/acl"
-	"github.com/uhppoted/uhppoted-lib/config"
+	"codeberg.org/uhppoted/uhppoted-app-db/db"
+	"codeberg.org/uhppoted/uhppoted-core/uhppote"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
+	"codeberg.org/uhppoted/uhppoted-lib/config"
 )
 
 var GetACLCmd = GetACL{
@@ -102,9 +102,9 @@ func (cmd *GetACL) Execute(args ...any) error {
 	// ... retrieve ACL from DB
 	f := func(table lib.Table, devices []uhppote.Device) (*lib.ACL, []error, error) {
 		if cmd.withPIN {
-			return lib.ParseTable(&table, devices, false)
+			return lib.ParseTable(&table, devices, false, true, false)
 		} else {
-			return lib.ParseTable(&table, devices, false)
+			return lib.ParseTable(&table, devices, false, false, false)
 		}
 	}
 

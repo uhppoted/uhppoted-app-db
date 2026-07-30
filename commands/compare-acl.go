@@ -10,11 +10,11 @@ import (
 	"text/template"
 	"time"
 
-	core "github.com/uhppoted/uhppote-core/types"
-	"github.com/uhppoted/uhppote-core/uhppote"
-	"github.com/uhppoted/uhppoted-app-db/db"
-	lib "github.com/uhppoted/uhppoted-lib/acl"
-	"github.com/uhppoted/uhppoted-lib/config"
+	"codeberg.org/uhppoted/uhppoted-app-db/db"
+	core "codeberg.org/uhppoted/uhppoted-core/types"
+	"codeberg.org/uhppoted/uhppoted-core/uhppote"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
+	"codeberg.org/uhppoted/uhppoted-lib/config"
 )
 
 var CompareACLCmd = CompareACL{
@@ -122,9 +122,9 @@ func (cmd *CompareACL) Execute(args ...any) error {
 	// ... retrieve ACL from DB
 	f := func(table lib.Table, devices []uhppote.Device) (*lib.ACL, []error, error) {
 		if cmd.withPIN {
-			return lib.ParseTable(&table, devices, false)
+			return lib.ParseTable(&table, devices, false, true, false)
 		} else {
-			return lib.ParseTable(&table, devices, false)
+			return lib.ParseTable(&table, devices, false, false, false)
 		}
 	}
 

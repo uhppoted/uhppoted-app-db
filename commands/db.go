@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	core "github.com/uhppoted/uhppote-core/types"
-	lib "github.com/uhppoted/uhppoted-lib/acl"
+	core "codeberg.org/uhppoted/uhppoted-core/types"
+	lib "codeberg.org/uhppoted/uhppoted-lib/acl"
 
-	"github.com/uhppoted/uhppoted-app-db/db"
-	"github.com/uhppoted/uhppoted-app-db/db/mssql"
-	"github.com/uhppoted/uhppoted-app-db/db/mysql"
-	"github.com/uhppoted/uhppoted-app-db/db/postgres"
-	"github.com/uhppoted/uhppoted-app-db/db/sqlite3"
+	"codeberg.org/uhppoted/uhppoted-app-db/db"
+	"codeberg.org/uhppoted/uhppoted-app-db/db/mssql"
+	"codeberg.org/uhppoted/uhppoted-app-db/db/mysql"
+	"codeberg.org/uhppoted/uhppoted-app-db/db/postgres"
+	"codeberg.org/uhppoted/uhppoted-app-db/db/sqlite3"
 )
 
 func fromDSN(dsn string) (db.DB, error) {
