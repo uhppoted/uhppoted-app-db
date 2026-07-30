@@ -1,4 +1,4 @@
-![build](https://github.com/uhppoted/uhppoted-app-db/workflows/build/badge.svg)
+<!-- ![build](https://github.com/uhppoted/uhppoted-app-db/workflows/build/badge.svg) -->
 
 # uhppoted-app-db
 
@@ -31,7 +31,7 @@ creating the table rather than implementing an UPSERT.
 
 ## Current Release
 
-**[v0.9.0](https://github.com/uhppoted/uhppoted-app-db/releases/tag/v0.9.0) - 2026-01-27**
+**[v0.9.0](https://codeberg.org/uhppoted/uhppoted-app-db/releases/tag/v0.9.0) - 2026-01-27**
 1. Updated to Go 1.25.
 
 
