@@ -1,9 +1,11 @@
 # TODO
 
+## In Progress
+
 - [x] Migrate to codeberg.org (cf. https://codeberg.org/uhppoted/uhppoted/issues/1)
 
-## To Be Done
 
+## To Be Done
 - [ ] Firebase
 - https://www.pgrs.net/2024/03/21/duckdb-as-the-new-jq/
 - (?) Foreign data wrappers
