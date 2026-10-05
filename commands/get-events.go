@@ -29,20 +29,18 @@ const BATCHSIZE = 128 // maximum controller events to fetch
 const GAPS = 2        // fix at most 2 gaps in a controller event record
 
 var GetEventsCmd = GetEvents{
-	command: command{
-		name:        "get-events",
-		description: "Retrieves a batch of events from the set of configured controllers and stores the events to a database table",
-		usage:       "--dsn <DSN> [--table:events <table>] [-table:log <table>] [--batch-size <N>]",
+	name:        "get-events",
+	description: "Retrieves a batch of events from the set of configured controllers and stores the events to a database table",
+	usage:       "--dsn <DSN> [--table:events <table>] [-table:log <table>] [--batch-size <N>]",
 
-		dsn: "",
-		tables: tables{
-			Events: "Events",
-			Log:    "",
-		},
-		lockfile: "",
-		config:   config.DefaultConfig,
-		debug:    false,
+	dsn: "",
+	tables: tables{
+		Events: "Events",
+		Log:    "",
 	},
+	lockfile:  "",
+	config:    config.DefaultConfig,
+	debug:     false,
 	batchSize: BATCHSIZE,
 }
 

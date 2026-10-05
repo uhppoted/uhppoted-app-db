@@ -14,21 +14,19 @@ import (
 )
 
 var LoadACLCmd = LoadACL{
-	command: command{
-		name:        "load-acl",
-		description: "Retrieves an access control list from a database and updates the configured set of access controllers",
-		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>] [-table:log <table>]",
+	name:        "load-acl",
+	description: "Retrieves an access control list from a database and updates the configured set of access controllers",
+	usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>] [-table:log <table>]",
 
-		dsn: "",
-		tables: tables{
-			ACL:   "ACL",
-			Audit: "",
-		},
-		withPIN:  false,
-		lockfile: "",
-		config:   config.DefaultConfig,
-		debug:    false,
+	dsn: "",
+	tables: tables{
+		ACL:   "ACL",
+		Audit: "",
 	},
+	withPIN:  false,
+	lockfile: "",
+	config:   config.DefaultConfig,
+	debug:    false,
 }
 
 type LoadACL struct {

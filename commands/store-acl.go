@@ -13,21 +13,19 @@ import (
 )
 
 var StoreACLCmd = StoreACL{
-	command: command{
-		name:        "store-acl",
-		description: "Retrieves the ACL from a set of access controllers and stores it in a database table",
-		usage:       "--with-pin --dsn <DSN> [--table:ACL <table>] [--table:log <table>]",
+	name:        "store-acl",
+	description: "Retrieves the ACL from a set of access controllers and stores it in a database table",
+	usage:       "--with-pin --dsn <DSN> [--table:ACL <table>] [--table:log <table>]",
 
-		dsn: "",
-		tables: tables{
-			ACL: "ACL",
-			Log: "",
-		},
-		withPIN:  false,
-		lockfile: "",
-		config:   config.DefaultConfig,
-		debug:    false,
+	dsn: "",
+	tables: tables{
+		ACL: "ACL",
+		Log: "",
 	},
+	withPIN:  false,
+	lockfile: "",
+	config:   config.DefaultConfig,
+	debug:    false,
 }
 
 type StoreACL struct {

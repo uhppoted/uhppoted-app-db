@@ -18,21 +18,19 @@ import (
 )
 
 var CompareACLCmd = CompareACL{
-	command: command{
-		name:        "compare-acl",
-		description: "Compares the access permissions in the configurated set of access controllers to an access control list in a database",
-		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>] [-table:log <table>] [--file <file>]",
+	name:        "compare-acl",
+	description: "Compares the access permissions in the configurated set of access controllers to an access control list in a database",
+	usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:audit <table>] [-table:log <table>] [--file <file>]",
 
-		dsn: "",
-		tables: tables{
-			ACL:   "ACL",
-			Audit: "",
-			Log:   "",
-		},
-		withPIN:  false,
-		lockfile: "",
-		config:   config.DefaultConfig,
+	dsn: "",
+	tables: tables{
+		ACL:   "ACL",
+		Audit: "",
+		Log:   "",
 	},
+	withPIN:  false,
+	lockfile: "",
+	config:   config.DefaultConfig,
 
 	file:  "",
 	debug: false,

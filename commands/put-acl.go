@@ -15,21 +15,19 @@ import (
 )
 
 var PutACLCmd = PutACL{
-	command: command{
-		name:        "put-acl",
-		description: "Stores an access control list in a TSV file to a database",
-		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [--table:log <table>] [--file <file>]",
+	name:        "put-acl",
+	description: "Stores an access control list in a TSV file to a database",
+	usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [--table:log <table>] [--file <file>]",
 
-		dsn: "",
-		tables: tables{
-			ACL: "ACL",
-			Log: "",
-		},
-		withPIN:  false,
-		lockfile: "",
-		config:   config.DefaultConfig,
-		debug:    false,
+	dsn: "",
+	tables: tables{
+		ACL: "ACL",
+		Log: "",
 	},
+	withPIN:  false,
+	lockfile: "",
+	config:   config.DefaultConfig,
+	debug:    false,
 
 	file: "",
 }

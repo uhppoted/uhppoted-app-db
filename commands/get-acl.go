@@ -15,21 +15,19 @@ import (
 )
 
 var GetACLCmd = GetACL{
-	command: command{
-		name:        "get-acl",
-		description: "Retrieves an access control list from a database and (optionally) saves it to a file",
-		usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:log <table>] [--file <file>]",
+	name:        "get-acl",
+	description: "Retrieves an access control list from a database and (optionally) saves it to a file",
+	usage:       "[--with-pin] --dsn <DSN> [--table:ACL <table>] [-table:log <table>] [--file <file>]",
 
-		dsn: "",
-		tables: tables{
-			ACL: "ACL",
-			Log: "",
-		},
-		withPIN:  false,
-		lockfile: "",
-		config:   config.DefaultConfig,
-		debug:    false,
+	dsn: "",
+	tables: tables{
+		ACL: "ACL",
+		Log: "",
 	},
+	withPIN:  false,
+	lockfile: "",
+	config:   config.DefaultConfig,
+	debug:    false,
 }
 
 type GetACL struct {
