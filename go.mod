@@ -3,8 +3,8 @@ module codeberg.org/uhppoted/uhppoted-app-db
 go 1.27
 
 require (
-	codeberg.org/uhppoted/uhppoted-core v0.9.1-0.20261001173143-860675f9c219
-	codeberg.org/uhppoted/uhppoted-lib v0.9.1-0.20261001184412-e96a37c5413e
+	codeberg.org/uhppoted/uhppoted-core v0.9.1
+	codeberg.org/uhppoted/uhppoted-lib v0.9.1
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/jackc/pgx/v5 v5.5.4
 	github.com/mattn/go-sqlite3 v1.14.16

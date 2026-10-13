@@ -21,6 +21,17 @@ Supported databases:
 
 ## Release Notes
 
+## Current Release
+
+## [0.9.1](https://codeberg.org/uhppoted/uhppoted-app-db/releases/tag/v0.9.1) - 2026-10-13
+
+_Maintenance release_
+
+1. Migrated from _github_ to _codeberg_.
+2. Updated to Go v1.27.
+3. Updated dependencies for security patches.
+
+
 ##### _Version v0.8.5_
 
 1. _Please note that this README describes the current development version and the command line arguments have changed to 
@@ -30,10 +41,6 @@ the command line arguments._
 2. The _sqlite3_ implementation has also changed to expect the ACL table to include an ON CONFLICT REPLACE clause when
 creating the table rather than implementing an UPSERT.
 
-## Current Release
-
-**[v0.9.0](https://codeberg.org/uhppoted/uhppoted-app-db/releases/tag/v0.9.0) - 2026-01-27**
-1. Updated to Go 1.25.
 
 
 ## Installation
