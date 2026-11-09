@@ -1,6 +1,15 @@
 ![build](https://github.com/uhppoted/uhppoted-app-db/workflows/build/badge.svg)
 
 
+<div align="center">
+
+_The primary repository for this project is hosted on codeberg: https://codeberg.org/uhppoted/uhppoted-app-db_
+
+_The [github repository](https://github.com/uhppoted/uhppoted-app-db) will be kept up to date and maintained as a courtesy (and for archival
+releases) but please use _codeberg_ for reporting issues, etc._
+</div>
+
+
 # uhppoted-app-db
 
 ```cron```'able command line utility to download access control lists managed by a database to UHPPOTE
