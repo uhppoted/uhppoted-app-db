@@ -5,8 +5,8 @@
 
 _The primary repository for this project is hosted on codeberg: https://codeberg.org/uhppoted/uhppoted-app-db_
 
-_The [github repository](https://github.com/uhppoted/uhppoted-app-db) will be kept up to date and maintained as a courtesy (and for archival
-releases) but please use _codeberg_ for reporting issues, etc._
+_The [github repository](https://github.com/uhppoted/uhppoted-app-db) will be kept up to date and maintained as a courtesy and for archival
+releases but please use _codeberg_ for reporting issues, etc._
 </div>
 
 
